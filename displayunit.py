@@ -5,8 +5,7 @@ import tkinter as tk
 import _thread
 
 #
-imageToDisplay = b'Start'  
-imageIsUpdated = False
+imageToDisplay = b'Start'
 
 
 #Setup of root window for the GUI and the different images 
@@ -18,7 +17,7 @@ questionlabel = tk.Label(image=image4)
 answerlabel = tk.Label(image=image4)
 
 #Try to connect to the server untill successfull
-HOST = '192.168.1.34'    # The remote host, 
+HOST = '192.168.1.40'    # The remote host, 
 PORT = 50007              # The same port as used by the server
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try: 
@@ -32,27 +31,11 @@ except:
 questionlabel.pack()
 root.update()
 
-#Loop of the game 
-def receiveThread():
-	i=1
-	while True:
-		global imageToDisplay
-		imageToDisplay = s.recv(1024) #receive information on what image to display. 
-		print(imageToDisplay.decode())
-		global imageIsUpdated
-		imageIsUpdated = True
-		print(i)
-		i+1
-
-
-try:
-   _thread.start_new_thread( receiveThread, ())
-except:
-   print ("Error: unable to start thread")
 
 
 while True:
-	if imageIsUpdated == True:
+		imageToDisplay = s.recv(1024) #receive information on what image to display. 
+		print(imageToDisplay.decode())
 		path = '/home/pi/Desktop/wav/%s.gif' % imageToDisplay.decode() #set the path to this desired image
 		questionlabel.pack_forget()
 		answerlabel.pack_forget()
@@ -61,4 +44,3 @@ while True:
 		answerlabel = tk.Label(image=image1)
 		answerlabel.pack()
 		root.update()
-		imageIsUpdated = False
