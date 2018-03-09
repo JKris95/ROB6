@@ -39,7 +39,7 @@ correctsound = pygame.mixer.Sound('/home/pi/Desktop/wav/correct.wav')
 incorrectsound = pygame.mixer.Sound('/home/pi/Desktop/wav/wrong.wav')
 
 #Try to connect to the server untill successfull
-HOST = '192.168.1.34'    # The remote host, 
+HOST = '192.168.1.40'    # The remote host, 
 PORT = 50007              # The same port as used by the server
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try: 
@@ -57,13 +57,16 @@ root.update()
 def receiveThread():
 	i=1
 	while True:
-		global role 
-		role = s.recv(1024) #receive information on whether the cone is holding the correct or incorrect answer. 
-		print(role)
 		global imageToDisplay
 		imageToDisplay = s.recv(1024) #receive information on what image to display. 
 		print(imageToDisplay.decode())
 		global imageIsUpdated
+		imageIsUpdated = True
+		global role 
+		role = s.recv(1024) #receive information on whether the cone is holding the correct or incorrect answer. 
+		print(role)
+		imageToDisplay = s.recv(1024) #receive information on what image to display. 
+		print(imageToDisplay.decode())
 		imageIsUpdated = True
 		print(i)
 		i+1
