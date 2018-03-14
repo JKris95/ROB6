@@ -2,8 +2,14 @@ from tkinter import *
 
 root = Tk()
 #root.attributes('-fullscreen',True)
-def printName(event):
-	print("printing")
+def Animal_game(event):
+	print("Animals")
+
+def Color_game(event):
+	print("Colors")	
+
+def Clock_game(event):
+	print("Clocks")
 
 def sliderValue(event):
 	print(slider.get())
@@ -40,13 +46,13 @@ scroll.pack(side=RIGHT, fill=Y)
 
 
 button_1 = Button(root, text="Animals")
-button_1.bind("<Button-1>",printName)
+button_1.bind("<Button-1>",Animal_game)
 button_1.pack()
 button_2 = Button(root, text="Colors")
-button_2.bind("<Button-1>",printName)
+button_2.bind("<Button-1>",Color_game)
 button_2.pack()
 button_3 = Button(root, text="Clocks")
-button_3.bind("<Button-1>", printName)
+button_3.bind("<Button-1>", Clock_game)
 button_3.pack()
 slider = Scale(root, from_=1, to=3, orient=HORIZONTAL)
 slider.bind("<ButtonRelease-1>",sliderValue)
