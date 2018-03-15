@@ -1,6 +1,8 @@
 import socket
 from random import randrange
 import time
+from tkinter import *
+import _thread
 all_connections = []
 all_addresses = []
 displayunit_connection = []
@@ -8,7 +10,9 @@ displayunit_address = '192.168.1.43'
 HOST=''
 PORT=50007
 
+conesInGame = False
 
+chosenGame = ['not chosen', False]
 #The images availible in the different categories. 
 colors = [b'red', b'green',b'blue',b'orange',b'purple',b'yellow']
 animals = [b'cow',b'dog',b'chicken',b'cat',b'zebra']
@@ -38,13 +42,13 @@ def socket_accept(numberofclients,displayunit_address): # accepting a fixed numb
 		try:
 			conn, address = s.accept()
 			conn.setblocking(1)
-			print(type(address))
-			print(address)
+			#print(type(address))
+			#print(address)
 			if address[0] == displayunit_address:
-				print("DIsplay unit appednd")
+				print("Display unit appended")
 				displayunit_connection.append(conn)
 			else:
-				print("cone appended") 
+				print("Cone appended") 
 				all_connections.append(conn)
 				all_addresses.append(address)
 			print("\n Connection has been established:" +address[0])
@@ -52,12 +56,11 @@ def socket_accept(numberofclients,displayunit_address): # accepting a fixed numb
 		except:
 			print("Error accepting connections")
 
-def chooseGame(correctCone): # lets the gamemaster chose what game catagory the questions should come from. 
+def chooseGame(correctCone, gametoplay): # lets the gamemaster chose what game catagory the questions should come from. 
 	contentList = []
 	pickedNumbers = []
 
-	choice = input('Hvilket spil skal spilles?')
-	if choice=='Dyre spil':
+	if gametoplay[0]=='animals':
 		print('Dyre spil valgt')
 		for i in range(numberofclients):
 			while True:
@@ -68,7 +71,7 @@ def chooseGame(correctCone): # lets the gamemaster chose what game catagory the 
 			contentList.append(animals[pickedNumbers[i]])
 
 
-	if choice=='Farve spil':
+	if gametoplay[0]=='colors':
 		print('Farve spil valgt')
 		for i in range(numberofclients):
 			while True:
@@ -79,7 +82,7 @@ def chooseGame(correctCone): # lets the gamemaster chose what game catagory the 
 			contentList.append(colors[pickedNumbers[i]])
 
 
-	if choice=='Ur spil':
+	if gametoplay[0]=='clocks':
 		print('Ur spil valgt')
 		for i in range(numberofclients):
 			while True:
@@ -90,8 +93,8 @@ def chooseGame(correctCone): # lets the gamemaster chose what game catagory the 
 			contentList.append(times[pickedNumbers[i]])
 
 	contentOnCorrectCone = contentList[correctCone]
-	print(contentList)
-	print ("{} {}".format("\n Kør til keglen som viser:", contentOnCorrectCone))
+	#print(contentList)
+	#print ("{} {}".format("\n Kør til keglen som viser:", contentOnCorrectCone))
 	return {"coneContent":contentList, "DUcontent":contentOnCorrectCone}
 
 
@@ -103,8 +106,8 @@ def sendGameContent(contentList,cones,numberofclients): #sends the content to th
 
 def randomCorrect(foo): #takes the array with the default false, and assigns a random correct cone and saves that chosen correct cone.
 	y = randrange(0,len(foo))
-	print("{} {}".format("\n Random index chosen:", y))
-	print ("{} {}".format("\n What object is at this index:", foo[y]))
+	#print("{} {}".format("\n Random index chosen:", y))
+	#print ("{} {}".format("\n What object is at this index:", foo[y]))
 	return y
 
 def sendTrueFalse(x,z,numberofclients): # sends True to the correct cone and false to the rest of the cones
@@ -121,18 +124,114 @@ def sendToDisplayunit(connectionDU, content):
 		connectionDU[i].sendall(content)
 		print("Content was send to display unit:", content)
 
-numberofclients = int(input("Hvor mange kegler er med i spillet? "))
-print(numberofclients)
+
+
+
+def Animal_game(event):
+	print("Animals")
+	chosenGame[0] = 'animals'
+	chosenGame[1] = True
+	print (chosenGame)
+
+def Color_game(event):
+	print("Colors")
+	chosenGame[0] = 'colors'
+	chosenGame[1] = True
+	print (chosenGame)	
+
+def Clock_game(event):
+	print("Clocks")	
+	chosenGame[0] = 'clocks'
+	chosenGame[1] = True
+	print (chosenGame)
+
+def guiThread():
+	while True:
+		root = Tk()
+		T = Text(root, height=2, width=30)
+		T.pack(side=RIGHT)
+		T.insert(END, "Number of cones")
+		
+		def sliderValue(event):
+			global numberofclients
+			print(slider.get())
+			numberofclients = slider.get()
+			global conesInGame
+			conesInGame = True
+
+		text1 = Text(root, height=15, width=40)
+		photo=PhotoImage(file='./pylogo.gif')
+		text1.insert(END,'\n')
+		text1.image_create(END, image=photo)
+
+		text1.pack(side=LEFT)
+
+		text2 = Text(root, height=20, width=50)
+		scroll = Scrollbar(root, command=text2.yview)
+		text2.configure(yscrollcommand=scroll.set)
+		text2.tag_configure('bold_italics', font=('Arial', 12, 'bold', 'italic'))
+		text2.tag_configure('big', font=('Verdana', 20, 'bold'))
+		text2.tag_configure('color', foreground='#476042', 
+								font=('Tempus Sans ITC', 12, 'bold'))
+		text2.tag_bind('follow', '<1>', lambda e, t=text2: t.insert(END, "Not now, maybe later!"))
+		text2.insert(END,'\nRobot Game\n', 'big')
+		quote = """
+		This is the user interface to the platform.
+		Needs some design update.
+		"""
+		text2.insert(END, quote, 'color')
+		text2.pack(side=LEFT)
+		scroll.pack(side=RIGHT, fill=Y)
+
+
+		button_1 = Button(root, text="Animals")
+		button_1.bind("<Button-1>",Animal_game)
+		button_1.pack()
+		button_2 = Button(root, text="Colors")
+		button_2.bind("<Button-1>",Color_game)
+		button_2.pack()
+		button_3 = Button(root, text="Clocks")
+		button_3.bind("<Button-1>", Clock_game)
+		button_3.pack()
+		slider = Scale(root, from_=1, to=3, orient=HORIZONTAL)
+		slider.bind("<ButtonRelease-1>",sliderValue)
+		slider.pack()
+		root.mainloop()
+
+
+try:
+   _thread.start_new_thread( guiThread, ())
+except:
+   print ("Error: unable to start thread")
+
+while True:
+	if conesInGame == True:
+		print("moving on")
+		break
+
 socket_bind(HOST,PORT,numberofclients+1)
 socket_accept(numberofclients,displayunit_address)
-time.sleep(10)
+
+
+
+
+hum = 1
 while True:
+	print (hum)
+	time.sleep(7)
 	sendToDisplayunit(displayunit_connection, b"questionmark")
+	time.sleep(3)
 	sendToDisplayunit(all_connections, b"questionmark")
 	index = randomCorrect(all_connections) # takes the return of randomCorrect and stores it in index. 
 	sendTrueFalse(index, all_connections,numberofclients)
-	content = chooseGame(index)
-	sendGameContent(content["coneContent"],all_connections,numberofclients)
-	sendToDisplayunit(displayunit_connection, content["DUcontent"])
-	print(all_connections[index].recv(1024))
-	time.sleep(5)
+	hum+=1
+	while True:
+		if chosenGame[1] == True:
+			content = chooseGame(index, chosenGame)
+			sendGameContent(content["coneContent"],all_connections,numberofclients)
+			sendToDisplayunit(displayunit_connection, content["DUcontent"])
+			print(all_connections[index].recv(1024))
+			chosenGame[1] = False
+			hum += 1000
+			time.sleep(5)
+			break
