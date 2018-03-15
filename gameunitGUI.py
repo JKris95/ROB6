@@ -60,37 +60,20 @@ def chooseGame(correctCone, gametoplay): # lets the gamemaster chose what game c
 	contentList = []
 	pickedNumbers = []
 
-	if gametoplay[0]=='animals':
-		print('Dyre spil valgt')
-		for i in range(numberofclients):
-			while True:
-				pick = randrange(0,len(animals)) 
-				if pick not in pickedNumbers:
-					pickedNumbers.append(pick)
-					break
-			contentList.append(animals[pickedNumbers[i]])
-
-
-	if gametoplay[0]=='colors':
-		print('Farve spil valgt')
-		for i in range(numberofclients):
-			while True:
-				pick = randrange(0,len(colors)) 
-				if pick not in pickedNumbers:
-					pickedNumbers.append(pick)
-					break
-			contentList.append(colors[pickedNumbers[i]])
-
-
-	if gametoplay[0]=='clocks':
-		print('Ur spil valgt')
-		for i in range(numberofclients):
-			while True:
-				pick = randrange(0,len(times)) 
-				if pick not in pickedNumbers:
-					pickedNumbers.append(pick)
-					break
-			contentList.append(times[pickedNumbers[i]])
+	for catagory, contents in [
+		('animals', animals),
+		('colors', colors),
+		('clocks', clocks)
+	]:
+		if gametoplay[0]==catagory:
+			print(catagory)
+			for i in range(numberofclients):
+				while True:
+					pick = randrange(0,len(contents)) 
+					if pick not in pickedNumbers:
+						pickedNumbers.append(pick)
+						break
+				contentList.append(contents[pickedNumbers[i]])
 
 	contentOnCorrectCone = contentList[correctCone]
 	#print(contentList)

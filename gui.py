@@ -21,7 +21,7 @@ T.insert(END, "Number of cones")
 
 
 text1 = Text(root, height=15, width=40)
-photo=PhotoImage(file='./EdsgerDijkstra.gif')
+photo=PhotoImage(file='./pylogo.gif')
 text1.insert(END,'\n')
 text1.image_create(END, image=photo)
 
