@@ -63,7 +63,7 @@ def chooseGame(correctCone, gametoplay): # lets the gamemaster chose what game c
 	for catagory, contents in [
 		('animals', animals),
 		('colors', colors),
-		('clocks', clocks)
+		('clocks', times)
 	]:
 		if gametoplay[0]==catagory:
 			print(catagory)
