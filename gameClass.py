@@ -10,16 +10,26 @@ times = [b'0100',b'0200',b'0300',b'0400',b'0500',b'0600',b'0700',b'0800',b'0900'
 class GameType():
 
 
-	def __init__(self):
-		self.category = ''
-		self.nr_cones = 0
-		self.nr_true = 0 #will be dependent on type of game and not changed bu user.
+	def __init__(self, category=None, nrOfCones=None, nrOfTrue=None):
+		if category == None:
+			self.category = ''
+		else:	
+			self.category = category
+		if nrOfCones == None:
+			self.nr_cones = 0
+		else:
+			self.nr_cones = nrOfCones
+		if nrOfTrue == None:
+			self.nr_true = 0
+		else:
+			self.nr_true = nrOfTrue #will be dependent on type of game and not changed by user.
 		self.coneInfo=[]
 		self.DUInfo=[]
+		self.makeList(self.nr_cones, self.coneInfo)
 
 	def makeList(self, nrOfCones,x):
 		for i in range(nrOfCones):
-			x.append({"Role": "False", "Content": "questionmark"})
+			x.append({"Role": b'False', "Content": b'questionmark'})
 	
 	def findCorrectCones(self, nrOfCones, nrOfTrue, coneInformation):
 		pickedNumbers = []
@@ -27,7 +37,7 @@ class GameType():
 			while True:
 				x = randrange(0, nrOfCones)
 				if x not in pickedNumbers:
-					coneInformation[x]["Role"] = "True"
+					coneInformation[x]["Role"] = b'True'
 					pickedNumbers.append(x)
 					break
 
@@ -48,24 +58,43 @@ class GameType():
 							break
 					coneInformation[i]["Content"] = contents[pickedNumbers[i]]
 
+	# A function to pack all info content to be send to the display unit, i.e all correct coneinfo
+	def packDUInfo(self, coneInformation, displayuitInfo):
+		if not coneInformation:
+			print("Content information is empty")
+		for i in range(len(coneInformation)):
+			if coneInformation[i]["Role"] == b'True':
+				displayuitInfo.append(coneInformation[i]["Content"])
 
-	def sendConeInfo(self,coneInformation, all_connections): #send roles and content to the connected cones found in all_connections. Can be send as one 'packet' if possible.
-		pass
+
+
+	#send roles and content to each cone - Every cone receives a dictionary with role and content
+	def sendConeInfo(self,coneInformation, all_connections):
+		if not coneInformation:
+			print("Content information is empty")
+		for i in range(len(all_connections)):
+			all_connections[i].sendall(coneInformation[i])
 
 	def sendDisplayunitInfo(self,DUInfo,displayunitconnection): #send information on what corrects answer(s) are on the cones. 
-		pass
+		if not DUInfo:
+			print("There is no information to display - list is empty")
+		for i in range(len(displayunitconnection)):
+			for j in DUInfo:
+				displayunitconnection[i].sendall(DUInfo[j])
 
 	
  
-Battle = GameType()
-Battle.category = 'colors'
+Battle = GameType() # Parameters: 'category', nrCones, nrTrue
+#Battle.category = 'colors'
 #print(Battle.category)
-Battle.nr_cones = 3
-Battle.nr_true = 1
+#Battle.nr_cones = 3
+#Battle.nr_true = 2
 #print(Battle.coneInfo)
-Battle.makeList(Battle.nr_cones,Battle.coneInfo)
+#Battle.makeList(Battle.nr_cones,Battle.coneInfo)
 print(Battle.coneInfo)
 Battle.findCorrectCones(Battle.nr_cones, Battle.nr_true, Battle.coneInfo)
 print(Battle.coneInfo)
 Battle.findContent(Battle.category,Battle.nr_cones, Battle.coneInfo)
 print(Battle.coneInfo)
+Battle.packDUInfo(Battle.coneInfo, Battle.DUInfo)
+print(Battle.DUInfo)
