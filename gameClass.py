@@ -1,5 +1,5 @@
 from random import randrange
-
+import json
 
 
 colors = [b'red', b'green',b'blue',b'orange',b'purple',b'yellow']
@@ -29,7 +29,7 @@ class GameType():
 
 	def makeList(self, nrOfCones,x):
 		for i in range(nrOfCones):
-			x.append({"Role": b'False', "Content": b'questionmark'})
+			x.append({"Role": 'False', "Content": 'questionmark'})
 	
 	def findCorrectCones(self, nrOfCones, nrOfTrue, coneInformation):
 		pickedNumbers = []
@@ -37,7 +37,7 @@ class GameType():
 			while True:
 				x = randrange(0, nrOfCones)
 				if x not in pickedNumbers:
-					coneInformation[x]["Role"] = b'True'
+					coneInformation[x]["Role"] = 'True'
 					pickedNumbers.append(x)
 					break
 
@@ -63,7 +63,7 @@ class GameType():
 		if not coneInformation:
 			print("Content information is empty")
 		for i in range(len(coneInformation)):
-			if coneInformation[i]["Role"] == b'True':
+			if coneInformation[i]["Role"] == 'True':
 				displayuitInfo.append(coneInformation[i]["Content"])
 
 
@@ -72,15 +72,16 @@ class GameType():
 	def sendConeInfo(self,coneInformation, all_connections):
 		if not coneInformation:
 			print("Content information is empty")
+		enConeInformation = json.dumps(coneInformation.encode())
 		for i in range(len(all_connections)):
-			all_connections[i].sendall(coneInformation[i])
+			all_connections[i].sendall(enConeInformation[i])
 
 	def sendDisplayunitInfo(self,DUInfo,displayunitconnection): #send information on what corrects answer(s) are on the cones. 
 		if not DUInfo:
 			print("There is no information to display - list is empty")
+		enDUInfo = json.dumps(DUInfo.encode())
 		for i in range(len(displayunitconnection)):
-			for j in DUInfo:
-				displayunitconnection[i].sendall(DUInfo[j])
+			displayunitconnection[i].sendall(enDUInfo)
 
 	
  
