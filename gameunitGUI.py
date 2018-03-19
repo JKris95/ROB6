@@ -108,33 +108,34 @@ def sendToDisplayunit(connectionDU, content):
 		print("Content was send to display unit:", content)
 
 
+def Battle_game(event):
+	print ("You have chosen the battle game")
 
+def Coop_game(event):
+	print ("You have chosen the coop game")	
 
 def Animal_game(event):
-	print("Animals")
 	chosenGame[0] = 'animals'
 	chosenGame[1] = True
 	print (chosenGame)
 
 def Color_game(event):
-	print("Colors")
 	chosenGame[0] = 'colors'
 	chosenGame[1] = True
 	print (chosenGame)	
 
 def Clock_game(event):
-	print("Clocks")	
 	chosenGame[0] = 'clocks'
 	chosenGame[1] = True
 	print (chosenGame)
 
+def startTheGame():
+	print ("click!")	
+
 def guiThread():
 	while True:
 		root = Tk()
-		T = Text(root, height=2, width=30)
-		T.pack(side=RIGHT)
-		T.insert(END, "Number of cones")
-		
+
 		def sliderValue(event):
 			global numberofclients
 			print(slider.get())
@@ -149,36 +150,37 @@ def guiThread():
 
 		text1.pack(side=LEFT)
 
-		text2 = Text(root, height=20, width=50)
-		scroll = Scrollbar(root, command=text2.yview)
-		text2.configure(yscrollcommand=scroll.set)
-		text2.tag_configure('bold_italics', font=('Arial', 12, 'bold', 'italic'))
-		text2.tag_configure('big', font=('Verdana', 20, 'bold'))
-		text2.tag_configure('color', foreground='#476042', 
-								font=('Tempus Sans ITC', 12, 'bold'))
-		text2.tag_bind('follow', '<1>', lambda e, t=text2: t.insert(END, "Not now, maybe later!"))
-		text2.insert(END,'\nRobot Game\n', 'big')
-		quote = """
-		This is the user interface to the platform.
-		Needs some design update.
-		"""
-		text2.insert(END, quote, 'color')
-		text2.pack(side=LEFT)
-		scroll.pack(side=RIGHT, fill=Y)
+
+		GAMETYPES = [
+		("Battle", Battle_game),
+		("Coop", Coop_game),
+		]
+
+		for text, callback in GAMETYPES:
+			b = Radiobutton(root, text=text)
+			b.bind("<Button-1>", callback)
+			b.pack(anchor=W)
 
 
-		button_1 = Button(root, text="Animals")
-		button_1.bind("<Button-1>",Animal_game)
-		button_1.pack()
-		button_2 = Button(root, text="Colors")
-		button_2.bind("<Button-1>",Color_game)
-		button_2.pack()
-		button_3 = Button(root, text="Clocks")
-		button_3.bind("<Button-1>", Clock_game)
-		button_3.pack()
-		slider = Scale(root, from_=1, to=3, orient=HORIZONTAL)
+		MODES = [
+		("Animals", Animal_game),
+		("Colors", Color_game),
+		("Clocks", Clock_game),
+		("New category", Animal_game),
+		]
+
+		for text, callback in MODES:
+			b = Radiobutton(root, text=text)
+			b.bind("<Button-1>", callback)
+			b.pack(anchor=W)
+
+		slider = Scale(root, from_=1, to=3, orient=HORIZONTAL, label="Number of cones",)
 		slider.bind("<ButtonRelease-1>",sliderValue)
 		slider.pack()
+
+		b = Button(root, text="Start", command=startTheGame)
+		b.pack()
+
 		root.mainloop()
 
 
@@ -194,8 +196,6 @@ while True:
 
 socket_bind(HOST,PORT,numberofclients+1)
 socket_accept(numberofclients,displayunit_address)
-
-
 
 
 hum = 1
