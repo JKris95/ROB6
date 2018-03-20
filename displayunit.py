@@ -34,13 +34,42 @@ root.update()
 
 
 while True:
-		imageToDisplay = s.recv(1024) #receive information on what image to display. 
-		print(imageToDisplay.decode())
-		path = '/home/pi/Desktop/wav/%s.gif' % imageToDisplay.decode() #set the path to this desired image
-		questionlabel.pack_forget()
-		answerlabel.pack_forget()
-		#Display the image at the path
-		image1 = tk.PhotoImage(file=path) 
-		answerlabel = tk.Label(image=image1)
-		answerlabel.pack()
-		root.update()
+		
+		DUInfoUnparsed = s.recv(1024)
+		DUInfoParsed = json.loads(DUInfoUnparsed.decode())
+		print(DUInfoParsed)
+
+		if len(DUInfoParsed) == 1:
+			path = '/home/pi/Desktop/wav/%s.gif' % DUInfoParsed #set the path to this desired image
+			left.pack_forget()
+			right.pack_forget()
+			questionlabel.pack_forget()
+			answerlabel.pack_forget()
+			answerlabel1.pack_forget()
+			answerlabel2.pack_forget()
+			#Display the image at the path
+			image = tk.PhotoImage(file=path) 
+			answerlabel = tk.Label(image=image)
+			answerlabel.pack()
+			root.update()
+
+		elif len(DUInfoParsed) == 2:
+			left = Frame(root, borderwidth=2, relief="solid")
+			right = Frame(root, borderwidth=2, relief="solid")
+			path1 = '/home/pi/Desktop/wav/%s.gif' % DUInfoParsed[0] #set the path to this desired image
+			path2 = '/home/pi/Desktop/wav/%s.gif' % DUInfoParsed[1] #set the path to this desired image
+			questionlabel.pack_forget()
+			answerlabel.pack_forget()
+			answerlabel1.pack_forget()
+			answerlabel2.pack_forget()
+			#Display the images at the paths
+			image1 = tk.PhotoImage(file=path1) 
+			answerlabel1 = tk.Label(left, image=image1)
+			answerlabel1.pack() #SPECIAL PACK IS NEEDED
+			image2 = tk.PhotoImage(file=path2) 
+			answerlabel2 = tk.Label(right, image=image2)
+			answerlabel2.pack() #SPECIAL PACK IS NEEDED
+			left.pack(side="left", expand=True, fill="both")
+			right.pack(side="right", expand=True, fill="both")
+			root.update()
+

@@ -5,7 +5,7 @@ import time
 import tkinter as tk
 import pygame
 import _thread
-
+import json
 #
 role = b'Start'
 imageToDisplay = b'Start'  
@@ -62,11 +62,15 @@ def receiveThread():
 		print(imageToDisplay.decode())
 		global imageIsUpdated
 		imageIsUpdated = True
+		
+		coneInfoUnparsed = s.recv(1024)
+		coneInfoParsed = json.loads(coneInfoUnparsed.decode())
+		print(coneInfoParsed)
 		global role 
-		role = s.recv(1024) #receive information on whether the cone is holding the correct or incorrect answer. 
+		role = coneInfoParsed['Role']
 		print(role)
-		imageToDisplay = s.recv(1024) #receive information on what image to display. 
-		print(imageToDisplay.decode())
+		imageToDisplay = coneInfoParsed['Content']
+		print(imageToDisplay)
 		imageIsUpdated = True
 		print(i)
 		i+1
