@@ -34,9 +34,12 @@ root.update()
 
 
 while True:
-		imageToDisplay = s.recv(1024) #receive information on what image to display. 
-		print(imageToDisplay.decode())
-		path = '/home/pi/Desktop/wav/%s.gif' % imageToDisplay.decode() #set the path to this desired image
+		
+		DUInfoUnparsed = s.recv(1024)
+		DUInfoParsed = json.loads(DUInfoUnparsed.decode())
+		print(DUInfoParsed)
+		imageToDisplay = DUInfoParsed['Content']
+		path = '/home/pi/Desktop/wav/%s.gif' % imageToDisplay #set the path to this desired image
 		questionlabel.pack_forget()
 		answerlabel.pack_forget()
 		#Display the image at the path
