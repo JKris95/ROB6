@@ -3,7 +3,7 @@ from random import randrange
 import time
 from tkinter import *
 import _thread
-import gameClass
+from gameClass import GameType
 all_connections = []
 all_addresses = []
 displayunit_connection = []
@@ -201,7 +201,7 @@ socket_bind(HOST,PORT,numberofclients+1)
 socket_accept(numberofclients,displayunit_address)
 while True:
 	if chosenGame[1] == True:
-		battleGame = GameType(1,1,chosenGame[0])
+		battleGame = GameType()
 		break
 
 hum = 1
