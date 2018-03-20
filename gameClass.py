@@ -86,20 +86,3 @@ class GameType():
 		enDUInfo = json.dumps(DUInfo.encode())
 		for i in range(len(displayunitconnection)):
 			displayunitconnection[i].sendall(enDUInfo)
-
-	
- 
-Battle = GameType() # Parameters: 'category', nrCones, nrTrue
-#Battle.category = 'colors'
-#print(Battle.category)
-#Battle.nr_cones = 3
-#Battle.nr_true = 2
-#print(Battle.coneInfo)
-#Battle.makeList(Battle.nr_cones,Battle.coneInfo)
-print(Battle.coneInfo)
-Battle.findCorrectCones(Battle.nr_cones, Battle.nr_true, Battle.coneInfo)
-print(Battle.coneInfo)
-Battle.findContent(Battle.category,Battle.nr_cones, Battle.coneInfo)
-print(Battle.coneInfo)
-Battle.packDUInfo(Battle.coneInfo, Battle.DUInfo)
-print(Battle.DUInfo)
