@@ -10,7 +10,7 @@ times = [b'0100',b'0200',b'0300',b'0400',b'0500',b'0600',b'0700',b'0800',b'0900'
 class GameType():
 
 
-	def __init__(self, category=None, nrOfCones=None, nrOfTrue=None):
+	def __init__(self, nrOfCones=None, nrOfTrue=None, category=None):
 		if category == None:
 			self.category = ''
 		else:	
@@ -59,12 +59,16 @@ class GameType():
 					coneInformation[i]["Content"] = contents[pickedNumbers[i]]
 
 	# A function to pack all info content to be send to the display unit, i.e all correct coneinfo
-	def packDUInfo(self, coneInformation, displayuitInfo):
+	def packDUInfo(self, displayuitInfo, coneInformation=None, defaultContent=None):
 		if not coneInformation:
 			print("Content information is empty")
-		for i in range(len(coneInformation)):
-			if coneInformation[i]["Role"] == 'True':
-				displayuitInfo.append(coneInformation[i]["Content"])
+		if coneInformation:
+			for i in range(len(coneInformation)):
+				if coneInformation[i]["Role"] == 'True':
+					displayuitInfo.append(coneInformation[i]["Content"])
+		if defaultContent:
+			for i in range(self.nr_true):
+				displayuitInfo.append(defaultContent)
 
 
 
