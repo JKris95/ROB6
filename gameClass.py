@@ -76,19 +76,26 @@ class GameType():
 	def sendConeInfo(self,coneInformation, all_connections):
 		if not coneInformation:
 			print("Content information is empty")
-		enConeInformation = json.dumps(coneInformation.encode())
 		for i in range(len(all_connections)):
-			all_connections[i].sendall(enConeInformation[i])
+			print("Before dump")
+			print("i is ", i)
+			print(type(coneInformation[i]))
+			print(coneInformation[i])
+			enConeInformation = json.dumps(coneInformation[i])
+			print("After dump")
+			en1ConeInformation = enConeInformation.encode()
+			print(en1ConeInformation)
+			all_connections[i].sendall(en1ConeInformation)
 
 	def sendDisplayunitInfo(self,DUInfo,displayunitconnection): #send information on what corrects answer(s) are on the cones. 
 		if not DUInfo:
 			print("There is no information to display - list is empty")
-		enDUInfo = json.dumps(DUInfo.encode())
+		enDUInfo = json.dumps(DUInfo).encode()
 		for i in range(len(displayunitconnection)):
 			displayunitconnection[i].sendall(enDUInfo)
 
 	
- 
+""" 
 Battle = GameType() # Parameters: 'category', nrCones, nrTrue
 #Battle.category = 'colors'
 #print(Battle.category)
@@ -103,3 +110,4 @@ Battle.findContent(Battle.category,Battle.nr_cones, Battle.coneInfo)
 print(Battle.coneInfo)
 Battle.packDUInfo(Battle.coneInfo, Battle.DUInfo)
 print(Battle.DUInfo)
+"""

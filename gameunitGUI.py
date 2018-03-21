@@ -6,7 +6,7 @@ import _thread
 all_connections = []
 all_addresses = []
 displayunit_connection = []
-displayunit_address = '192.168.1.43' 
+displayunit_address = '192.168.1.33' 
 HOST=''
 PORT=50007
 

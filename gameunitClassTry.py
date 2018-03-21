@@ -7,7 +7,7 @@ import gameClass
 all_connections = []
 all_addresses = []
 displayunit_connection = []
-displayunit_address = '192.168.1.43' 
+displayunit_address = '192.168.1.33' 
 HOST=''
 PORT=50007
 
@@ -199,23 +199,34 @@ while True:
 
 socket_bind(HOST,PORT,numberofclients+1)
 socket_accept(numberofclients,displayunit_address)
+
 while True:
 	if chosenGame[1] == True:
-		battleGame = GameType(1,1,chosenGame[0])
+		battleGame = gameClass.GameType(1,1,chosenGame[0])
 		break
 
 hum = 1
 while True:
-	print (hum)
+	print ("We are in whiel treu",hum)
 	time.sleep(7)
 	sendToDisplayunit(displayunit_connection, b"questionmark")
 	time.sleep(3)
 	sendToDisplayunit(all_connections, b"questionmark")
+	print("Send question marks is done")
+	time.sleep(3)
 	battleGame.findCorrectCones(battleGame.nr_cones, battleGame.nr_true, battleGame.coneInfo)
+	print("We found the correct cones")
+	time.sleep(3)
 	battleGame.findContent(battleGame.category, battleGame.nr_cones, battleGame.coneInfo) # takes the return of randomCorrect and stores it in index. 
+	print("We found the content", battleGame.coneInfo)
+	time.sleep(3)
 	battleGame.sendConeInfo(battleGame.coneInfo, all_connections)
+	print("Send cone info is done")
+	time.sleep(3)
 	battleGame.sendDisplayunitInfo(battleGame.DUInfo, displayunit_connection)
-
+	print("Send display unit info is done")
+	time.sleep(3)
+	
 	#sendTrueFalse(index, all_connections,numberofclients)
 	"""
 	hum+=1
