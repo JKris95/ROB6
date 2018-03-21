@@ -14,11 +14,12 @@ PORT=50007
 conesInGame = False
 
 chosenGame = ['not chosen', False]
+"""
 #The images availible in the different categories. 
-colors = [b'red', b'green',b'blue',b'orange',b'purple',b'yellow']
-animals = [b'cow',b'dog',b'chicken',b'cat',b'zebra']
-times = [b'0100',b'0200',b'0300',b'0400',b'0500',b'0600',b'0700',b'0800',b'0900',b'1000',b'1100',b'1200']
-
+colors = ['red', 'green','blue','orange','purple','yellow']
+animals = ['cow','dog','chicken','cat','zebra']
+times = ['0100','0200','0300','0400','0500','0600','0700','0800','0900','1000','1100','1200']
+"""
 
 # WILL BE REPLACED BY MAKELIST()
 sendList = [b'False', b'False', b'False']
