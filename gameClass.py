@@ -1,10 +1,9 @@
 from random import randrange
 import json
 
-
-colors = [b'red', b'green',b'blue',b'orange',b'purple',b'yellow']
-animals = [b'cow',b'dog',b'chicken',b'cat',b'zebra']
-times = [b'0100',b'0200',b'0300',b'0400',b'0500',b'0600',b'0700',b'0800',b'0900',b'1000',b'1100',b'1200']
+colors = ['red', 'green','blue','orange','purple','yellow']
+animals = ['cow','dog','chicken','cat','zebra']
+times = ['0100','0200','0300','0400','0500','0600','0700','0800','0900','1000','1100','1200']
 
 
 class GameType():
@@ -76,13 +75,20 @@ class GameType():
 	def sendConeInfo(self,coneInformation, all_connections):
 		if not coneInformation:
 			print("Content information is empty")
-		enConeInformation = json.dumps(coneInformation.encode())
 		for i in range(len(all_connections)):
-			all_connections[i].sendall(enConeInformation[i])
+			print("Before dump")
+			print("i is ", i)
+			print(type(coneInformation[i]))
+			print(coneInformation[i])
+			enConeInformation = json.dumps(coneInformation[i])
+			print("After dump")
+			enConeInformation = enConeInformation.encode()
+			print(enConeInformation)
+			all_connections[i].sendall(enConeInformation)
 
 	def sendDisplayunitInfo(self,DUInfo,displayunitconnection): #send information on what corrects answer(s) are on the cones. 
 		if not DUInfo:
 			print("There is no information to display - list is empty")
-		enDUInfo = json.dumps(DUInfo.encode())
+		enDUInfo = json.dumps(DUInfo).encode()
 		for i in range(len(displayunitconnection)):
 			displayunitconnection[i].sendall(enDUInfo)
