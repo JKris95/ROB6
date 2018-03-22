@@ -3,7 +3,7 @@ from random import randrange
 import time
 from tkinter import *
 import _thread
-import gameClass
+from gameClass import GameType
 all_connections = []
 all_addresses = []
 displayunit_connection = []
