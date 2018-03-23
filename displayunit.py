@@ -1,8 +1,9 @@
 #imports needed
 import socket
 import time
-import tkinter as tk
+import tkinter as tk 
 import _thread
+import json
 
 #
 imageToDisplay = b'Start'
@@ -10,14 +11,19 @@ imageToDisplay = b'Start'
 
 #Setup of root window for the GUI and the different images 
 root = tk.Tk()
-root.attributes('-fullscreen',True)
+#root.attributes('-fullscreen',True)
 
-image4 = tk.PhotoImage(file="/home/pi/Desktop/wav/questionmark.gif")
+image4 = tk.PhotoImage(file="/home/pi/Desktop/rob6/questionmark.gif")
+
+#Declare and initialize all labels
 questionlabel = tk.Label(image=image4)
 answerlabel = tk.Label(image=image4)
+answerlabel1 = tk.Label(image=image4)
+answerlabel2 = tk.Label(image=image4)
+
 
 #Try to connect to the server untill successfull
-HOST = '192.168.1.40'    # The remote host, 
+HOST = '192.168.1.34'    # The remote host, remember to change when switching game unit
 PORT = 50007              # The same port as used by the server
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try: 
@@ -34,13 +40,17 @@ root.update()
 
 
 while True:
-		
-		DUInfoUnparsed = s.recv(1024)
-		DUInfoParsed = json.loads(DUInfoUnparsed.decode())
+		x = s.recv(1024) #  First, receive a questionmark - not used
+		DUInfoUnparsed = s.recv(1024) # Receive questions / correct answers
+		print(DUInfoUnparsed)
+		DUInfoParsed = json.loads(DUInfoUnparsed.decode()) #Recover a list from the bytes that were sent
 		print(DUInfoParsed)
+		left = tk.Frame(root, borderwidth=2, relief="solid")
+		right = tk.Frame(root, borderwidth=2, relief="solid")
 
-		if len(DUInfoParsed) == 1:
-			path = '/home/pi/Desktop/wav/%s.gif' % DUInfoParsed #set the path to this desired image
+		# This condition is true when battle game is played (1 correct answer)
+		if len(DUInfoParsed) == 1: 
+			path = '/home/pi/Desktop/rob6/%s.gif' % DUInfoParsed[0] #set the path to this desired image
 			left.pack_forget()
 			right.pack_forget()
 			questionlabel.pack_forget()
@@ -53,11 +63,10 @@ while True:
 			answerlabel.pack()
 			root.update()
 
+		# This condition is true when co-op is played (2 correct answers)
 		elif len(DUInfoParsed) == 2:
-			left = Frame(root, borderwidth=2, relief="solid")
-			right = Frame(root, borderwidth=2, relief="solid")
-			path1 = '/home/pi/Desktop/wav/%s.gif' % DUInfoParsed[0] #set the path to this desired image
-			path2 = '/home/pi/Desktop/wav/%s.gif' % DUInfoParsed[1] #set the path to this desired image
+			path1 = '/home/pi/Desktop/rob6/%s.gif' % DUInfoParsed[0] #set the path to this desired image
+			path2 = '/home/pi/Desktop/rob6/%s.gif' % DUInfoParsed[1] #set the path to this desired image
 			questionlabel.pack_forget()
 			answerlabel.pack_forget()
 			answerlabel1.pack_forget()

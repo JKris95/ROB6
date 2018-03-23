@@ -7,7 +7,7 @@ from gameClass import GameType
 all_connections = []
 all_addresses = []
 displayunit_connection = []
-displayunit_address = '192.168.1.33' 
+displayunit_address = '192.168.1.44' 
 HOST=''
 PORT=50007
 
@@ -33,7 +33,7 @@ def socket_bind(HOST,PORT,numberofclients): # SHOULD NUMBEROFCLIENTS COME FROM O
 		s.listen(numberofclients) #setting up the socket, limitied to a fixed number of cones
 	except socket.error as msg:
 		print("Socket binding error: " + str(msg) +"\n" + "Retrying...")
-		socket_bind()
+		socket_bind(HOST, PORT, numberofclients+1)
 
 def socket_accept(numberofclients,displayunit_address): # accepting a fixed number of clients/cones
 	for c in all_connections:
@@ -59,6 +59,7 @@ def socket_accept(numberofclients,displayunit_address): # accepting a fixed numb
 			print("Error accepting connections")
 
 # FINDCONTENT
+"""
 def chooseGame(correctCone, gametoplay): # lets the gamemaster chose what game catagory the questions should come from. 
 	contentList = []
 	pickedNumbers = []
@@ -82,7 +83,7 @@ def chooseGame(correctCone, gametoplay): # lets the gamemaster chose what game c
 	#print(contentList)
 	#print ("{} {}".format("\n Kør til keglen som viser:", contentOnCorrectCone))
 	return {"coneContent":contentList, "DUcontent":contentOnCorrectCone}
-
+	
 #SENDCONEINFO()
 def sendGameContent(contentList,cones,numberofclients): #sends the content to the cones
 
@@ -104,6 +105,7 @@ def sendTrueFalse(x,z,numberofclients): # sends True to the correct cone and fal
 	for i in range(numberofclients):
 		z[i].sendall(y[i])
 	print("{} {}".format("\n TRUE/FALSE Information sent to this many connections:", numberofclients))
+"""
 #SENDDISPLAYUNITINFO()
 def sendToDisplayunit(connectionDU, content):
 	for i in range(len(connectionDU)):
@@ -203,7 +205,7 @@ socket_accept(numberofclients,displayunit_address)
 
 while True:
 	if chosenGame[1] == True:
-		battleGame = gameClass.GameType(1,1,chosenGame[0])
+		battleGame = GameType(1,1,chosenGame[0])
 		break
 
 hum = 1
@@ -224,6 +226,7 @@ while True:
 	battleGame.sendConeInfo(battleGame.coneInfo, all_connections)
 	print("Send cone info is done")
 	time.sleep(3)
+	battleGame.packDUInfo(battleGame.DUInfo, battleGame.coneInfo)
 	battleGame.sendDisplayunitInfo(battleGame.DUInfo, displayunit_connection)
 	print("Send display unit info is done")
 	time.sleep(3)

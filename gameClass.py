@@ -58,17 +58,18 @@ class GameType():
 					coneInformation[i]["Content"] = contents[pickedNumbers[i]]
 
 	# A function to pack all info content to be send to the display unit, i.e all correct coneinfo
-	def packDUInfo(self, displayuitInfo, coneInformation=None, defaultContent=None):
+	def packDUInfo(self, displayunitInfo, coneInformation=None, defaultContent=None):
 		if not coneInformation:
 			print("Content information is empty")
+		del displayunitInfo[:]
 		if coneInformation:
 			for i in range(len(coneInformation)):
 				if coneInformation[i]["Role"] == 'True':
-					displayuitInfo.append(coneInformation[i]["Content"])
+					displayunitInfo.append(coneInformation[i]["Content"])
 		if defaultContent:
 			for i in range(self.nr_true):
-				displayuitInfo.append(defaultContent)
-
+				displayunitInfo.append(defaultContent)
+		print(displayunitInfo)
 
 
 	#send roles and content to each cone - Every cone receives a dictionary with role and content
@@ -90,5 +91,4 @@ class GameType():
 		if not DUInfo:
 			print("There is no information to display - list is empty")
 		enDUInfo = json.dumps(DUInfo).encode()
-		for i in range(len(displayunitconnection)):
-			displayunitconnection[i].sendall(enDUInfo)
+		displayunitconnection[0].sendall(enDUInfo) #Send to the one and only display unit
