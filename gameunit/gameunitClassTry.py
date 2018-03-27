@@ -86,6 +86,7 @@ def Clock_game(event):
 	print (chosenGame)
 
 def startTheGame():
+	global game_is_running
 	print ("click!")
 	for x in all_connections:
 		try:
@@ -153,10 +154,14 @@ def guiThread():
 
 		root.mainloop()
 
-def battle_game_over(Battle_events)
+def battle_game_over(Battle_events):
 	#if battle events contains a true set game is running = false
-
-	game_is_running = False
+	global game_is_running
+	for x in Battle_events:
+		if x["role"] == True:
+			game_is_running = False
+			print("Found a try hit in event list")
+			break
 
 try:
    _thread.start_new_thread( guiThread, ())
@@ -173,7 +178,6 @@ socket_bind(HOST,PORT,numberofclients+1)
 socket_accept(numberofclients,displayunit_address)
 
 while True:
-
 	if game_is_runnning == True:
 
 		#below needs to be put in a method for the game class
