@@ -105,7 +105,7 @@ while True:
 			correctlabel.pack()
 			root.update()
 			correctsound.play()
-			s.sendall(b'Correct cone got hit')
+			s.sendall(b'{"role": "True", "time": 5}')
 			time.sleep(5) #Leave the correct label on the screen for 5 seconds before displaying the question mark again. 
 			correctlabel.pack_forget()
 			questionlabel.pack()
@@ -116,6 +116,7 @@ while True:
 			incorrectlabel.pack()
 			root.update()
 			incorrectsound.play()
+			s.sendall(b'{"role": "False", "time": 5}')
 			time.sleep(5) #Leave the incorrect label on the screen for 5 seconds before displaying the question mark again.
 			incorrectlabel.pack_forget()
 			questionlabel.pack()
