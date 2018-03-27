@@ -27,9 +27,9 @@ class GameType():
 		self.event_list = []
 		self.makeList(self.nr_cones, self.coneInfo)
 
-	def makeList(self, nrOfCones,x):
+	def makeList(self, nrOfCones, coneInformation):
 		for i in range(nrOfCones):
-			x.append({"Role": 'False', "Content": 'questionmark'})
+			coneInformation.append({"Role": 'False', "Content": 'questionmark'})
 	
 	def findCorrectCones(self, nrOfCones, nrOfTrue, coneInformation):
 		pickedNumbers = []

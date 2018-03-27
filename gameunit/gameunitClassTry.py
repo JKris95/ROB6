@@ -4,6 +4,7 @@ import time
 from tkinter import *
 import _thread
 from gameClass import GameType
+import json
 all_connections = []
 all_addresses = []
 displayunit_connection = []
@@ -36,6 +37,7 @@ def socket_accept(numberofclients,displayunit_address): # accepting a fixed numb
 		try:
 			conn, address = s.accept()
 			conn.setblocking(1)
+			#conn.__dict__
 			#print(type(address))
 			#print(address)
 			if address[0] == displayunit_address:
@@ -59,7 +61,7 @@ def event_packer(game_event, adresss):
 def receive(connection):
 	game_event_raw = connection.recv(1024)
 	game_event = json.loads(game_event_raw.decode())
-	game_instance.event_list.append(event_packer(game_event,connection.address)) #does connections have an address
+	#game_instance.event_list.append(event_packer(game_event,connection.address)) #does connections have an address
 
 #SENDDISPLAYUNITINFO()
 def sendToDisplayunit(connectionDU, content):
@@ -69,12 +71,12 @@ def sendToDisplayunit(connectionDU, content):
 
 def Battle_game(event):
 	print ("You have chosen the battle game")
-	game_instance = GameType(numberofclients,1)
-
+	game_instance.nr_true = 1
+	game_instance.nr_cones = numberofclients
 def Coop_game(event):
 	print ("You have chosen the coop game")
-	game_instance = GameType(numberofclients,2)	
-
+	game_instance.nr_true = 2
+	game_instance.nr_cones = numberofclients
 def Animal_game(event):
 	chosenGame[0] = 'animals'
 	print (chosenGame)
@@ -90,13 +92,19 @@ def Clock_game(event):
 def startTheGame():
 	global game_is_running
 	print ("click!")
+	"""
 	for x in all_connections:
 		try:
 			_thread.start_new_thread( receive, (x.address))
 		except:
 			print ("Error: unable to start thread")
+	"""
 	game_instance.category = chosenGame[0] 
 	game_is_running = True			
+
+def startConnection():
+			global conesInGame
+			conesInGame = True
 
 def guiThread():
 	while True:
@@ -107,14 +115,8 @@ def guiThread():
 			print(slider.get())
 			numberofclients = slider.get()
 
-		def startConnection(event):
-			global conesInGame
-			conesInGame = True
-
-
-
 		text1 = Text(root, height=15, width=40)
-		photo=PhotoImage(file='./pylogo.gif')
+		photo=PhotoImage(file='./gameunit/pylogo.gif')
 		text1.insert(END,'\n')
 		text1.image_create(END, image=photo)
 
@@ -167,9 +169,12 @@ def battle_game_over(Battle_events):
 
 def start_game():
 		print ("starting game...")
+		game_instance.makeList(game_instance.nr_cones, game_instance.coneInfo)
 		game_instance.packDUInfo(game_instance.DUInfo, defaultContent = "questionmark")
 		game_instance.sendDisplayunitInfo(game_instance.DUInfo, displayunit_connection)
+		all_connections[0].sendall(b'questionmark')
 		print("Send question marks is done")
+		time.sleep(5)
 		game_instance.findCorrectCones(game_instance.nr_cones, game_instance.nr_true, game_instance.coneInfo)
 		print("We found the correct cones")
 		game_instance.findContent(game_instance.category, game_instance.nr_cones, game_instance.coneInfo) # takes the return of randomCorrect and stores it in index. 
@@ -179,6 +184,7 @@ def start_game():
 		game_instance.packDUInfo(game_instance.DUInfo, game_instance.coneInfo)
 		game_instance.sendDisplayunitInfo(game_instance.DUInfo, displayunit_connection)
 		print("Send display unit info is done")
+		time.sleep(7)
 
 try:
    _thread.start_new_thread( guiThread, ())
@@ -195,7 +201,7 @@ socket_bind(HOST,PORT,numberofclients+1)
 socket_accept(numberofclients,displayunit_address)
 
 while True:
-	if game_is_runnning == True:
+	if game_is_running == True:
 		start_game()
 		
 		
