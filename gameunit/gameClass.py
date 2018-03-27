@@ -90,5 +90,8 @@ class GameType():
 	def sendDisplayunitInfo(self,DUInfo,displayunitconnection): #send information on what corrects answer(s) are on the cones. 
 		if not DUInfo:
 			print("There is no information to display - list is empty")
-		enDUInfo = json.dumps(DUInfo).encode()
+		if type(DUInfo) == str:
+			enDUInfo = DUInfo.encode
+		else:
+			enDUInfo = json.dumps(DUInfo).encode()
 		displayunitconnection[0].sendall(enDUInfo) #Send to the one and only display unit

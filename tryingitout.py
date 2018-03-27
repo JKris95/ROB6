@@ -1,4 +1,12 @@
+import sys
 import json
+#import gameClass
 
-for i in range(1):
-    print(i)
+print(sys.path)
+"""
+def test():
+    objectScope = gameClass.GameType()
+
+test()
+objectScope.category = 'animals'
+"""

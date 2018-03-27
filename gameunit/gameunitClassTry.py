@@ -15,7 +15,7 @@ game_is_running = False
 conesInGame = False
 
 chosenGame = ['not chosen', False]
-
+game_instance = GameType()
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 def socket_bind(HOST,PORT,numberofclients): # SHOULD NUMBEROFCLIENTS COME FROM OBJECT // setting up the socket, limitied to a fixed number of cones 
@@ -171,8 +171,8 @@ while True:
 
 		#below needs to be put in a method for the game class
 		print ("We are in while true")
-		time.sleep(7)
-		sendToDisplayunit(displayunit_connection, b"questionmark")
+		game_instance.packDUInfo(game_instance.DUInfo, defaultContent = "questionmark")
+		game_instance.sendDisplayunitInfo(displayunit_connection)
 		time.sleep(3)
 		sendToDisplayunit(all_connections, b"questionmark")
 		print("Send question marks is done")
