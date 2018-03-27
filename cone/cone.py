@@ -18,7 +18,7 @@ GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Pin 36 = GPIO16
 
 #Setup of root window for the GUI and the different images 
 root = tk.Tk()
-root.attributes('-fullscreen',True)
+#root.attributes('-fullscreen',True)
 
 image6 = tk.PhotoImage(file="/home/pi/Desktop/wav/wrong.gif")
 incorrectlabel = tk.Label(image=image6)
@@ -39,7 +39,7 @@ correctsound = pygame.mixer.Sound('/home/pi/Desktop/wav/correct.wav')
 incorrectsound = pygame.mixer.Sound('/home/pi/Desktop/wav/wrong.wav')
 
 #Try to connect to the server untill successfull
-HOST = '192.168.1.40'    # The remote host, 
+HOST = '192.168.1.34'    # The remote host, 
 PORT = 50007              # The same port as used by the server
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try: 
@@ -59,7 +59,8 @@ def receiveThread():
 	while True:
 		global imageToDisplay
 		imageToDisplay = s.recv(1024) #receive information on what image to display. 
-		print(imageToDisplay.decode())
+		imageToDisplay = imageToDisplay.decode()
+		print(imageToDisplay)
 		global imageIsUpdated
 		imageIsUpdated = True
 		
@@ -67,10 +68,10 @@ def receiveThread():
 		coneInfoParsed = json.loads(coneInfoUnparsed.decode())
 		print(coneInfoParsed)
 		global role 
-		role = coneInfoParsed['Role']
-		print(role)
-		imageToDisplay = coneInfoParsed['Content']
-		print(imageToDisplay)
+		role = coneInfoParsed["Role"]
+		print("role is", role)
+		imageToDisplay = coneInfoParsed["Content"]
+		print("image to display", imageToDisplay)
 		imageIsUpdated = True
 		print(i)
 		i+1
@@ -89,7 +90,7 @@ except:
 
 while True:
 	if imageIsUpdated == True:
-		path = '/home/pi/Desktop/wav/%s.gif' % imageToDisplay.decode() #set the path to this desired image
+		path = '/home/pi/Desktop/wav/%s.gif' % imageToDisplay #set the path to this desired image
 		questionlabel.pack_forget()
 		answerlabel.pack_forget()
 		#Display the image at the path
