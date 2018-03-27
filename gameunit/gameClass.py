@@ -24,6 +24,7 @@ class GameType():
 			self.nr_true = nrOfTrue #will be dependent on type of game and not changed by user.
 		self.coneInfo=[]
 		self.DUInfo=[]
+		self.event_list = []
 		self.makeList(self.nr_cones, self.coneInfo)
 
 	def makeList(self, nrOfCones,x):

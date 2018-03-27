@@ -163,6 +163,21 @@ def battle_game_over(Battle_events):
 			print("Found a try hit in event list")
 			break
 
+def start_game():
+		print ("starting game...")
+		game_instance.packDUInfo(game_instance.DUInfo, defaultContent = "questionmark")
+		game_instance.sendDisplayunitInfo(game_instance.DUInfo, displayunit_connection)
+		print("Send question marks is done")
+		game_instance.findCorrectCones(game_instance.nr_cones, game_instance.nr_true, game_instance.coneInfo)
+		print("We found the correct cones")
+		game_instance.findContent(game_instance.category, game_instance.nr_cones, game_instance.coneInfo) # takes the return of randomCorrect and stores it in index. 
+		print("We found the content", game_instance.coneInfo)
+		game_instance.sendConeInfo(game_instance.coneInfo, all_connections)
+		print("Send cone info is done")
+		game_instance.packDUInfo(game_instance.DUInfo, game_instance.coneInfo)
+		game_instance.sendDisplayunitInfo(game_instance.DUInfo, displayunit_connection)
+		print("Send display unit info is done")
+
 try:
    _thread.start_new_thread( guiThread, ())
 except:
@@ -179,26 +194,6 @@ socket_accept(numberofclients,displayunit_address)
 
 while True:
 	if game_is_runnning == True:
-
-		#below needs to be put in a method for the game class
-		print ("We are in while true")
-		game_instance.packDUInfo(game_instance.DUInfo, defaultContent = "questionmark")
-		game_instance.sendDisplayunitInfo(displayunit_connection)
-		time.sleep(3)
-		sendToDisplayunit(all_connections, b"questionmark")
-		print("Send question marks is done")
-		time.sleep(3)
-		battleGame.findCorrectCones(battleGame.nr_cones, battleGame.nr_true, battleGame.coneInfo)
-		print("We found the correct cones")
-		time.sleep(3)
-		battleGame.findContent(battleGame.category, battleGame.nr_cones, battleGame.coneInfo) # takes the return of randomCorrect and stores it in index. 
-		print("We found the content", battleGame.coneInfo)
-		time.sleep(3)
-		battleGame.sendConeInfo(battleGame.coneInfo, all_connections)
-		print("Send cone info is done")
-		time.sleep(3)
-		battleGame.packDUInfo(battleGame.DUInfo, battleGame.coneInfo)
-		battleGame.sendDisplayunitInfo(battleGame.DUInfo, displayunit_connection)
-		print("Send display unit info is done")
-		time.sleep(3)
+		start_game()
+		
 		
