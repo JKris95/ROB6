@@ -103,8 +103,12 @@ def guiThread():
 			global numberofclients
 			print(slider.get())
 			numberofclients = slider.get()
+
+		def startConnection(event):
 			global conesInGame
 			conesInGame = True
+
+
 
 		text1 = Text(root, height=15, width=40)
 		photo=PhotoImage(file='./pylogo.gif')
@@ -141,8 +145,11 @@ def guiThread():
 		slider.bind("<ButtonRelease-1>",sliderValue)
 		slider.pack()
 
-		b = Button(root, text="Start", command=startTheGame)
-		b.pack()
+		start_button = Button(root, text="Start", command=startTheGame)
+		start_button.pack()
+
+		connect_button = Button(root, text="Connect", command=startConnection)
+		connect_button.pack()
 
 		root.mainloop()
 
