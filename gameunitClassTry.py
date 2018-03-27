@@ -58,54 +58,8 @@ def socket_accept(numberofclients,displayunit_address): # accepting a fixed numb
 		except:
 			print("Error accepting connections")
 
-# FINDCONTENT
-"""
-def chooseGame(correctCone, gametoplay): # lets the gamemaster chose what game catagory the questions should come from. 
-	contentList = []
-	pickedNumbers = []
 
-	for catagory, contents in [
-		('animals', animals),
-		('colors', colors),
-		('clocks', times)
-	]:
-		if gametoplay[0]==catagory:
-			print(catagory)
-			for i in range(numberofclients):
-				while True:
-					pick = randrange(0,len(contents)) 
-					if pick not in pickedNumbers:
-						pickedNumbers.append(pick)
-						break
-				contentList.append(contents[pickedNumbers[i]])
 
-	contentOnCorrectCone = contentList[correctCone]
-	#print(contentList)
-	#print ("{} {}".format("\n Kør til keglen som viser:", contentOnCorrectCone))
-	return {"coneContent":contentList, "DUcontent":contentOnCorrectCone}
-	
-#SENDCONEINFO()
-def sendGameContent(contentList,cones,numberofclients): #sends the content to the cones
-
-	for i in range(numberofclients):
-		cones[i].sendall(contentList[i])
-	print("{} {}".format("\n Information sent to this many connections:", numberofclients))
-#FINDCORRECTCONES()
-def randomCorrect(foo): #takes the array with the default false, and assigns a random correct cone and saves that chosen correct cone.
-	y = randrange(0,len(foo))
-	#print("{} {}".format("\n Random index chosen:", y))
-	#print ("{} {}".format("\n What object is at this index:", foo[y]))
-	return y
-#REPLACED BY SENDCONEINFO()
-def sendTrueFalse(x,z,numberofclients): # sends True to the correct cone and false to the rest of the cones
-	y = [b'False', b'False', b'False']
-	print ("{} {}".format("\n Send list before adding the true cone", y))
-	y[x] = b'True'
-	print ("{} {}".format("\n Send list after adding the true cone", y))
-	for i in range(numberofclients):
-		z[i].sendall(y[i])
-	print("{} {}".format("\n TRUE/FALSE Information sent to this many connections:", numberofclients))
-"""
 #SENDDISPLAYUNITINFO()
 def sendToDisplayunit(connectionDU, content):
 	for i in range(len(connectionDU)):
@@ -231,7 +185,6 @@ while True:
 	print("Send display unit info is done")
 	time.sleep(3)
 	
-	#sendTrueFalse(index, all_connections,numberofclients)
 	"""
 	hum+=1
 	while True:
