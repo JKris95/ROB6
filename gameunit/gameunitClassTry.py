@@ -52,11 +52,13 @@ def socket_accept(numberofclients,displayunit_address): # accepting a fixed numb
 
 def event_packer(game_event, adresss):
 	#needs to pack the dictionary. 
+
 	pass
 
 #Receive information from the cone connections. Event specific dictionaries.
 def receive(connection):
-	game_event = connection.recv(1024)
+	game_event_raw = connection.recv(1024)
+	game_event = json.loads(game_event_raw.decode())
 	game_instance.event_list.append(event_packer(game_event,connection.address)) #does connections have an address
 
 #SENDDISPLAYUNITINFO()
@@ -193,7 +195,33 @@ socket_bind(HOST,PORT,numberofclients+1)
 socket_accept(numberofclients,displayunit_address)
 
 while True:
+<<<<<<< HEAD
 	if game_is_runnning == True:
 		start_game()
 		
+=======
+	if game_is_running == True:
+
+		#below needs to be put in a method for the game class
+		print ("We are in while true")
+		game_instance.packDUInfo(game_instance.DUInfo, defaultContent = "questionmark")
+		game_instance.sendDisplayunitInfo(displayunit_connection)
+		time.sleep(3)
+		sendToDisplayunit(all_connections, b"questionmark")
+		print("Send question marks is done")
+		time.sleep(3)
+		battleGame.findCorrectCones(battleGame.nr_cones, battleGame.nr_true, battleGame.coneInfo)
+		print("We found the correct cones")
+		time.sleep(3)
+		battleGame.findContent(battleGame.category, battleGame.nr_cones, battleGame.coneInfo) # takes the return of randomCorrect and stores it in index. 
+		print("We found the content", battleGame.coneInfo)
+		time.sleep(3)
+		battleGame.sendConeInfo(battleGame.coneInfo, all_connections)
+		print("Send cone info is done")
+		time.sleep(3)
+		battleGame.packDUInfo(battleGame.DUInfo, battleGame.coneInfo)
+		battleGame.sendDisplayunitInfo(battleGame.DUInfo, displayunit_connection)
+		print("Send display unit info is done")
+		time.sleep(3)
+>>>>>>> f901f2a03340e842f7cc15f02dd5c85d771a9f7a
 		
