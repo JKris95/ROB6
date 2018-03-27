@@ -52,11 +52,13 @@ def socket_accept(numberofclients,displayunit_address): # accepting a fixed numb
 
 def event_packer(game_event, adresss):
 	#needs to pack the dictionary. 
+
 	pass
 
 #Receive information from the cone connections. Event specific dictionaries.
 def receive(connection):
-	game_event = connection.recv(1024)
+	game_event_raw = connection.recv(1024)
+	game_event = json.loads(game_event_raw.decode())
 	game_instance.event_list.append(event_packer(game_event,connection.address)) #does connections have an address
 
 #SENDDISPLAYUNITINFO()
@@ -178,7 +180,7 @@ socket_bind(HOST,PORT,numberofclients+1)
 socket_accept(numberofclients,displayunit_address)
 
 while True:
-	if game_is_runnning == True:
+	if game_is_running == True:
 
 		#below needs to be put in a method for the game class
 		print ("We are in while true")
