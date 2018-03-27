@@ -11,6 +11,7 @@ displayunit_address = '192.168.1.44'
 HOST=''
 PORT=50007
 
+game_is_running = False
 conesInGame = False
 
 chosenGame = ['not chosen', False]
@@ -49,7 +50,14 @@ def socket_accept(numberofclients,displayunit_address): # accepting a fixed numb
 		except:
 			print("Error accepting connections")
 
+def event_packer(game_event, adresss):
+	#needs to pack the dictionary. 
+	pass
 
+#Receive information from the cone connections. Event specific dictionaries.
+def receive(connection):
+	game_event = connection.recv(1024)
+	game_instance.event_list.append(event_packer(game_event,connection.address)) #does connections have an address
 
 #SENDDISPLAYUNITINFO()
 def sendToDisplayunit(connectionDU, content):
@@ -57,30 +65,35 @@ def sendToDisplayunit(connectionDU, content):
 		connectionDU[i].sendall(content)
 		print("Content was send to display unit:", content)
 
-
 def Battle_game(event):
 	print ("You have chosen the battle game")
+	game_instance = GameType(numberofclients,1)
 
 def Coop_game(event):
-	print ("You have chosen the coop game")	
+	print ("You have chosen the coop game")
+	game_instance = GameType(numberofclients,2)	
 
 def Animal_game(event):
 	chosenGame[0] = 'animals'
-	chosenGame[1] = True
 	print (chosenGame)
 
 def Color_game(event):
 	chosenGame[0] = 'colors'
-	chosenGame[1] = True
 	print (chosenGame)	
 
 def Clock_game(event):
 	chosenGame[0] = 'clocks'
-	chosenGame[1] = True
 	print (chosenGame)
 
 def startTheGame():
-	print ("click!")	
+	print ("click!")
+	for x in all_connections:
+		try:
+			_thread.start_new_thread( receive, (x.address))
+		except:
+			print ("Error: unable to start thread")
+	game_instance.category = chosenGame[0] 
+	game_is_running = True			
 
 def guiThread():
 	while True:
@@ -133,13 +146,17 @@ def guiThread():
 
 		root.mainloop()
 
+def battle_game_over(Battle_events)
+	#if battle events contains a true set game is running = false
 
+	game_is_running = False
 
 try:
    _thread.start_new_thread( guiThread, ())
 except:
    print ("Error: unable to start thread")
 
+#tilføj knap og lad dem slide
 while True:
 	if conesInGame == True:
 		print("moving on")
@@ -149,30 +166,28 @@ socket_bind(HOST,PORT,numberofclients+1)
 socket_accept(numberofclients,displayunit_address)
 
 while True:
-	if chosenGame[1] == True:
-		battleGame = GameType(1,1,chosenGame[0])
-		break
 
-hum = 1
-while True:
-	print ("We are in whiel treu",hum)
-	time.sleep(7)
-	sendToDisplayunit(displayunit_connection, b"questionmark")
-	time.sleep(3)
-	sendToDisplayunit(all_connections, b"questionmark")
-	print("Send question marks is done")
-	time.sleep(3)
-	battleGame.findCorrectCones(battleGame.nr_cones, battleGame.nr_true, battleGame.coneInfo)
-	print("We found the correct cones")
-	time.sleep(3)
-	battleGame.findContent(battleGame.category, battleGame.nr_cones, battleGame.coneInfo) # takes the return of randomCorrect and stores it in index. 
-	print("We found the content", battleGame.coneInfo)
-	time.sleep(3)
-	battleGame.sendConeInfo(battleGame.coneInfo, all_connections)
-	print("Send cone info is done")
-	time.sleep(3)
-	battleGame.packDUInfo(battleGame.DUInfo, battleGame.coneInfo)
-	battleGame.sendDisplayunitInfo(battleGame.DUInfo, displayunit_connection)
-	print("Send display unit info is done")
-	time.sleep(3)
-	
+	if game_is_runnning == True:
+
+		#below needs to be put in a method for the game class
+		print ("We are in while true")
+		time.sleep(7)
+		sendToDisplayunit(displayunit_connection, b"questionmark")
+		time.sleep(3)
+		sendToDisplayunit(all_connections, b"questionmark")
+		print("Send question marks is done")
+		time.sleep(3)
+		battleGame.findCorrectCones(battleGame.nr_cones, battleGame.nr_true, battleGame.coneInfo)
+		print("We found the correct cones")
+		time.sleep(3)
+		battleGame.findContent(battleGame.category, battleGame.nr_cones, battleGame.coneInfo) # takes the return of randomCorrect and stores it in index. 
+		print("We found the content", battleGame.coneInfo)
+		time.sleep(3)
+		battleGame.sendConeInfo(battleGame.coneInfo, all_connections)
+		print("Send cone info is done")
+		time.sleep(3)
+		battleGame.packDUInfo(battleGame.DUInfo, battleGame.coneInfo)
+		battleGame.sendDisplayunitInfo(battleGame.DUInfo, displayunit_connection)
+		print("Send display unit info is done")
+		time.sleep(3)
+		
