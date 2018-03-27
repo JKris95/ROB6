@@ -14,16 +14,7 @@ PORT=50007
 conesInGame = False
 
 chosenGame = ['not chosen', False]
-"""
-#The images availible in the different categories. 
-colors = ['red', 'green','blue','orange','purple','yellow']
-animals = ['cow','dog','chicken','cat','zebra']
-times = ['0100','0200','0300','0400','0500','0600','0700','0800','0900','1000','1100','1200']
-"""
 
-# WILL BE REPLACED BY MAKELIST()
-sendList = [b'False', b'False', b'False']
-index = 0
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 def socket_bind(HOST,PORT,numberofclients): # SHOULD NUMBEROFCLIENTS COME FROM OBJECT // setting up the socket, limitied to a fixed number of cones 
@@ -185,16 +176,3 @@ while True:
 	print("Send display unit info is done")
 	time.sleep(3)
 	
-	"""
-	hum+=1
-	while True:
-		if chosenGame[1] == True:
-			content = chooseGame(index, chosenGame)
-			sendGameContent(content["coneContent"],all_connections,numberofclients)
-			sendToDisplayunit(displayunit_connection, content["DUcontent"])
-			print(all_connections[index].recv(1024))
-			chosenGame[1] = False
-			hum += 1000
-			time.sleep(5)
-			break
-	"""
