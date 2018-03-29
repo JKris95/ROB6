@@ -52,23 +52,26 @@ def socket_accept(numberofclients,displayunit_address): # accepting a fixed numb
 		except:
 			print("Error accepting connections")
 
+#Expands the dictionary received form the cones with the address of the respective cone
 def event_packer(game_event, adresss):
-	#needs to pack the dictionary. 
-
-	pass
+	game_event["address"] = adresss
+	return game_event
 
 #Receive information from the cone connections. Event specific dictionaries.
-def receive(connection):
+def receive(connection, address):
 	game_event_raw = connection.recv(1024)
 	game_event = json.loads(game_event_raw.decode())
-	#game_instance.event_list.append(event_packer(game_event,connection.address)) #does connections have an address
+	game_instance.event_list.append(event_packer(game_event, address)) # Write to list containing information on all cones hit
+	print(game_instance.event_list)
+	battle_game_over(game_instance.event_list)
 
+"""	
 #SENDDISPLAYUNITINFO()
 def sendToDisplayunit(connectionDU, content):
 	for i in range(len(connectionDU)):
 		connectionDU[i].sendall(content)
 		print("Content was send to display unit:", content)
-
+"""
 def Battle_game(event):
 	print ("You have chosen the battle game")
 	game_instance.nr_true = 1
@@ -92,16 +95,16 @@ def Clock_game(event):
 def startTheGame():
 	global game_is_running
 	print ("click!")
-	"""
-	for x in all_connections:
+	
+	for index, conn in enumerate(all_connections):
 		try:
-			_thread.start_new_thread( receive, (x.address))
+			_thread.start_new_thread(receive, (conn, all_addresses[index]))
 		except:
 			print ("Error: unable to start thread")
-	"""
+	
 	game_instance.category = chosenGame[0] 
-	game_is_running = True			
-
+	game_is_running = True
+	start_game()
 def startConnection():
 			global conesInGame
 			conesInGame = True
@@ -163,8 +166,8 @@ def battle_game_over(Battle_events):
 	global game_is_running
 	for x in Battle_events:
 		if x["role"] == True:
+			print("Found a true hit in event list")
 			game_is_running = False
-			print("Found a try hit in event list")
 			break
 
 def start_game():
@@ -199,9 +202,10 @@ while True:
 
 socket_bind(HOST,PORT,numberofclients+1)
 socket_accept(numberofclients,displayunit_address)
-
 while True:
 	if game_is_running == True:
-		start_game()
+		battle_game_over(game_instance.event_list)
+		
+		
 		
 		

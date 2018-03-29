@@ -100,7 +100,7 @@ while True:
 		imageIsUpdated = False
 
 	if buttonstate == True:
-		if role == b'True':
+		if role == 'True':
 			answerlabel.pack_forget()
 			correctlabel.pack()
 			root.update()
@@ -111,7 +111,7 @@ while True:
 			questionlabel.pack()
 			root.update()
 
-		if role == b'False':
+		if role == 'False':
 			answerlabel.pack_forget()
 			incorrectlabel.pack()
 			root.update()
