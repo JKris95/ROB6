@@ -14,6 +14,7 @@ PORT=50007
 
 game_is_running = False
 conesInGame = False
+receive_threads_created = False
 
 chosenGame = ['not chosen', False]
 game_instance = GameType()
@@ -59,19 +60,14 @@ def event_packer(game_event, adresss):
 
 #Receive information from the cone connections. Event specific dictionaries.
 def receive(connection, address):
-	game_event_raw = connection.recv(1024)
-	game_event = json.loads(game_event_raw.decode())
-	game_instance.event_list.append(event_packer(game_event, address)) # Write to list containing information on all cones hit
-	print(game_instance.event_list)
-	battle_game_over(game_instance.event_list)
+	while True:
+		game_event_raw = connection.recv(1024)
+		game_event = json.loads(game_event_raw.decode())
+		print(game_event)
+		game_instance.event_list.append(event_packer(game_event, address)) # Write to list containing information on all cones hit
+		print(game_instance.event_list, len(game_instance.event_list))
+		#battle_game_over(game_instance.event_list)
 
-"""	
-#SENDDISPLAYUNITINFO()
-def sendToDisplayunit(connectionDU, content):
-	for i in range(len(connectionDU)):
-		connectionDU[i].sendall(content)
-		print("Content was send to display unit:", content)
-"""
 def Battle_game(event):
 	print ("You have chosen the battle game")
 	game_instance.nr_true = 1
@@ -94,17 +90,19 @@ def Clock_game(event):
 
 def startTheGame():
 	global game_is_running
+	global receive_threads_created
 	print ("click!")
-	
-	for index, conn in enumerate(all_connections):
-		try:
-			_thread.start_new_thread(receive, (conn, all_addresses[index]))
-		except:
-			print ("Error: unable to start thread")
-	
+	if not receive_threads_created:
+		for index, conn in enumerate(all_connections):
+			try:
+				_thread.start_new_thread(receive, (conn, all_addresses[index][0]))
+			except:
+				print ("Error: unable to start thread")
+		receive_threads_created = True	
 	game_instance.category = chosenGame[0] 
 	game_is_running = True
 	start_game()
+
 def startConnection():
 			global conesInGame
 			conesInGame = True
@@ -164,10 +162,13 @@ def guiThread():
 def battle_game_over(Battle_events):
 	#if battle events contains a true set game is running = false
 	global game_is_running
+	global receive_threads_created
 	for x in Battle_events:
+		print (x)
 		if x["role"] == True:
 			print("Found a true hit in event list")
 			game_is_running = False
+			receive_threads_created = False
 			break
 
 def start_game():
@@ -175,14 +176,14 @@ def start_game():
 		game_instance.makeList(game_instance.nr_cones, game_instance.coneInfo)
 		game_instance.packDUInfo(game_instance.DUInfo, defaultContent = "questionmark")
 		game_instance.sendDisplayunitInfo(game_instance.DUInfo, displayunit_connection)
-		all_connections[0].sendall(b'questionmark')
+		game_instance.sendConeInfo(all_connections, defaultContent= b"questionmark")
 		print("Send question marks is done")
 		time.sleep(5)
 		game_instance.findCorrectCones(game_instance.nr_cones, game_instance.nr_true, game_instance.coneInfo)
 		print("We found the correct cones")
 		game_instance.findContent(game_instance.category, game_instance.nr_cones, game_instance.coneInfo) # takes the return of randomCorrect and stores it in index. 
 		print("We found the content", game_instance.coneInfo)
-		game_instance.sendConeInfo(game_instance.coneInfo, all_connections)
+		game_instance.sendConeInfo(all_connections, game_instance.coneInfo)
 		print("Send cone info is done")
 		game_instance.packDUInfo(game_instance.DUInfo, game_instance.coneInfo)
 		game_instance.sendDisplayunitInfo(game_instance.DUInfo, displayunit_connection)

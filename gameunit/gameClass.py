@@ -35,6 +35,9 @@ class GameType():
 	
 	def findCorrectCones(self, nrOfCones, nrOfTrue, coneInformation):
 		pickedNumbers = []
+		#Clean cone information
+		for entry in coneInformation:
+			entry['Role']='False'
 		for i in range(nrOfTrue):
 			while True:
 				x = randrange(0, nrOfCones)
@@ -76,25 +79,30 @@ class GameType():
 
 
 	#send roles and content to each cone - Every cone receives a dictionary with role and content
-	def sendConeInfo(self,coneInformation, all_connections):
-		if not coneInformation:
-			print("Content information is empty")
-		for i in range(len(all_connections)):
-			print("Before dump")
-			print("i is ", i)
-			print(type(coneInformation[i]))
-			print(coneInformation[i])
-			enConeInformation = json.dumps(coneInformation[i])
-			print("After dump")
-			enConeInformation = enConeInformation.encode()
-			print(enConeInformation)
-			all_connections[i].sendall(enConeInformation)
+	def sendConeInfo(self, all_connections, coneInformation=None, defaultContent=None):
+		if coneInformation:
+			for i in range(len(all_connections)):
+				print("Before dump")
+				print("i is ", i)
+				print(type(coneInformation[i]))
+				print(coneInformation[i])
+				enConeInformation = json.dumps(coneInformation[i])
+				print("After dump")
+				enConeInformation = enConeInformation.encode()
+				print(enConeInformation)
+				all_connections[i].sendall(enConeInformation)
+		elif defaultContent:
+			for conn in all_connections:
+				conn.sendall(defaultContent)
+			print(str(defaultContent) + " was sent to " + str(len(all_connections)) + " cones")
+		else:
+			print("No information to send to cones")
 
 	def sendDisplayunitInfo(self,DUInfo,displayunitconnection): #send information on what corrects answer(s) are on the cones. 
 		if not DUInfo:
 			print("There is no information to display - list is empty")
 		if type(DUInfo) == str:
-			enDUInfo = DUInfo.encode
+			enDUInfo = DUInfo.encode()
 		else:
 			enDUInfo = json.dumps(DUInfo).encode()
 		displayunitconnection[0].sendall(enDUInfo) #Send to the one and only display unit
