@@ -63,9 +63,9 @@ def receive(connection, address):
 	while True:
 		game_event_raw = connection.recv(1024)
 		game_event = json.loads(game_event_raw.decode())
-		print(game_event)
+		print("Event received: " + str(game_event))
 		game_instance.event_list.append(event_packer(game_event, address)) # Write to list containing information on all cones hit
-		print(game_instance.event_list, len(game_instance.event_list))
+		print("Current event list: " + str(game_instance.event_list) + " has length: " + str(len(game_instance.event_list)))
 		#battle_game_over(game_instance.event_list)
 
 def Battle_game(event):
@@ -101,6 +101,7 @@ def startTheGame():
 		receive_threads_created = True	
 	game_instance.category = chosenGame[0] 
 	game_is_running = True
+	del(game_instance.event_list[:]) #Ensure that correct hits from previous game doesn't carry over
 	start_game()
 
 def startConnection():
@@ -162,13 +163,12 @@ def guiThread():
 def battle_game_over(Battle_events):
 	#if battle events contains a true set game is running = false
 	global game_is_running
-	global receive_threads_created
-	for x in Battle_events:
-		print (x)
+	for i, x in enumerate(Battle_events):
+		print ("index " +str(i) + str(x) + " in batle_events")
+		time.sleep(2)
 		if x["role"] == True:
 			print("Found a true hit in event list")
 			game_is_running = False
-			receive_threads_created = False
 			break
 
 def start_game():

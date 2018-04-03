@@ -82,14 +82,8 @@ class GameType():
 	def sendConeInfo(self, all_connections, coneInformation=None, defaultContent=None):
 		if coneInformation:
 			for i in range(len(all_connections)):
-				print("Before dump")
-				print("i is ", i)
-				print(type(coneInformation[i]))
-				print(coneInformation[i])
 				enConeInformation = json.dumps(coneInformation[i])
-				print("After dump")
 				enConeInformation = enConeInformation.encode()
-				print(enConeInformation)
 				all_connections[i].sendall(enConeInformation)
 		elif defaultContent:
 			for conn in all_connections:
