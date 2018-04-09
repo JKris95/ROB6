@@ -5,6 +5,7 @@ from tkinter import *
 import _thread
 from gameClass import GameType
 import json
+
 all_connections = []
 all_addresses = []
 displayunit_connection = []
@@ -169,6 +170,7 @@ def battle_game_over(Battle_events):
 		if x["role"] == True:
 			print("Found a true hit in event list")
 			game_is_running = False
+			# Send signal to turtlebots telling them to go back to start 
 			break
 
 def start_game():
@@ -203,10 +205,13 @@ while True:
 
 socket_bind(HOST,PORT,numberofclients+1)
 socket_accept(numberofclients,displayunit_address)
+
 while True:
 	if game_is_running == True:
 		battle_game_over(game_instance.event_list)
-		
+
+
+
 		
 		
 		
