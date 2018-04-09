@@ -7,17 +7,11 @@ GPIO.setup(38, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Forward
 GPIO.setup(33, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Right
 GPIO.setup(35, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Back
 
-def Connect(HOST, PORT, s):
-    i=0
-    while i == 0:
-        if GPIO.input(38) == False and GPIO.input (33) == True and GPIO.input(36) == True:
-            HOST = '192.168.1.38'
-            s.connect((HOST, PORT))
-            i = 1
-        if GPIO.input(35) == False and GPIO.input(33) == True and GPIO.input(36) == True:
-            HOST = '192.168.1.39'
-            s.connect((HOST, PORT))
-            i = 1
+def Connect(HOST, PORT, socket_object):
+        """Connects to the desired turtlebot corresponding to the ip-address
+        passed to it"""
+        socket_object.connect((HOST, PORT))
+
 
 
 def eightWay(s):
@@ -119,31 +113,7 @@ def angularWay(s):
                 s.sendall(b' ')
 
 def choseMode():
-    i=0
-    while i == 0:
-        if GPIO.input(38) == False and GPIO.input(33) == True and GPIO.input(36) == True:
-                print ('8-way')
-                chose = 1
-                i=1
-                return chose
-
-        elif GPIO.input(35) == False and GPIO.input(33) == True and GPIO.input(36) == True:
-                print ('2-way')
-                chose = 2
-                i=1
-                return chose
-
-        elif GPIO.input(38) == True and GPIO.input(35) == True and GPIO.input(33) == False:
-                print ('4-way')
-                chose = 3
-                i=1
-                return chose
-
-        elif GPIO.input(38) == True and GPIO.input(35) == True and GPIO.input(36) == False:
-                print ('angular-way')
-                chose = 4
-                i=1
-                return chose
+        pass
 
 
 if __name__=="__main__":
