@@ -6,18 +6,16 @@ import _thread
 from gameClass import GameType
 import json
 
+#Global variables
 all_connections = []
 all_addresses = []
 displayunit_connection = []
 displayunit_address = '192.168.1.44' 
 HOST=''
 PORT=50007
-
 game_is_running = False
 conesInGame = False
 receive_threads_created = False
-
-chosenGame = ['not chosen', False]
 game_instance = GameType()
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -39,9 +37,6 @@ def socket_accept(numberofclients,displayunit_address): # accepting a fixed numb
 		try:
 			conn, address = s.accept()
 			conn.setblocking(1)
-			#conn.__dict__
-			#print(type(address))
-			#print(address)
 			if address[0] == displayunit_address:
 				print("Display unit appended")
 				displayunit_connection.append(conn)
@@ -54,7 +49,7 @@ def socket_accept(numberofclients,displayunit_address): # accepting a fixed numb
 		except:
 			print("Error accepting connections")
 
-#Expands the dictionary received form the cones with the address of the respective cone
+#Expands the dictionary received fromm the cones with the address of the respective cone
 def event_packer(game_event, adresss):
 	game_event["address"] = adresss
 	return game_event
@@ -67,27 +62,30 @@ def receive(connection, address):
 		print("Event received: " + str(game_event))
 		game_instance.event_list.append(event_packer(game_event, address)) # Write to list containing information on all cones hit
 		print("Current event list: " + str(game_instance.event_list) + " has length: " + str(len(game_instance.event_list)))
-		#battle_game_over(game_instance.event_list)
-
+	
 def Battle_game(event):
 	print ("You have chosen the battle game")
 	game_instance.nr_true = 1
 	game_instance.nr_cones = numberofclients
+	game_instance.game_type = 'battle'
+
 def Coop_game(event):
 	print ("You have chosen the coop game")
 	game_instance.nr_true = 2
 	game_instance.nr_cones = numberofclients
+	game_instance.game_type = 'coop'
+
 def Animal_game(event):
-	chosenGame[0] = 'animals'
-	print (chosenGame)
+	game_instance.category = 'animals'
+	print (game_instance.category)
 
 def Color_game(event):
-	chosenGame[0] = 'colors'
-	print (chosenGame)	
+	game_instance.category = 'colors'
+	print (game_instance.category)
 
 def Clock_game(event):
-	chosenGame[0] = 'clocks'
-	print (chosenGame)
+	game_instance.category = 'clocks'
+	print (game_instance.category)
 
 def startTheGame():
 	global game_is_running
@@ -99,8 +97,7 @@ def startTheGame():
 				_thread.start_new_thread(receive, (conn, all_addresses[index][0]))
 			except:
 				print ("Error: unable to start thread")
-		receive_threads_created = True	
-	game_instance.category = chosenGame[0] 
+		receive_threads_created = True	# Only create threads once
 	game_is_running = True
 	del(game_instance.event_list[:]) #Ensure that correct hits from previous game doesn't carry over
 	start_game()
@@ -166,9 +163,9 @@ def battle_game_over(Battle_events):
 	global game_is_running
 	for i, x in enumerate(Battle_events):
 		print ("index " +str(i) + str(x) + " in batle_events")
-		time.sleep(2)
+		time.sleep(0.5)
 		if x["role"] == True:
-			print("Found a true hit in event list")
+			print("")
 			game_is_running = False
 			# Send signal to turtlebots telling them to go back to start 
 			break
@@ -208,7 +205,10 @@ socket_accept(numberofclients,displayunit_address)
 
 while True:
 	if game_is_running == True:
-		battle_game_over(game_instance.event_list)
+		if game_instance.game_type == 'battle':
+			battle_game_over(game_instance.event_list)
+		else:
+			pass #coop_game_over()
 
 
 
