@@ -1,0 +1,104 @@
+import tkinter as tk
+
+settings = {"robot": 'x', "player": "notdefined", "difficulty": 1, "extra": 1}
+
+def change_settings(name,value):
+    settings[name] = value
+    print(settings[name])
+
+
+class GUI_select_robot:
+    def __init__(self, master):
+        self.master = master
+        self.frame = tk.Frame(self.master)
+        self.img_robot_1 = tk.PhotoImage(file='./controller/192.666.1.68.gif')
+        self.img_robot_2 = tk.PhotoImage(file='./controller/192.666.1.67.gif')  
+        self.button_robot_1 = tk.Button(self.frame, image=self.img_robot_1, command = lambda *args:[change_settings("robot",'192.666.1.68'),self.new_window()])
+        self.button_robot_2 = tk.Button(self.frame, image=self.img_robot_2, command = lambda *args:[change_settings("robot",'192.666.1.67'),self.new_window()])
+        self.button_robot_1.pack()
+        self.button_robot_2.pack()
+        self.frame.pack()
+
+    def new_window(self):
+        self.newWindow = tk.Toplevel(self.master)
+        self.app = GUI_select_difficulty(self.newWindow)
+
+class GUI_select_difficulty:
+    def __init__(self, master):
+        self.master = master
+        self.frame = tk.Frame(self.master)
+        self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = self.close_windows)
+        self.quitButton.pack()
+        self.frame.pack()
+        self.difficulty_1 = tk.Button(self.frame, text = 'Difficulty 1', width = 25, command = lambda *args:[change_settings("difficulty",'1'),self.new_window()])
+        self.difficulty_1.pack()
+        self.difficulty_2 = tk.Button(self.frame, text = 'Difficulty 2', width = 25, command = lambda *args:[change_settings("difficulty",'2'),self.new_window()])
+        self.difficulty_2.pack()
+        self.difficulty_3 = tk.Button(self.frame, text = 'Difficulty 3', width = 25, command = lambda *args:[change_settings("difficulty",'3'),self.new_window()])
+        self.difficulty_3.pack()
+        self.difficulty_4 = tk.Button(self.frame, text = 'Difficulty 4', width = 25, command = lambda *args:[change_settings("difficulty",'4'),self.new_window()])
+        self.difficulty_4.pack()
+
+    def new_window(self):
+        self.newWindow = tk.Toplevel(self.master)
+        self.app = GUI_select_player(self.newWindow)
+
+    def close_windows(self):
+        self.master.destroy()
+
+
+class GUI_select_player:
+    def __init__(self, master):
+        self.master = master
+        self.frame = tk.Frame(self.master)
+        self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = self.close_windows)
+        self.quitButton.pack()
+        self.frame.pack()
+        self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, command = lambda *args:[change_settings("player",'Martin'),self.new_window()])
+        self.player_martin.pack()
+        self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, command = lambda *args:[change_settings("player",'Nina'),self.new_window()])
+        self.player_nina.pack()
+        self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, command = lambda *args:[change_settings("player",'Natasja'),self.new_window()])
+        self.player_natasja.pack()
+        self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, command = lambda *args:[change_settings("player",'Gæst'),self.new_window()])
+        self.player_guest.pack()
+        
+    def new_window(self):
+        self.newWindow = tk.Toplevel(self.master)
+        self.app = GUI_player_screen(self.newWindow)    
+
+    def close_windows(self):
+        self.master.destroy()        
+
+class GUI_player_screen:
+    def __init__(self, master):
+        self.master = master
+        self.frame = tk.Frame(self.master)
+        self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = self.close_windows)
+        self.quitButton.pack()
+        self.frame.pack()
+        self.img_player = tk.PhotoImage(file='./controller/%s.gif' % settings["player"])
+        self.player_avatar_label = tk.Label(self.frame, image=self.img_player)
+        self.player_avatar_label.pack()
+        self.player_name_label = tk.Label(self.frame, text=settings["player"])
+        self.player_name_label.pack()
+        self.img_robot = tk.PhotoImage(file='./controller/%s.gif' % settings["robot"])
+        self.robot_img_label = tk.Label(self.frame, image=self.img_robot)
+        self.robot_img_label.pack()        
+
+
+
+    def close_windows(self):
+        self.master.destroy()    
+
+
+
+def main(): 
+    root = tk.Tk()
+    #root.attributes('-fullscreen',True)
+    GUI_select_robot(root)
+    root.mainloop()
+
+while 1:
+    main()
+    print(settings)
