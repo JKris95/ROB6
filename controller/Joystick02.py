@@ -7,6 +7,8 @@ GPIO.setup(38, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Forward
 GPIO.setup(33, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Right
 GPIO.setup(35, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Back
 
+#memes
+
 def Connect(HOST, PORT, s):
     i=0
     while i == 0:
