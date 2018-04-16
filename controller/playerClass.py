@@ -9,6 +9,7 @@ class Player():
         self.control_mode = control_mode
         self.robot = robot
         self.image = image
+        self.flip_directions = False
 
     def set_angular(self, ang_lin=0.8, ang_ang=0.2):
         self.ang_lin = ang_lin * self.lin_speed #New linear speed for curved movement

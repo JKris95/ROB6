@@ -11,11 +11,11 @@ GPIO.setup(38, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Left
 GPIO.setup(40, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Forward
 GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Right
 GPIO.setup(32, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Back
-
+GPIOs = (GPIO.input(40), GPIO.input(38), GPIO.input(36), GPIO.input(32))
 
 player = playerClass.Player()
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+turtle_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 def Connect(self, HOST, PORT, socket_object):
     """Connects to the desired turtlebot corresponding to the ip-address
@@ -25,133 +25,145 @@ def Connect(self, HOST, PORT, socket_object):
     except:
         print("Couldn't connect to TurtleBot with address " + HOST) 
 
-def wait_for_input(control_mode):
-	GPIOs = (GPIO.input(40), GPIO.input(38), GPIO.input(36), GPIO.input(32))
+def wait_for_input():
+	"""While joystick is idle nothing is done. When joystick is activated again 
+	control returns to previous function where commands are sent."""
 	while True:
 		for GPIO in GPIOs:
 			if not GPIO:
-				return # returns control to drive()
+				return #return to function sending control commands 
 
-def eight_Way(socket_object):
+def send_dict(socket_object, info):
+	"""Sends dictionary over socket as a series of bytes"""
+	socket_object.sendall(json.dumps(info).decode())
+
+def make_dict(keys, values):
+	"""Takes a list of keys and a list of values
+	and returns dictionary made from them"""
+	d = {}
+	for key, value in zip(keys, values):
+		d[key]=value
+	return d
+
+def eight_Way():
     while status['running'] == True:
         time.sleep(0.1)
         if GPIO.input(40) == False and GPIO.input(36) == True and GPIO.input(38) == True:
             print ('Forward')
-            s.sendall(json.dumps(player.speeds).decode)
+            send_dict(turtle_conn, make_dict(['lin', 'ang'], [player.lin_speed, 0]))
 
         elif GPIO.input(32) == False and GPIO.input(36) == True and GPIO.input(38) == True:
             print ('Back')
-            s.sendall(b'Back')
+            send_dict(turtle_conn, make_dict(['lin', 'ang'], [-player.lin_speed, 0]))
 
         elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(36) == False:
             print ('Right')
-            s.sendall(b'Right')
+            send_dict(turtle_conn, make_dict(['lin', 'ang'], [0, -player.ang_speed]))
 
         elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == False:
             print ('Left')
-            s.sendall(b'Left')
+            send_dict(turtle_conn, make_dict(['lin', 'ang'], [0, player.ang_speed]))
 
         elif GPIO.input(40) == False and GPIO.input(38) == False:
             print ('Forward and Left')
-            s.sendall(b'Forward and Left')
+            send_dict(turtle_conn, make_dict(['lin', 'ang'], [player.ang_lin, player.ang_ang]))
 
         elif GPIO.input(40) == False and GPIO.input(36) == False:
             print ('Forward and Right')
-            s.sendall(b'Forward and Right')
+            send_dict(turtle_conn, make_dict(['lin', 'ang'], [player.ang_lin, -player.ang_ang]))
 
         elif GPIO.input(32) == False and GPIO.input(38) == False:
             print ('Back and Left')
-            s.sendall(b'Back and Left')
+            send_dict(turtle_conn, make_dict(['lin', 'ang'], [-player.ang_lin, player.ang_ang]))
 
         elif GPIO.input(32) == False and GPIO.input(36) == False:
             print ('Back and Right')
-            s.sendall(b'Back and Right')
+            send_dict(turtle_conn, make_dict(['lin', 'ang'], [-player.ang_lin, -player.ang_ang]))
         
         elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == True and GPIO.input(36) == True:
             print ('stop')
-            s.sendall(json.dumps({'lin': 0, 'ang': 0}).decode())
-        
-def four_Way(socket_object):
+            send_dict(turtle_conn, dict([ ('lin', 0), ('ang', 0) ]))
+            wait_for_input()
+
+def four_Way():
 	while status['running'] == True:
 		time.sleep(0.1)
 		if GPIO.input(40) == False and GPIO.input(36) == True and GPIO.input(38) == True:
 			print ('Forward')
-			s.sendall(b'Forward')
+			send_dict(turtle_conn, dict([ ('lin', player.lin_speed), ('ang', 0) ]))
 
 		elif GPIO.input(32) == False and GPIO.input(36) == True and GPIO.input(38) == True:
 			print ('Back')
-			s.sendall(b'Back')
+			send_dict(turtle_conn, dict([ ('lin', -player.lin_speed), ('ang', 0) ]))
 
 		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(36) == False:
 			print ('Right')
-			s.sendall(b'Right')
+			send_dict(turtle_conn, dict([ ('lin', 0), ('ang', -player.ang_speed) ]))
 
 		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == False:
 			print ('Left')
-			s.sendall(b'Left')
+			send_dict(turtle_conn, dict([ ('lin', 0), ('ang', player.ang_speed) ]))
         
 		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == True and GPIO.input(36) == True:
 			print ('stop')
-			s.sendall(json.dumps({'lin': 0, 'ang': 0}).decode())
-			break #Returns control to drive()
+			send_dict(turtle_conn, dict([ ('lin', 0), ('ang', 0) ]))
+			wait_for_input()
         
-def two_Way(socket_object):
+def two_Way():
     while status['running'] == True:
         time.sleep(0.1)
         if GPIO.input(40) == False and GPIO.input(36) == True and GPIO.input(38) == True:
             print ('Forward')
-            s.sendall(b'Forward')
+            send_dict(turtle_conn, dict([ ('lin', player.lin_speed), ('ang', 0) ]))
 
         elif GPIO.input(32) == False and GPIO.input(36) == True and GPIO.input(38) == True:
             print ('Back')
-            s.sendall(b'Back')
+            send_dict(turtle_conn, dict([ ('lin', -player.lin_speed), ('ang', 0) ]))
         
         elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == True and GPIO.input(36) == True:
-                print ('stop')
-                s.sendall(json.dumps({'lin': 0, 'ang': 0}).decode())
+            print ('stop')
+            send_dict(turtle_conn, dict([ ('lin', 0), ('ang', 0) ]))
+            wait_for_input()
         
-def angular(socket_object):
+def angular():
     while status['running'] == True:
         time.sleep(0.1)
         if GPIO.input(40) == False and GPIO.input(38) == False:
             print ('Forward and Left')
-            s.sendall(b'Forward and Left')
+            send_dict(turtle_conn, dict([ ('lin', player.ang_lin), ('ang', player.ang_ang) ]))
 
         elif GPIO.input(40) == False and GPIO.input(36) == False:
             print ('Forward and Right')
-            s.sendall(b'Forward and Right')
+            send_dict(turtle_conn, dict([ ('lin', player.ang_lin), ('ang', -player.ang_ang) ]))
 
         elif GPIO.input(32) == False and GPIO.input(38) == False:
             print ('Back and Left')
-            s.sendall(b'Back and Left')
+            send_dict(turtle_conn, dict([ ('lin', -player.ang_lin), ('ang', player.ang_ang) ]))
 
         elif GPIO.input(32) == False and GPIO.input(36) == False:
             print ('Back and Right')
-            s.sendall(b'Back and Right')
+            send_dict(turtle_conn, dict([ ('lin', -player.ang_lin), ('ang', -player.ang_ang) ]))
         
         elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == True and GPIO.input(36) == True:
                 print ('stop')
-                s.sendall(json.dumps({'lin': 0, 'ang': 0}).decode())
+                send_dict(turtle_conn, dict([ ('lin', 0), ('ang', 0) ]))
+                wait_for_input()
         
+def drive(control_mode): 
+    if control_mode == 'four_way':
+        four_Way()
+    elif control_mode == 'eight_way':
+        eight_Way()
+    elif control_mode == 'two_way':
+        two_Way()
+    elif control_mode == 'angular':
+        angular()
 
-def send_dict(socket_object, info):
-	"""Sends dictionary with relevant info to turtlebot"""
-	socket_object.sendall(json.dumps(info).decode())
 
-def drive(control_mode):
-    while status['running']==True: 
-        if control_mode == 'four_way':
-            four_Way(s)
-        elif control_mode == 'eight_way':
-                eight_Way(s)
-        elif control_mode == 'two_way':
-            two_Way(s)
-        elif control_mode == 'angular':
-            angular(s)
-		else:
-			wait_for_input(control_mode)
+
+"""		
 #Possibly redundant - currently trying out difficulty handling from the class
 def set_difficulty(settings):
     global player
     player = playerClass.Player(settings)
-
+"""
