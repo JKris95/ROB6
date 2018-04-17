@@ -113,10 +113,6 @@ def main():
 	GUI_select_robot(root)
 	root.mainloop()
 
-while 1:
-	main()
-	print(settings)
-"""GUI_END"""
 
 def change_dict_pair(dictionary, key, value):
     dictionary[key]=value
@@ -269,4 +265,9 @@ def angular():
                 print ('stop')
                 send_dict(turtle_conn, dict([ ('lin', 0), ('ang', 0) ]))
                 wait_for_input()
-        
+
+
+while 1:
+	main()
+	print(settings)
+"""GUI_END"""        
