@@ -27,8 +27,8 @@ class GUI_select_robot:
 	def __init__(self, master):
 		self.master = master
 		self.frame = tk.Frame(self.master)
-		self.img_robot_1 = tk.PhotoImage(file='./controller/192.666.1.68.gif')
-		self.img_robot_2 = tk.PhotoImage(file='./controller/192.666.1.67.gif')  
+		self.img_robot_1 = tk.PhotoImage(file='./192.666.1.68.gif')
+		self.img_robot_2 = tk.PhotoImage(file='./192.666.1.67.gif')  
 		self.button_robot_1 = tk.Button(self.frame, image=self.img_robot_1, command = lambda *args:[player.change_settings(player.robot,'192.666.1.38'), Connect(player.robot, PORT, turtle_conn) ,self.new_window()])
 		self.button_robot_2 = tk.Button(self.frame, image=self.img_robot_2, command = lambda *args:[player.change_settings(player.robot,'192.666.1.39'),self.new_window()])
 		self.button_robot_1.pack()
@@ -93,12 +93,12 @@ class GUI_player_screen:
 		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = lambda *args:[change_dict_pair(status, 'running', False), self.close_windows])
 		self.quitButton.pack()
 		self.frame.pack()
-		self.img_player = tk.PhotoImage(file='./controller/%s.gif' % settings["player"])
+		self.img_player = tk.PhotoImage(file='./%s.gif' % settings["player"])
 		self.player_avatar_label = tk.Label(self.frame, image=self.img_player)
 		self.player_avatar_label.pack()
 		self.player_name_label = tk.Label(self.frame, text=settings["player"])
 		self.player_name_label.pack()
-		self.img_robot = tk.PhotoImage(file='./controller/%s.gif' % settings["robot"])
+		self.img_robot = tk.PhotoImage(file='./%s.gif' % settings["robot"])
 		self.robot_img_label = tk.Label(self.frame, image=self.img_robot)
 		self.robot_img_label.pack()        
 
