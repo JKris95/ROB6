@@ -1,19 +1,21 @@
 class Player():
-	def __init__(self, name = 'player', lin_scale = 1, ang_scale = 1, control_mode = 'four_way', robot = '192.168.1.39', image = ""):
+	def __init__(self, **kwargs):
+	   
+		self.player_info = {}
+		for key, value in kwargs.items():
+			self.player_info[key] = value
+			
 		self.max_lin_speed = 0.22
 		self.max_ang_speed = 2.84
-		self.name = name
-		#self.speeds = {}
-		self.lin_speed = lin_scale * self.max_lin_speed
-		self.ang_speed = ang_scale * self.max_ang_speed
-		self.control_mode = control_mode
-		self.robot = robot
-		self.image = image
+		self.lin_speed = self.max_lin_speed
+		self.ang_speed = self.max_ang_speed
+		self.image = ''
+		self.control_mode = ''
 		self.flip_directions = False
-
-	def change_settings(self, attri, value):
-		self.attri = value
-		print(self.attri)
+		
+	def change_settings(self, settings, keys, values):
+		for key, value in zip(keys, values):
+			settings[key] = value
 
 	def set_angular(self, ang_lin=0.8, ang_ang=0.2):
 		"""Sets speed values for curved movement"""
@@ -48,10 +50,9 @@ class Player():
 		self.set_angular()
 	
 	
-
 if __name__ == '__main__':
-   player = Player()
-   print(player.robot)
-   player.change_settings(player.robot,'1111')
-   print(player.robot)
+	player = Player(name='player', robot='192.168.1.x')
+	print(player.player_info)
+	player.change_settings(player.player_info, ['name', 'robot'], ['nina', '192.168'])
+	print(player.player_info)
 
