@@ -1,7 +1,7 @@
 import time
 import socket
 import json
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import playerClass
 import tkinter as tk
 import threading
