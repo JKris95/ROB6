@@ -2,7 +2,7 @@ import sys
 import json
 #import gameClass
 
-print(sys.path)
+#print(sys.path)
 """
 def test():
     objectScope = gameClass.GameType()
@@ -10,3 +10,5 @@ def test():
 test()
 objectScope.category = 'animals'
 """
+a = dict([('hej', 3), ('farvel', 4)])
+print(a)
