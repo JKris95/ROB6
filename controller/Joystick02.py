@@ -25,10 +25,10 @@ class GUI_select_robot:
 	def __init__(self, master):
 		self.master = master
 		self.frame = tk.Frame(self.master)
-		self.img_robot_1 = tk.PhotoImage(file='./192.666.1.68.gif')
-		self.img_robot_2 = tk.PhotoImage(file='./192.666.1.67.gif')  
+		self.img_robot_1 = tk.PhotoImage(file='./192.666.1.38.gif')
+		self.img_robot_2 = tk.PhotoImage(file='./192.666.1.39.gif')  
 		self.button_robot_1 = tk.Button(self.frame, image=self.img_robot_1, command = lambda *args:[player.change_settings(player.robot,'192.666.1.38'), Connect(player.robot, PORT, turtle_conn) ,self.new_window()])
-		self.button_robot_2 = tk.Button(self.frame, image=self.img_robot_2, command = lambda *args:[player.change_settings(player.robot,'192.666.1.39'),self.new_window()])
+		self.button_robot_2 = tk.Button(self.frame, image=self.img_robot_2, command = lambda *args:[player.change_settings(player.robot,'192.666.1.39'), Connect(player.robot, PORT, turtle_conn), self.new_window()])
 		self.button_robot_1.pack()
 		self.button_robot_2.pack()
 		self.frame.pack()
