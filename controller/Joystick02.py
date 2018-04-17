@@ -20,8 +20,6 @@ player = playerClass.Player()
 turtle_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 """GUI_BEGIN"""
-settings = {"robot": 'x', "player": "notdefined", "difficulty": 1, "extra": 1}
-
 
 class GUI_select_robot:
 	def __init__(self, master):
@@ -93,12 +91,12 @@ class GUI_player_screen:
 		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = lambda *args:[change_dict_pair(status, 'running', False), self.close_windows])
 		self.quitButton.pack()
 		self.frame.pack()
-		self.img_player = tk.PhotoImage(file='./%s.gif' % settings["player"])
+		self.img_player = tk.PhotoImage(file='./%s.gif' % player.name)
 		self.player_avatar_label = tk.Label(self.frame, image=self.img_player)
 		self.player_avatar_label.pack()
-		self.player_name_label = tk.Label(self.frame, text=settings["player"])
+		self.player_name_label = tk.Label(self.frame, text=player.name)
 		self.player_name_label.pack()
-		self.img_robot = tk.PhotoImage(file='./%s.gif' % settings["robot"])
+		self.img_robot = tk.PhotoImage(file='./%s.gif' % player.robot)
 		self.robot_img_label = tk.Label(self.frame, image=self.img_robot)
 		self.robot_img_label.pack()        
 
@@ -137,10 +135,12 @@ def spawn_thread(function, name, args):
 def Connect(HOST, PORT, socket_object):
     """Connects to the desired turtlebot corresponding to the ip-address
     passed to it"""
-    try:
-        socket_object.connect((HOST, PORT))
-    except:
-        print("Couldn't connect to TurtleBot with address " + HOST) 
+	while 1:
+		try:
+			socket_object.connect((HOST, PORT))
+			break
+		except:
+			print("Couldn't connect to TurtleBot with address " + HOST) 
 
 def wait_for_input():
 	"""While joystick is idle nothing is done. When joystick is activated again 
@@ -269,5 +269,4 @@ def angular():
 
 while 1:
 	main()
-	print(settings)
 """GUI_END"""        
