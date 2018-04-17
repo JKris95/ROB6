@@ -39,6 +39,6 @@ rospy.init_node('post_office', anonymous = True)
 
 while True:     
 	try:
-        publish_cmd_vel
-    except rospy.ROSInterruptException: #rospy.ROSInterruptException exception, which can be thrown by rospy.sleep() and rospy.Rate.sleep() methods when Ctrl-C is pressed or your Node is otherwise shutdown. NB! We have not placed any rates on our communication yet. 
-        pass
+		publish_cmd_vel
+	except rospy.ROSInterruptException: #rospy.ROSInterruptException exception, which can be thrown by rospy.sleep() and rospy.Rate.sleep() methods when Ctrl-C is pressed or your Node is otherwise shutdown. NB! We have not placed any rates on our communication yet. 
+		pass
