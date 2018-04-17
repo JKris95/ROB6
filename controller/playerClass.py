@@ -11,7 +11,11 @@ class Player():
         self.image = image
         self.flip_directions = False
 
+    def change_settings(self, name, value):
+	    self.name = value
+
     def set_angular(self, ang_lin=0.8, ang_ang=0.2):
+        """Sets speed values for curved movement"""
         self.ang_lin = ang_lin * self.lin_speed #New linear speed for curved movement
         self.ang_ang = ang_ang * self.ang_speed #New angular speed for curved movement    
     def easy(self):
@@ -45,10 +49,5 @@ class Player():
     
 
 if __name__ == '__main__':
-    kwargs = {"name": "martin", "lin_scale": 0.5}
-    player1 = Player(**kwargs)
-    print(player1.lin_speed, player1.ang_speed, player1.control_mode)
-    player1.medium()
-    print(player1.lin_speed, player1.ang_speed, player1.control_mode)
-
+   pass
 
