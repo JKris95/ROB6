@@ -68,13 +68,13 @@ class GUI_select_player:
 		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = self.close_windows)
 		self.quitButton.pack()
 		self.frame.pack()
-		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, command = lambda *args:[player.change_settings(player.player_info,['name'],['Martin']), spawn_thread(drive, 'Martin_drives', (player.control_mode)), self.new_window()])
+		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, command = lambda *args:[player.change_settings(player.player_info,['name'],['Martin']), spawn_thread(drive, 'Martin_drives', player.control_mode), self.new_window()])
 		self.player_martin.pack()
-		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), spawn_thread(drive, 'Nina_drives', (player.control_mode)), self.new_window()])
+		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), spawn_thread(drive, 'Nina_drives', player.control_mode), self.new_window()])
 		self.player_nina.pack()
-		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), spawn_thread(drive, 'Natasja_drives', (player.control_mode)), self.new_window()])
+		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), spawn_thread(drive, 'Natasja_drives', player.control_mode), self.new_window()])
 		self.player_natasja.pack()
-		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), spawn_thread(drive, 'Guest_drives', (player.control_mode)) ,self.new_window()])
+		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), spawn_thread(drive, 'Guest_drives', player.control_mode) ,self.new_window()])
 		self.player_guest.pack()
 		
 	def new_window(self):
@@ -127,7 +127,7 @@ def drive(control_mode):
 
 def spawn_thread(function, name, args):
 	try:
-		t = threading.Thread(target=function, name=name, args=args)
+		t = threading.Thread(target=function, name=name, args=(args))
 		t.start()
 	except:
 		print('Not able to start thread')
