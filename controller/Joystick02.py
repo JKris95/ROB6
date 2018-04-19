@@ -152,7 +152,7 @@ def wait_for_input():
 
 def send_dict(socket_object, info):
 	"""Sends dictionary over socket as a series of bytes"""
-	socket_object.sendall(json.dumps(info)).encode()
+	socket_object.sendall(json.dumps(info).encode())
 
 def make_dict(keys, values):
 	"""Takes a list of keys and a list of values
