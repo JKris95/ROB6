@@ -32,9 +32,9 @@ def recv_from_controller():
 		global move_info
 		move_bytes = conn.recv(1024) #receive information as bytes
 		print("Type received", type(move_bytes))
-		move_info_string = move_bytes.decode()
-		print("After decoding", type(move_info_string))
-		move_info = json.loads(move_info_string) #decode into a dictionary
+		#move_info_string = move_bytes.decode()
+		#print("After decoding", type(move_info_string))
+		move_info = json.loads(move_bytes) #decode into a dictionary
 		print("after JSON", type(move_info), move_info)
 
 thread.start_new_thread( recv_from_controller, ())    
