@@ -10,5 +10,9 @@ def test():
 test()
 objectScope.category = 'animals'
 """
-a = dict([('hej', 3), ('farvel', 4)])
-print(a)
+#a = dict([('hej', 3), ('farvel', 4)])
+a = (4,)
+print(type(a))
+
+
+
