@@ -148,7 +148,11 @@ def wait_for_input():
 	while True:
 		for GPIO in GPIOs:
 			if GPIO == False:
-				break #return to function sending control commands 
+				print("returning to caller")
+				break #return to function sending control commands
+			else:
+				print("GPIO pin is not activated")
+
 
 def send_dict(socket_object, info):
 	"""Sends dictionary over socket as a series of bytes"""
@@ -165,6 +169,7 @@ def make_dict(keys, values):
 def eight_Way():
 	while status['running'] == True:
 		time.sleep(0.1)
+		print("Checking for input")
 		if GPIO.input(40) == False and GPIO.input(36) == True and GPIO.input(38) == True:
 			print ('Forward')
 			send_dict(turtle_conn, make_dict(['lin', 'ang'], [player.lin_speed, 0]))
