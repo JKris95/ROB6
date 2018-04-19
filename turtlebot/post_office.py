@@ -25,7 +25,7 @@ def publish_cmd_vel():
 		twist.linear.x = move_info["lin"]; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 		twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = move_info["ang"] #angular has to be .z value to change
 		pub.publish(twist)
-		rospy.loginfo(twist) #debugging: performs triple-duty: the messages get printed to screen, it gets written to the Node's log file, and it gets written to rosout. rosout is a handy for debugging: you can pull up messages using rqt_console instead of having to find the console window with your Node's output.
+		#rospy.loginfo(twist) #debugging: performs triple-duty: the messages get printed to screen, it gets written to the Node's log file, and it gets written to rosout. rosout is a handy for debugging: you can pull up messages using rqt_console instead of having to find the console window with your Node's output.
 
 def recv_from_controller():
 	while True:
@@ -34,8 +34,8 @@ def recv_from_controller():
 		print("Type received", type(move_bytes))
 		move_info_string = move_bytes.decode()
 		print("After decoding", type(move_info_string))
-		move_info_dict = json.loads(move_info_string) #decode into a dictionary
-		print("after JSON", type(move_info_dict), move_info_dict)
+		move_info = json.loads(move_info_string) #decode into a dictionary
+		print("after JSON", type(move_info), move_info)
 
 thread.start_new_thread( recv_from_controller, ())    
 
