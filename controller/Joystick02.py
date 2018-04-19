@@ -147,11 +147,11 @@ def wait_for_input():
 	control returns to previous function where commands are sent."""
 	while True:
 		for GPIO in GPIOs:
-			if GPIO == False:
-				print("returning to caller")
+			if GPIO.input(40)==False or GPIO.input(38)==False or GPIO(36)==False or GPIO(32)== False:
+				print("returning to caller") # Debugging
 				break #return to function sending control commands
 			else:
-				print("GPIO pin is not activated")
+				print("GPIO pin is not activated") #Debugging
 
 
 def send_dict(socket_object, info):
@@ -169,7 +169,7 @@ def make_dict(keys, values):
 def eight_Way():
 	while status['running'] == True:
 		time.sleep(0.1)
-		print("Checking for input")
+		print("Checking for input") # Debugging
 		if GPIO.input(40) == False and GPIO.input(36) == True and GPIO.input(38) == True:
 			print ('Forward')
 			send_dict(turtle_conn, make_dict(['lin', 'ang'], [player.lin_speed, 0]))
