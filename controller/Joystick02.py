@@ -147,8 +147,8 @@ def wait_for_input():
 	control returns to previous function where commands are sent."""
 	while True:
 		for GPIO in GPIOs:
-			if not GPIO:
-				return #return to function sending control commands 
+			if GPIO == False:
+				break #return to function sending control commands 
 
 def send_dict(socket_object, info):
 	"""Sends dictionary over socket as a series of bytes"""
