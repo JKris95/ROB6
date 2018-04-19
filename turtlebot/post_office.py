@@ -31,8 +31,11 @@ def recv_from_controller():
 	while True:
 		global move_info
 		move_bytes = conn.recv(1024) #receive information as bytes
-		move_info = json.loads(move_bytes.decode()) #decode into a dictionary
-		print(move_info)
+		print(type(move_bytes))
+		move_info_string = move_bytes.decode()
+		print(type(move_bytes))
+		move_info_dict = json.loads(move_info_string) #decode into a dictionary
+		print(type(move_info_dict))
 
 thread.start_new_thread( recv_from_controller, ())    
 
