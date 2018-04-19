@@ -51,8 +51,17 @@ class Player():
 	
 	
 if __name__ == '__main__':
+	def make_dict(keys, values):
+		"""Takes a list of keys and a list of values
+		and returns dictionary made from them"""
+		d = {}
+		for key, value in zip(keys, values):
+			d[key]=value
+		return d
+
 	player = Player(name='player', robot='192.168.1.x')
 	print(player.player_info)
 	player.change_settings(player.player_info, ['name', 'robot'], ['nina', '192.168'])
 	print(player.player_info)
-
+	print(-player.lin_speed)
+	print(make_dict(['lin', 'ang'], [-player.lin_speed, player.ang_speed]))
