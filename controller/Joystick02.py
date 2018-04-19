@@ -107,7 +107,7 @@ class GUI_player_screen:
 
 def main(): 
 	root = tk.Tk()
-	root.attributes('-fullscreen',True)
+	#root.attributes('-fullscreen',True)
 	GUI_select_robot(root)
 	root.mainloop()
 
