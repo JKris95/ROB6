@@ -35,7 +35,7 @@ class GUI_select_robot:
 
 	def new_window(self):
 		self.newWindow = tk.Toplevel(self.master)
-		self.app = GUI_select_difficulty(self.newWindow)
+		self.app = GUI_select_difficulty(self.frame) #self.newWindow before
 
 class GUI_select_difficulty:
 	def __init__(self, master):
