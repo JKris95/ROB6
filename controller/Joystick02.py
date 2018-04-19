@@ -146,7 +146,7 @@ def wait_for_input():
 	"""While joystick is idle nothing is done. When joystick is activated again 
 	control returns to previous function where commands are sent."""
 	while True:
-			if GPIO.input(40)==False or GPIO.input(38)==False or GPIO(36)==False or GPIO(32)== False:
+			if GPIO.input(40)==False or GPIO.input(38)==False or GPIO.input(36)==False or GPIO.input(32)== False:
 				print("returning to caller") # Debugging
 				break #return to function sending control commands
 			else:
