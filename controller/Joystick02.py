@@ -27,7 +27,7 @@ class GUI_select_robot:
 		self.frame = tk.Frame(self.master)
 		self.img_robot_1 = tk.PhotoImage(file='./192.168.1.38.gif')
 		self.img_robot_2 = tk.PhotoImage(file='./192.168.1.39.gif')  
-		self.button_robot_1 = tk.Button(self.frame, image=self.img_robot_1, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['192.168.1.38']), Connect(player.player_info['robot'], PORT, turtle_conn) ,self.new_window()])
+		self.button_robot_1 = tk.Button(self.frame, image=self.img_robot_1, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.34']), Connect(player.player_info['robot'], PORT, turtle_conn) ,self.new_window()])
 		self.button_robot_2 = tk.Button(self.frame, image=self.img_robot_2, command = lambda *args:[player.change_settings(player.player_info, ['robot'],['192.168.1.39']), Connect(player.player_info['robot'], PORT, turtle_conn), self.new_window()])
 		self.button_robot_1.pack()
 		self.button_robot_2.pack()
