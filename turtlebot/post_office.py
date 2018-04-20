@@ -15,16 +15,18 @@ s.listen(1)
 conn, addr = s.accept()
 print ('Connected by', addr)
 
+twist = Twist()
 move_info = {'lin': 0, 'ang': 0}
-
+pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5) #queqe size can be adjusted maybe
 
 def publish_cmd_vel():
-	pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5) #queqe size can be adjusted maybe
 	while not rospy.is_shutdown(): #checking the rospy.is_shutdown() flag and then doing work. You have to check is_shutdown() to check if your program should exit (e.g. if there is a Ctrl-C or otherwise).
-		twist = Twist()
 		twist.linear.x = move_info["lin"]; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 		twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = move_info["ang"] #angular has to be .z value to change
-		pub.publish(twist)
+		try:
+			pub.publish(twist)
+		except:
+			print('unable to publish')
 		#rospy.loginfo(twist) #debugging: performs triple-duty: the messages get printed to screen, it gets written to the Node's log file, and it gets written to rosout. rosout is a handy for debugging: you can pull up messages using rqt_console instead of having to find the console window with your Node's output.
 
 def recv_from_controller():
@@ -39,7 +41,7 @@ def recv_from_controller():
 
 thread.start_new_thread( recv_from_controller, ())    
 
-rospy.init_node('post_office', anonymous = True)
+rospy.init_node('post_office', anonymous = False)
 
 while True:     
 	try:

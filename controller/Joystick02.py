@@ -149,8 +149,6 @@ def wait_for_input():
 			if GPIO.input(40)==False or GPIO.input(38)==False or GPIO.input(36)==False or GPIO.input(32)== False:
 				print("returning to caller") # Debugging
 				break #return to function sending control commands
-			else:
-				print("GPIO pin is not activated") #Debugging
 
 
 def send_dict(socket_object, info):
