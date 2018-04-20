@@ -38,7 +38,7 @@ def recv_from_controller():
 		move_info = json.loads(move_bytes) #decode into a dictionary
 		lin = move_info['lin']
 		ang = move_info['ang']
-		print(type(lin), type(ang))
+		print(type(lin), lin, type(ang), ang)
 		
 
 thread.start_new_thread( recv_from_controller, ())    
@@ -46,7 +46,6 @@ thread.start_new_thread( recv_from_controller, ())
 rospy.init_node('post_office', anonymous = False)
 
 while True:     
-	try:
-		publish_cmd_vel()
-	except rospy.ROSInterruptException: #rospy.ROSInterruptException exception, which can be thrown by rospy.sleep() and rospy.Rate.sleep() methods when Ctrl-C is pressed or your Node is otherwise shutdown. NB! We have not placed any rates on our communication yet. 
-		pass
+	publish_cmd_vel()
+	#rospy.ROSInterruptException: #rospy.ROSInterruptException exception, which can be thrown by rospy.sleep() and rospy.Rate.sleep() methods when Ctrl-C is pressed or your Node is otherwise shutdown. NB! We have not placed any rates on our communication yet. 
+	#pass

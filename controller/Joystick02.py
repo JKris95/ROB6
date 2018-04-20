@@ -169,19 +169,19 @@ def eight_Way():
 		print("Checking for input") # Debugging
 		if GPIO.input(40) == False and GPIO.input(36) == True and GPIO.input(38) == True:
 			print ('Forward')
-			send_dict(turtle_conn, make_dict(['lin', 'ang'], [player.lin_speed, 0]))
+			send_dict(turtle_conn, make_dict(['lin', 'ang'], [player.lin_speed, 0.0]))
 
 		elif GPIO.input(32) == False and GPIO.input(36) == True and GPIO.input(38) == True:
 			print ('Back')
-			send_dict(turtle_conn, make_dict(['lin', 'ang'], [-player.lin_speed, 0]))
+			send_dict(turtle_conn, make_dict(['lin', 'ang'], [-player.lin_speed, 0.0]))
 
 		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(36) == False:
 			print ('Right')
-			send_dict(turtle_conn, make_dict(['lin', 'ang'], [0, -player.ang_speed]))
+			send_dict(turtle_conn, make_dict(['lin', 'ang'], [0.0, -player.ang_speed]))
 
 		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == False:
 			print ('Left')
-			send_dict(turtle_conn, make_dict(['lin', 'ang'], [0, player.ang_speed]))
+			send_dict(turtle_conn, make_dict(['lin', 'ang'], [0.0, player.ang_speed]))
 
 		elif GPIO.input(40) == False and GPIO.input(38) == False:
 			print ('Forward and Left')
@@ -201,7 +201,7 @@ def eight_Way():
 		
 		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == True and GPIO.input(36) == True:
 			print ('stop')
-			send_dict(turtle_conn, dict([ ('lin', 0), ('ang', 0) ]))
+			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', 0.0) ]))
 			wait_for_input()
 
 def four_Way():
@@ -209,23 +209,23 @@ def four_Way():
 		time.sleep(0.1)
 		if GPIO.input(40) == False and GPIO.input(36) == True and GPIO.input(38) == True:
 			print ('Forward')
-			send_dict(turtle_conn, dict([ ('lin', player.lin_speed), ('ang', 0) ]))
+			send_dict(turtle_conn, dict([ ('lin', player.lin_speed), ('ang', 0.0) ]))
 
 		elif GPIO.input(32) == False and GPIO.input(36) == True and GPIO.input(38) == True:
 			print ('Back')
-			send_dict(turtle_conn, dict([ ('lin', -player.lin_speed), ('ang', 0) ]))
+			send_dict(turtle_conn, dict([ ('lin', -player.lin_speed), ('ang', 0.0) ]))
 
 		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(36) == False:
 			print ('Right')
-			send_dict(turtle_conn, dict([ ('lin', 0), ('ang', -player.ang_speed) ]))
+			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', -player.ang_speed) ]))
 
 		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == False:
 			print ('Left')
-			send_dict(turtle_conn, dict([ ('lin', 0), ('ang', player.ang_speed) ]))
+			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', player.ang_speed) ]))
 		
 		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == True and GPIO.input(36) == True:
 			print ('stop')
-			send_dict(turtle_conn, dict([ ('lin', 0), ('ang', 0) ]))
+			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', 0.0) ]))
 			wait_for_input()
 		
 def two_Way():
@@ -233,15 +233,15 @@ def two_Way():
 		time.sleep(0.1)
 		if GPIO.input(40) == False and GPIO.input(36) == True and GPIO.input(38) == True:
 			print ('Forward')
-			send_dict(turtle_conn, dict([ ('lin', player.lin_speed), ('ang', 0) ]))
+			send_dict(turtle_conn, dict([ ('lin', player.lin_speed), ('ang', 0.0) ]))
 
 		elif GPIO.input(32) == False and GPIO.input(36) == True and GPIO.input(38) == True:
 			print ('Back')
-			send_dict(turtle_conn, dict([ ('lin', -player.lin_speed), ('ang', 0) ]))
+			send_dict(turtle_conn, dict([ ('lin', -player.lin_speed), ('ang', 0.0) ]))
 		
 		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == True and GPIO.input(36) == True:
 			print ('stop')
-			send_dict(turtle_conn, dict([ ('lin', 0), ('ang', 0) ]))
+			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', 0.0) ]))
 			wait_for_input()
 		
 def angular():
@@ -265,7 +265,7 @@ def angular():
 		
 		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == True and GPIO.input(36) == True:
 				print ('stop')
-				send_dict(turtle_conn, dict([ ('lin', 0), ('ang', 0) ]))
+				send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', 0.0) ]))
 				wait_for_input()
 
 
