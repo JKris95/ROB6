@@ -38,7 +38,7 @@ def recv_from_controller():
 		move_info = json.loads(move_bytes) #decode into a dictionary
 		lin = move_info['lin']
 		ang = move_info['ang']
-		print(type(lin, ang))
+		print(type(lin), type(ang))
 		
 
 thread.start_new_thread( recv_from_controller, ())    
