@@ -96,7 +96,7 @@ class GUI_player_screen:
 		self.player_avatar_label.pack()
 		self.player_name_label = tk.Label(self.frame, text=player.player_info['name'])
 		self.player_name_label.pack()
-		self.img_robot = tk.PhotoImage(file='./%s.gif' % player.player_info['robot'])
+		self.img_robot = tk.PhotoImage(file='./%s.gif' % '192.168.1.38')
 		self.robot_img_label = tk.Label(self.frame, image=self.img_robot)
 		self.robot_img_label.pack()        
 
