@@ -16,15 +16,18 @@ print ('Connected by', addr)
 twist = Twist()
 lin = 0.0
 ang = 0.0
-pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5) #queqe size can be adjusted maybe
+
 
 def publish_cmd_vel():
+	pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5) #queqe size can be adjusted maybe
+	rospy.init_node('post_office')
+	rate = rospy.Rate(10)
 	while not rospy.is_shutdown(): #checking the rospy.is_shutdown() flag and then doing work. You have to check is_shutdown() to check if your program should exit (e.g. if there is a Ctrl-C or otherwise).
 		twist.linear.x = lin; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 		twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = ang #angular has to be .z value to change
 		try:
 			pub.publish(twist)
-			rospy.sleep(0.1)
+			rate.sleep()
 		except:
 			print('unable to publish')
 		#rospy.loginfo(twist) #debugging: performs triple-duty: the messages get printed to screen, it gets written to the Node's log file, and it gets written to rosout. rosout is a handy for debugging: you can pull up messages using rqt_console instead of having to find the console window with your Node's output.
@@ -33,18 +36,16 @@ def recv_from_controller():
 	while True:
 		global lin, ang
 		move_bytes = conn.recv(1024) #receive information as bytes
-		#print("Type received", type(move_bytes))
+		print("Received", move_bytes, type(move_bytes))
 		#move_info_string = move_bytes.decode()
 		#print("After decoding", type(move_info_string))
-		move_info = json.loads(move_bytes) #decode into a dictionary
-		lin = move_info['lin']
-		ang = move_info['ang']
-		print(type(lin), lin, type(ang), ang)
+		try:
+			move_info = json.loads(move_bytes) #decode into a dictionary
+		except ValueError:
+			print('value error')
+		#print(type(lin), lin, type(ang), ang)
 		
-
 thread.start_new_thread( recv_from_controller, ())    
-
-rospy.init_node('post_office', anonymous = False)
 
 while True:     
 	publish_cmd_vel()
