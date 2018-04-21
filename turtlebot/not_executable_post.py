@@ -43,6 +43,8 @@ def recv_from_controller():
 			move_info = json.loads(move_bytes) #decode into a dictionary
 		except ValueError:
 			print('value error')
+		lin = move_info['lin']
+		ang = move_info['ang']
 		#print(type(lin), lin, type(ang), ang)
 		
 thread.start_new_thread( recv_from_controller, ())    
