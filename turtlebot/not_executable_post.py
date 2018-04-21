@@ -24,6 +24,7 @@ def publish_cmd_vel():
 		twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = ang #angular has to be .z value to change
 		try:
 			pub.publish(twist)
+			rospy.sleep(1)
 		except:
 			print('unable to publish')
 		#rospy.loginfo(twist) #debugging: performs triple-duty: the messages get printed to screen, it gets written to the Node's log file, and it gets written to rosout. rosout is a handy for debugging: you can pull up messages using rqt_console instead of having to find the console window with your Node's output.
@@ -47,6 +48,6 @@ rospy.init_node('post_office', anonymous = False)
 
 while True:     
 	publish_cmd_vel()
-	rospy.sleep(1)
+	
 	#rospy.ROSInterruptException: #rospy.ROSInterruptException exception, which can be thrown by rospy.sleep() and rospy.Rate.sleep() methods when Ctrl-C is pressed or your Node is otherwise shutdown. NB! We have not placed any rates on our communication yet. 
 	#pass
