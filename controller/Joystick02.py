@@ -27,7 +27,7 @@ class GUI_select_robot:
 		self.frame = tk.Frame(self.master)
 		self.img_robot_1 = tk.PhotoImage(file='./192.168.1.38.gif')
 		self.img_robot_2 = tk.PhotoImage(file='./192.168.1.39.gif')  
-		self.button_robot_1 = tk.Button(self.frame, image=self.img_robot_1, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.34']), Connect(player.player_info['robot'], PORT, turtle_conn) ,self.new_window()])
+		self.button_robot_1 = tk.Button(self.frame, image=self.img_robot_1, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.38']), Connect(player.player_info['robot'], PORT, turtle_conn) ,self.new_window()])
 		self.button_robot_2 = tk.Button(self.frame, image=self.img_robot_2, command = lambda *args:[player.change_settings(player.player_info, ['robot'],['192.168.1.39']), Connect(player.player_info['robot'], PORT, turtle_conn), self.new_window()])
 		self.button_robot_1.pack()
 		self.button_robot_2.pack()
@@ -88,7 +88,7 @@ class GUI_player_screen:
 	def __init__(self, master):
 		self.master = master
 		self.frame = tk.Frame(self.master)
-		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = lambda *args:[change_dict_pair(status, 'running', False), self.close_windows])
+		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = lambda *args:[change_dict_pair(status, 'running', False), self.close_windows()])
 		self.quitButton.pack()
 		self.frame.pack()
 		self.img_player = tk.PhotoImage(file='./%s.gif' % player.player_info['name'])
@@ -96,7 +96,7 @@ class GUI_player_screen:
 		self.player_avatar_label.pack()
 		self.player_name_label = tk.Label(self.frame, text=player.player_info['name'])
 		self.player_name_label.pack()
-		self.img_robot = tk.PhotoImage(file='./%s.gif' % '192.168.1.38')
+		self.img_robot = tk.PhotoImage(file='./%s.gif' % player.player_info['robot'])
 		self.robot_img_label = tk.Label(self.frame, image=self.img_robot)
 		self.robot_img_label.pack()        
 
