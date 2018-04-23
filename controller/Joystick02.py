@@ -10,11 +10,11 @@ import random
 status = {'running':False}
 PORT = 50007
 GPIO.setmode(GPIO.BOARD)
-GPIO.setup(38, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Left
-GPIO.setup(40, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Forward
-GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Right
-GPIO.setup(32, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Back
-GPIOs = (GPIO.input(40), GPIO.input(38), GPIO.input(36), GPIO.input(32))
+GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Left #360
+GPIO.setup(32, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Forward #320
+GPIO.setup(38, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Right #380
+GPIO.setup(40, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Back #400
+GPIOs = (GPIO.input(32), GPIO.input(36), GPIO.input(38), GPIO.input(40))
 
 player = playerClass.Player()
 
@@ -26,9 +26,9 @@ class GUI_select_robot:
 	def __init__(self, master):
 		self.master = master
 		self.frame = tk.Frame(self.master)
-		self.img_robot_1 = tk.PhotoImage(file='./192.168.1.38.gif')
+		self.img_robot_1 = tk.PhotoImage(file='./192.168.1.36.gif')
 		self.img_robot_2 = tk.PhotoImage(file='./192.168.1.39.gif')  
-		self.button_robot_1 = tk.Button(self.frame, image=self.img_robot_1, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.38']), Connect(player.player_info['robot'], PORT, turtle_conn) ,self.new_window()])
+		self.button_robot_1 = tk.Button(self.frame, image=self.img_robot_1, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.36']), Connect(player.player_info['robot'], PORT, turtle_conn) ,self.new_window()])
 		self.button_robot_2 = tk.Button(self.frame, image=self.img_robot_2, command = lambda *args:[player.change_settings(player.player_info, ['robot'],['192.168.1.39']), Connect(player.player_info['robot'], PORT, turtle_conn), self.new_window()])
 		self.button_robot_1.pack()
 		self.button_robot_2.pack()
@@ -155,7 +155,7 @@ def wait_for_input():
 	"""While joystick is idle nothing is done. When joystick is activated again 
 	control returns to previous function where commands are sent."""
 	while True:
-			if GPIO.input(40)==False or GPIO.input(38)==False or GPIO.input(36)==False or GPIO.input(32)== False:
+			if GPIO.input(32)==False or GPIO.input(36)==False or GPIO.input(38)==False or GPIO.input(40)== False:
 				print("returning to caller") # Debugging
 				break #return to function sending control commands
 
@@ -174,41 +174,43 @@ def make_dict(keys, values):
 
 def eight_Way():
 	while status['running'] == True:
+		if player.flip_directions:
+			player.flip_direction()
 		time.sleep(0.1)
 		print("Checking for input") # Debugging
-		if GPIO.input(40) == False and GPIO.input(36) == True and GPIO.input(38) == True:
+		if GPIO.input(32) == False and GPIO.input(38) == True and GPIO.input(36) == True:
 			print ('Forward')
 			send_dict(turtle_conn, make_dict(['lin', 'ang'], [player.speeds['lin'], 0.0]))
 
-		elif GPIO.input(32) == False and GPIO.input(36) == True and GPIO.input(38) == True:
+		elif GPIO.input(40) == False and GPIO.input(38) == True and GPIO.input(36) == True:
 			print ('Back')
 			send_dict(turtle_conn, make_dict(['lin', 'ang'], [-player.speeds['lin'], 0.0]))
 
-		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(36) == False:
+		elif GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(38) == False:
 			print ('Right')
 			send_dict(turtle_conn, make_dict(['lin', 'ang'], [0.0, -player.speeds['ang']]))
 
-		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == False:
+		elif GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(36) == False:
 			print ('Left')
 			send_dict(turtle_conn, make_dict(['lin', 'ang'], [0.0, player.speeds['ang']]))
 
-		elif GPIO.input(40) == False and GPIO.input(38) == False:
+		elif GPIO.input(32) == False and GPIO.input(36) == False:
 			print ('Forward and Left')
 			send_dict(turtle_conn, make_dict(['lin', 'ang'], [player.speeds['ang_lin'], player.speeds['ang_ang']]))
 
-		elif GPIO.input(40) == False and GPIO.input(36) == False:
+		elif GPIO.input(32) == False and GPIO.input(38) == False:
 			print ('Forward and Right')
 			send_dict(turtle_conn, make_dict(['lin', 'ang'], [player.speeds['ang_lin'], -player.speeds['ang_ang']]))
 
-		elif GPIO.input(32) == False and GPIO.input(38) == False:
+		elif GPIO.input(40) == False and GPIO.input(36) == False:
 			print ('Back and Left')
 			send_dict(turtle_conn, make_dict(['lin', 'ang'], [-player.speeds['ang_lin'], player.speeds['ang_ang']]))
 
-		elif GPIO.input(32) == False and GPIO.input(36) == False:
+		elif GPIO.input(40) == False and GPIO.input(38) == False:
 			print ('Back and Right')
 			send_dict(turtle_conn, make_dict(['lin', 'ang'], [-player.speeds['ang_lin'], -player.speeds['ang_ang']]))
 		
-		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == True and GPIO.input(36) == True:
+		elif GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(36) == True and GPIO.input(38) == True:
 			print ('stop')
 			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', 0.0) ]))
 			wait_for_input()
@@ -216,24 +218,26 @@ def eight_Way():
 def four_Way():
 	random.seed()
 	while status['running'] == True:
+		if player.flip_directions:
+			player.flip_direction()
 		time.sleep(0.1)
-		if GPIO.input(40) == False and GPIO.input(36) == True and GPIO.input(38) == True:
+		if GPIO.input(32) == False and GPIO.input(38) == True and GPIO.input(36) == True:
 			print ('Forward')
 			send_dict(turtle_conn, dict([ ('lin', player.speeds['lin']), ('ang', 0.0) ]))
 
-		elif GPIO.input(32) == False and GPIO.input(36) == True and GPIO.input(38) == True:
+		elif GPIO.input(40) == False and GPIO.input(38) == True and GPIO.input(36) == True:
 			print ('Back')
 			send_dict(turtle_conn, dict([ ('lin', -player.speeds['lin']), ('ang', 0.0) ]))
 
-		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(36) == False:
+		elif GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(38) == False:
 			print ('Right')
 			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', -player.speeds['ang']) ]))
 
-		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == False:
+		elif GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(36) == False:
 			print ('Left')
 			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', player.speeds['ang']) ]))
 		
-		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == True and GPIO.input(36) == True:
+		elif GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(36) == True and GPIO.input(38) == True:
 			print ('stop')
 			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', 0.0) ]))
 			wait_for_input()
@@ -244,15 +248,15 @@ def two_Way():
 		if player.flip_directions:
 			player.flip_direction()
 		time.sleep(0.1)
-		if GPIO.input(40) == False and GPIO.input(36) == True and GPIO.input(38) == True:
+		if GPIO.input(32) == False and GPIO.input(38) == True and GPIO.input(36) == True:
 			print ('Forward')
 			send_dict(turtle_conn, dict([ ('lin', player.speeds['lin']), ('ang', 0.0) ]))
 
-		elif GPIO.input(32) == False and GPIO.input(36) == True and GPIO.input(38) == True:
+		elif GPIO.input(40) == False and GPIO.input(38) == True and GPIO.input(36) == True:
 			print ('Back')
 			send_dict(turtle_conn, dict([ ('lin', -player.speeds['lin']), ('ang', 0.0) ]))
 		
-		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == True and GPIO.input(36) == True:
+		elif GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(36) == True and GPIO.input(38) == True:
 			print ('stop')
 			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', 0.0) ]))
 			wait_for_input()
@@ -263,23 +267,23 @@ def angular():
 		if player.flip_directions:
 			player.flip_direction()
 		time.sleep(0.1)
-		if GPIO.input(40) == False and GPIO.input(38) == False:
+		if GPIO.input(32) == False and GPIO.input(36) == False:
 			print ('Forward and Left')
 			send_dict(turtle_conn, dict([ ('lin', player.speeds['ang_lin']), ('ang', player.speeds['ang_ang']) ]))
 
-		elif GPIO.input(40) == False and GPIO.input(36) == False:
+		elif GPIO.input(32) == False and GPIO.input(38) == False:
 			print ('Forward and Right')
 			send_dict(turtle_conn, dict([ ('lin', player.speeds['ang_lin']), ('ang', -player.speeds['ang_ang']) ]))
 
-		elif GPIO.input(32) == False and GPIO.input(38) == False:
+		elif GPIO.input(40) == False and GPIO.input(36) == False:
 			print ('Back and Left')
 			send_dict(turtle_conn, dict([ ('lin', -player.speeds['ang_lin']), ('ang', player.speeds['ang_ang']) ]))
 
-		elif GPIO.input(32) == False and GPIO.input(36) == False:
+		elif GPIO.input(40) == False and GPIO.input(38) == False:
 			print ('Back and Right')
 			send_dict(turtle_conn, dict([ ('lin', -player.speeds['ang_lin']), ('ang', -player.speeds['ang_ang']) ]))
 		
-		elif GPIO.input(40) == True and GPIO.input(32) == True and GPIO.input(38) == True and GPIO.input(36) == True:
+		elif GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(36) == True and GPIO.input(38) == True:
 				print ('stop')
 				send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', 0.0) ]))
 				wait_for_input()
