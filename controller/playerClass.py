@@ -63,7 +63,7 @@ class Player():
 		self.set_angular()
 		
 	def flip_direction(self, probability_of_flipping=0.01):
-		odds = random.random(0,1) #Pick a random fraction between 0 and 1
+		odds = random.random() #Pick a random fraction between 0 and 1
 		if odds < probability_of_flipping:
 			for key, value in self.speeds.items(): 
 				self.speeds[key] = -value
