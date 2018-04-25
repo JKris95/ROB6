@@ -37,39 +37,43 @@ class Player():
 			self.set_angular()
 			self.flip_directions = False
 			print('difficulty changed')
+			print(self.speeds.items(), self.control_mode, self.flip_directions)
 		except:
 			print('Did not change all parameters')
 
 	def medium(self):
 		try:
-			self.speeds['lin'] = 0.8 * self.max_lin_speed
+			self.speeds['lin'] = 1.0 * self.max_lin_speed
 			self.speeds['ang'] = 0.5 * self.max_ang_speed
 			self.control_mode = 'four_way'
 			self.flip_directions = False
 			#self.set_angular() 
 			print('difficulty changed')
+			print(self.speeds.items(), self.control_mode, self.flip_directions)
 		except:
 			print('Did not change all parameters')
 
 	def hard(self):
 		try:
-			self.speeds['lin'] = 0.6 * self.max_lin_speed
+			self.speeds['lin'] = 1.0 * self.max_lin_speed
 			self.speeds['ang'] = 0.75 * self.max_ang_speed
 			self.control_mode = 'four_way'
 			self.flip_directions = False
 			#self.set_angular()
 			print('difficulty changed')
+			print(self.speeds.items(), self.control_mode, self.flip_directions)
 		except:
 			print('Did not change all parameters')
 
 	def very_hard(self):
 		try:
-			self.speeds['lin'] = 0.4 * self.max_lin_speed
+			self.speeds['lin'] = 1.0 * self.max_lin_speed
 			self.speeds['ang'] = 1.0 * self.max_ang_speed
 			self.control_mode = 'angular'
 			self.set_angular()
-			self.flip_directions = True
+			self.flip_directions = False
 			print('difficulty changed')
+			print(self.speeds.items(), self.control_mode, self.flip_directions)
 		except:
 			print('Did not change all parameters')
 
