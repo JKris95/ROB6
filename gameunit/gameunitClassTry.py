@@ -16,6 +16,8 @@ PORT=50007
 game_is_running = False
 conesInGame = False
 receive_threads_created = False
+times_lock = _thread.allocate_lock()
+times = {'start': 0, 'end': 0}
 game_instance = GameType()
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -49,18 +51,22 @@ def socket_accept(numberofclients,displayunit_address): # accepting a fixed numb
 		except:
 			print("Error accepting connections")
 
-#Expands the dictionary received fromm the cones with the address of the respective cone
-def event_packer(game_event, adresss):
-	game_event["address"] = adresss
+def event_packer(game_event, **kwargs):
+	"""Expands the dictionary received from the cones with the passed key-value pairs"""
+	for key, value in kwargs.items():
+		game_event[key] = value
 	return game_event
 
 #Receive information from the cone connections. Event specific dictionaries.
 def receive(connection, address):
 	while True:
 		game_event_raw = connection.recv(1024)
+		times_lock.acquire()
+		times['end']=time.time()
+		times_lock.release()
 		game_event = json.loads(game_event_raw.decode())
 		print("Event received: " + str(game_event))
-		game_instance.event_list.append(event_packer(game_event, address)) # Write to list containing information on all cones hit
+		game_instance.event_list.append(event_packer(game_event, address = address, time = times['start']-times['end'])) # Write to list containing information on all cones that were hit
 		print("Current event list: " + str(game_instance.event_list) + " has length: " + str(len(game_instance.event_list)))
 	
 def Battle_game(event):
@@ -183,6 +189,7 @@ def start_game():
 		game_instance.findContent(game_instance.category, game_instance.nr_cones, game_instance.coneInfo) # takes the return of randomCorrect and stores it in index. 
 		print("We found the content", game_instance.coneInfo)
 		game_instance.sendConeInfo(all_connections, game_instance.coneInfo)
+		times['start']=time.time()
 		print("Send cone info is done")
 		game_instance.packDUInfo(game_instance.DUInfo, game_instance.coneInfo)
 		game_instance.sendDisplayunitInfo(game_instance.DUInfo, displayunit_connection)
