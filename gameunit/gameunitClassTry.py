@@ -122,7 +122,7 @@ def guiThread():
 			numberofclients = slider.get()
 
 		text1 = Text(root, height=15, width=40)
-		photo=PhotoImage(file='./gameunit/pylogo.gif')
+		photo=PhotoImage(file='pylogo.gif')
 		text1.insert(END,'\n')
 		text1.image_create(END, image=photo)
 

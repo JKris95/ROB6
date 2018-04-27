@@ -21,90 +21,78 @@ player = playerClass.Player()
 turtle_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 """GUI_BEGIN"""
-
-class GUI_select_robot:
+class GUI_base:
 	def __init__(self, master):
 		self.master = master
 		self.frame = tk.Frame(self.master)
+		self.window_list = [self.frame]
+
+	def unpacker(self, window_list):
+		for i in window_list:
+			i.pack_forget()
+
+	def packer(self, window_list):
+		for i in window_list:
+			i.pack()
+
+	def new_window(self, window):
+		self.app = window(self.master)
+
+	def append_window_list(self, *args):
+		for i in args:
+			self.window_list.append(i)	
+
+	def close_window(self, window_to_open):
+		self.app = window_to_open(self.master)
+		self.frame.destroy() 
+
+class GUI_select_robot(GUI_base):
+	def __init__(self, master):
+		GUI_base.__init__(self,master)
 		self.img_robot_1 = tk.PhotoImage(file='./192.168.1.38.gif')
 		self.img_robot_2 = tk.PhotoImage(file='./192.168.1.39.gif')  
-		self.button_robot_1 = tk.Button(self.frame, image=self.img_robot_1, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.36']), Connect(player.player_info['robot'], PORT, turtle_conn) ,self.new_window()])
-		self.button_robot_2 = tk.Button(self.frame, image=self.img_robot_2, command = lambda *args:[player.change_settings(player.player_info, ['robot'],['192.168.1.39']), Connect(player.player_info['robot'], PORT, turtle_conn), self.new_window()])
-		self.button_robot_1.pack()
-		self.button_robot_2.pack()
-		self.frame.pack()
+		self.button_robot_1 = tk.Button(self.frame, image=self.img_robot_1, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.38']), Connect(player.player_info['robot'], PORT, turtle_conn),self.unpacker(self.window_list), self.new_window(GUI_select_difficulty)])
+		self.button_robot_2 = tk.Button(self.frame, image=self.img_robot_2, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.39']), Connect(player.player_info['robot'], PORT, turtle_conn),self.unpacker(self.window_list), self.new_window(GUI_select_difficulty)])
+		self.append_window_list(self.button_robot_1,self.button_robot_2)
+		self.packer(self.window_list)
 
-	def new_window(self):
-		self.newWindow = tk.Toplevel(self.master)
-		self.app = GUI_select_difficulty(self.frame) #self.newWindow before
-
-class GUI_select_difficulty:
+class GUI_select_difficulty(GUI_base):
 	def __init__(self, master):
-		self.master = master
-		self.frame = tk.Frame(self.master)
-		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = self.close_windows)
-		self.quitButton.pack()
-		self.frame.pack()
-		self.difficulty_1 = tk.Button(self.frame, text = 'Difficulty 1', width = 25, command = lambda *args:[player.easy(),self.new_window()])
-		self.difficulty_1.pack()
-		self.difficulty_2 = tk.Button(self.frame, text = 'Difficulty 2', width = 25, command = lambda *args:[player.medium(),self.new_window()])
-		self.difficulty_2.pack()
-		self.difficulty_3 = tk.Button(self.frame, text = 'Difficulty 3', width = 25, command = lambda *args:[player.hard(),self.new_window()])
-		self.difficulty_3.pack()
-		self.difficulty_4 = tk.Button(self.frame, text = 'Difficulty 4', width = 25, command = lambda *args:[player.very_hard(),self.new_window()])
-		self.difficulty_4.pack()
-
-	def new_window(self):
-		self.newWindow = tk.Toplevel(self.master)
-		self.app = GUI_select_player(self.newWindow)
-
-	def close_windows(self):
-		self.master.destroy()
-
-
-class GUI_select_player:
+		GUI_base.__init__(self,master)
+		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = lambda *args:[self.close_window(GUI_select_robot)])
+		self.difficulty_1 = tk.Button(self.frame, text = 'Difficulty 1', width = 25, command = lambda *args:[player.easy(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
+		self.difficulty_2 = tk.Button(self.frame, text = 'Difficulty 2', width = 25, command = lambda *args:[player.medium(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
+		self.difficulty_3 = tk.Button(self.frame, text = 'Difficulty 3', width = 25, command = lambda *args:[player.hard(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
+		self.difficulty_4 = tk.Button(self.frame, text = 'Difficulty 4', width = 25, command = lambda *args:[player.very_hard(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
+		self.append_window_list(self.quitButton,self.frame, self.difficulty_1, self.difficulty_2, self.difficulty_3, self.difficulty_4)
+		self.packer(self.window_list)
+       
+class GUI_select_player(GUI_base):
 	def __init__(self, master):
-		self.master = master
-		self.frame = tk.Frame(self.master)
-		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = self.close_windows)
-		self.quitButton.pack()
-		self.frame.pack()
-		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, command = lambda *args:[player.change_settings(player.player_info,['name'],['Martin']), change_dict_pair(status, 'running', True), spawn_thread(drive, 'Martin_drives', player.control_mode), self.new_window()])
-		self.player_martin.pack()
-		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), spawn_thread(drive, 'Nina_drives', player.control_mode), self.new_window()])
-		self.player_nina.pack()
-		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), spawn_thread(drive, 'Natasja_drives', player.control_mode), self.new_window()])
-		self.player_natasja.pack()
-		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), spawn_thread(drive, 'Guest_drives', player.control_mode) ,self.new_window()])
-		self.player_guest.pack()
-		
-	def new_window(self):
-		self.newWindow = tk.Toplevel(self.master)
-		self.app = GUI_player_screen(self.newWindow)    
+		GUI_base.__init__(self,master)
+		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = lambda *args:[self.close_window(GUI_select_difficulty)])
+		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, command = lambda *args:[player.change_settings(player.player_info,['name'],['Martin']), change_dict_pair(status, 'running', True), spawn_thread(drive, 'Martin_drives', player.control_mode),self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), spawn_thread(drive, 'Nina_drives', player.control_mode),self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), spawn_thread(drive, 'Natasja_drives', player.control_mode),self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), spawn_thread(drive, 'Guest_drives', player.control_mode),self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.append_window_list(self.quitButton,self.frame, self.player_martin, self.player_nina, self.player_natasja, self.player_guest)
+		self.packer(self.window_list)
 
-	def close_windows(self):
-		self.master.destroy()        
-
-class GUI_player_screen:
+class GUI_player_screen(GUI_base):
 	def __init__(self, master):
-		self.master = master
-		self.frame = tk.Frame(self.master)
-		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = lambda *args:[change_dict_pair(status, 'running', False), self.close_windows()])
-		self.quitButton.pack()
-		self.frame.pack()
+		GUI_base.__init__(self,master)
+		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = lambda *args:[change_dict_pair(status, 'running', False),self.close_window(GUI_select_player)])
 		self.img_player = tk.PhotoImage(file='./%s.gif' % player.player_info['name'])
 		self.player_avatar_label = tk.Label(self.frame, image=self.img_player)
-		self.player_avatar_label.pack()
+		self.player_avatar_label.pack(side=tk.LEFT)
 		self.player_name_label = tk.Label(self.frame, text=player.player_info['name'])
 		self.player_name_label.pack()
 		self.img_robot = tk.PhotoImage(file='./%s.gif' % player.player_info['robot'])
 		self.robot_img_label = tk.Label(self.frame, image=self.img_robot)
-		self.robot_img_label.pack()        
+		self.robot_img_label.pack(side=tk.LEFT)
+		self.append_window_list(self.quitButton,self.frame)
+		self.packer(self.window_list)
 
-
-
-	def close_windows(self):
-		self.master.destroy()    
 
 def main(): 
 	root = tk.Tk()
