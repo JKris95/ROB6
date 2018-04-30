@@ -63,13 +63,13 @@ class GUI_select_player:
 		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = self.close_windows)
 		self.quitButton.pack()
 		self.frame.pack()
-		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, command = lambda *args:[player.change_settings(player.player_info,['name'],['Martin']), change_dict_pair(status, 'running', True), spawn_thread(drive, 'Martin_drives', player.control_mode), self.new_window()])
+		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, command = lambda *args:[player.change_settings(player.player_info,['name'],['Martin']), change_dict_pair(status, 'running', True), threading._start_new_thread(drive, (player.control_mode,)), self.new_window()])
 		self.player_martin.pack()
-		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), spawn_thread(drive, 'Nina_drives', player.control_mode), self.new_window()])
+		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), threading._start_new_thread(drive, (player.control_mode,)), self.new_window()])
 		self.player_nina.pack()
-		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), spawn_thread(drive, 'Natasja_drives', player.control_mode), self.new_window()])
+		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), threading._start_new_thread(drive, (player.control_mode,)), self.new_window()])
 		self.player_natasja.pack()
-		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), spawn_thread(drive, 'Guest_drives', player.control_mode) ,self.new_window()])
+		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), threading._start_new_thread(drive, (player.control_mode,)), self.new_window()])
 		self.player_guest.pack()
 		
 	def new_window(self):
@@ -182,6 +182,11 @@ def angular():
 	while status['running']:
 		print('angular')
 		time.sleep(0.9)
+def run_thread():
+	while status['running']:
+		print('hello')
+		time.sleep(1)
 
-while 1:
-	main()
+drive_thread = threading.Thread(target=run_thread)
+
+main()
