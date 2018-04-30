@@ -5,8 +5,18 @@ from geometry_msgs.msg import Twist
 import thread
 import time
 
+#Global variables goes here.
+HOST = ''
+PORT = 50007
+lin,ang = 0.0,0.0
+
+
 #Function definitions goes here.
-def publish_cmd_vel(): #Function that creates the node, and publishes to the topic /cmd_vel. 
+def publish_cmd_vel():
+	"""
+	Function that creates the node, and publishes to the topic /cmd_vel. 
+	
+	""" 
 	pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5) #queqe size can be adjusted maybe
 	rospy.init_node('post_office')
 	rate = rospy.Rate(10) #10 hz executing on the node
@@ -20,7 +30,12 @@ def publish_cmd_vel(): #Function that creates the node, and publishes to the top
 			print('unable to publish')
 		#rospy.loginfo(twist) #debugging: performs triple-duty: the messages get printed to screen, it gets written to the Node's log file, and it gets written to rosout. rosout is a handy for debugging: you can pull up messages using rqt_console instead of having to find the console window with your Node's output.
 
-def recv_from_controller(): #Function that receives information from the connected controller.
+def recv_from_controller():
+	"""
+	Function that receives information from the connected controller.
+
+	"""
+	
 	while True:
 		global lin, ang
 		move_bytes = conn.recv(1024) #receive information as bytes
@@ -35,11 +50,6 @@ def recv_from_controller(): #Function that receives information from the connect
 		ang = move_info['ang']
 		#print(type(lin), lin, type(ang), ang)
 
-
-#Global variables goes here.
-HOST = ''
-PORT = 50007
-lin,ang = 0.0,0.0
 
 
 #While True loop retrying to accept a connection if the old breaks dowm. TODO: Check if the thread gets killed if the connection drops. If not kill it.
