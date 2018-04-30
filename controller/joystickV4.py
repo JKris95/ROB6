@@ -7,18 +7,7 @@ import tkinter as tk
 import threading
 import random
 
-player = playerClass.Player()
-PORT = 50007
-turtle_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-status = {'running':False}
 
-""" Initialize thread object """
-drive_thread = threading.Thread(target=drive, name='driving', args=(player.control_mode,))
-
-""" RPI GPIO Setup """
-CHANNELS = (32, 36, 38, 40) # FORWARD, LEFT, RIGHT, BACK
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(CHANNELS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 class GUI_base:
 	def __init__(self, master):
@@ -279,6 +268,23 @@ def angular():
 	if player.flipped:
 		player.unflip()
 
+"""Global variables"""
+player = playerClass.Player()
+PORT = 50007
+turtle_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+status = {'running':False}
 
+#Initialize thread object
+drive_thread = threading.Thread(target=drive, name='driving', args=(player.control_mode,))
+
+#GPIO
+CHANNELS = (32, 36, 38, 40) # FORWARD, LEFT, RIGHT, BACK
+"""Global variables"""
+
+#GPIO setup
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(CHANNELS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+#Run the GUI
 main()
         
