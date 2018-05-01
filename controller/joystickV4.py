@@ -59,10 +59,10 @@ class GUI_select_player(GUI_base):
 	def __init__(self, master):
 		GUI_base.__init__(self,master)
 		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = lambda *args:[self.close_window(GUI_select_difficulty)])
-		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, command = lambda *args:[player.change_settings(player.player_info,['name'],['Martin']), change_dict_pair(status, 'running', True), threading._start_new_thread(drive, (player.control_mode,)), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), threading._start_new_thread(drive, (player.control_mode,)), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), threading._start_new_thread(drive, (player.control_mode,)), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), threading._start_new_thread(drive, (player.control_mode,)), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, command = lambda *args:[player.change_settings(player.player_info,['name'],['Martin']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
 		self.append_window_list(self.quitButton,self.frame, self.player_martin, self.player_nina, self.player_natasja, self.player_guest)
 		self.packer(self.window_list)
 
@@ -92,15 +92,21 @@ def main():
 def change_dict_pair(dictionary, key, value):
 	dictionary[key]=value
 
-def drive(control_mode): 
-	if control_mode == 'four_way':
-		four_Way()
-	elif control_mode == 'eight_way':
-		eight_Way()
-	elif control_mode == 'two_way':
-		two_Way()
-	elif control_mode == 'angular':
-		angular()
+def drive():
+	if status['running']:
+		print('we are running') # For debugging
+		control_mode = player.control_mode
+		print('In mode: ', control_mode) # For debugging
+		if control_mode == 'four_way':
+			four_Way()
+		elif control_mode == 'eight_way':
+			eight_Way()
+		elif control_mode == 'two_way':
+			two_Way()
+		elif control_mode == 'angular':
+			angular()
+	else:
+		print('we are not running')
 
 def spawn_thread(function, name, args):
 	try:
@@ -123,9 +129,10 @@ def wait_for_input():
 	"""While joystick is idle nothing is done. When joystick is activated again 
 	control returns to previous function where commands are sent."""
 	while True:
-			if GPIO.input(32)==False or GPIO.input(36)==False or GPIO.input(38)==False or GPIO.input(40)== False:
+		for channel in CHANNELS:
+			if GPIO.input(channel)==False or not status['running']:
 				print("returning to caller") # Debugging
-				break #return to function sending control commands
+				return #return to function sending control commands
 
 
 def send_dict(socket_object, info):
@@ -286,5 +293,8 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(CHANNELS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 #Run the GUI
-main()
+GUI = threading.Thread(target=main, name='GUI')
+GUI.start()
+while True:	
+	drive()
         
