@@ -31,6 +31,7 @@ def connect(socket_object, host, port):
 	while True:
 		try: 
 			socket_object.connect((host, port))
+			break
 		except:
 			print("FAILED. Sleep briefly & try again")
 			time.sleep(5)
