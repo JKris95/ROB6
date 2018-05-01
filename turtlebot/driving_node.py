@@ -16,9 +16,9 @@ detected = 'Nothing'
 
 #Function definitions goes here.
 def publish_cmd_vel():
-	"""
-	Function that creates the node, and publishes to the topic /cmd_vel and subscribe to /det_ang. 
-	""" 
+
+	#Function that creates the node, and publishes to the topic /cmd_vel and subscribe to /det_ang. 
+
 	pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5) #queqe size can be adjusted maybe
 	rospy.Subscriber("/det_ang", String, detection)
 	rospy.init_node('post_office')
@@ -33,22 +33,25 @@ def publish_cmd_vel():
 			except:
 				print('unable to publish')
 		#rospy.loginfo(twist) #debugging: performs triple-duty: the messages get printed to screen, it gets written to the Node's log file, and it gets written to rosout. rosout is a handy for debugging: you can pull up messages using rqt_console instead of having to find the console window with your Node's output.
-		if detected == 'Forward': #What to do if the turtlebot detects something in front of it
+		if detected == 'Front': #What to do if the turtlebot detects something in front of it
 			twist.linear.x = -0.2; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 #angular has to be .z value to change
+			pub.publish(twist)
+			time.sleep(0.5)
 		if detected == 'Back': #What to do if the turtlebot detects something in front of it
 			twist.linear.x = 0.2; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 #angular has to be .z value to change
-			
+			pub.publish(twist)
+			time.sleep(0.5)
 
 def recv_from_controller():
-	"""
-	Function that receives information from the connected controller.
-	"""
+
+	#Function that receives information from the connected controller.
+
 	while True:
 		global lin, ang
 		move_bytes = conn.recv(1024) #receive information as bytes
-		print("Received", move_bytes, type(move_bytes))
+		#print("Received", move_bytes, type(move_bytes))
 		#move_info_string = move_bytes.decode()
 		#print("After decoding", type(move_info_string))
 		try:
@@ -62,6 +65,7 @@ def recv_from_controller():
 def detection(data):
 	global detected 
 	detected = data.data
+	#print(detected)
 
 
 
