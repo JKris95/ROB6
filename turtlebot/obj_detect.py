@@ -3,8 +3,7 @@ from sensor_msgs.msg import LaserScan
 from std_msgs.msg import String
 
 rospy.init_node('turtlebot3_obstacle', anonymous=True)
-pub = rospy.Publisher('detect_angle', String, queue_size=10)
-
+pub = rospy.Publisher('/det_ang', String, queue_size=10)
 
 def obstacle():
     someVal = 0
