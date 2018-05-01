@@ -6,7 +6,7 @@ import tkinter as tk
 import pygame
 import _thread
 import json
-#Run at boot comment Check
+#Run at boot comment Checking
 role = b'Start'
 imageToDisplay = b'Start'  
 buttonstate = False
