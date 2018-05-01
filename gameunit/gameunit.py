@@ -66,7 +66,7 @@ def receive(connection, address):
 		times_lock.release()
 		game_event = json.loads(game_event_raw.decode())
 		print("Event received: " + str(game_event))
-		game_instance.event_list.append(event_packer(game_event, address = address, time = times['start']-times['end'])) # Write to list containing information on all cones that were hit
+		game_instance.event_list.append(event_packer(game_event, address = address, time = times['end']-times['start'])) # Write to list containing information on all cones that were hit
 		print("Current event list: " + str(game_instance.event_list) + " has length: " + str(len(game_instance.event_list)))
 	
 def Battle_game(event):
@@ -109,8 +109,8 @@ def startTheGame():
 	start_game()
 
 def startConnection():
-			global conesInGame
-			conesInGame = True
+	global conesInGame
+	conesInGame = True
 
 def guiThread():
 	while True:
@@ -122,7 +122,7 @@ def guiThread():
 			numberofclients = slider.get()
 
 		text1 = Text(root, height=15, width=40)
-		photo=PhotoImage(file='pylogo.gif')
+		photo=PhotoImage(file='gameunit/pylogo.gif')
 		text1.insert(END,'\n')
 		text1.image_create(END, image=photo)
 
@@ -169,9 +169,9 @@ def battle_game_over(Battle_events):
 	global game_is_running
 	for i, x in enumerate(Battle_events):
 		print ("index " +str(i) + str(x) + " in batle_events")
-		time.sleep(0.5)
+		time.sleep(0.1)
 		if x["role"] == True:
-			print("")
+			print("You won")
 			game_is_running = False
 			# Send signal to turtlebots telling them to go back to start 
 			break

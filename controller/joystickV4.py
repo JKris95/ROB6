@@ -94,9 +94,7 @@ def change_dict_pair(dictionary, key, value):
 
 def drive():
 	if status['running']:
-		print('we are running') # For debugging
 		control_mode = player.control_mode
-		print('In mode: ', control_mode) # For debugging
 		if control_mode == 'four_way':
 			four_Way()
 		elif control_mode == 'eight_way':
@@ -105,8 +103,6 @@ def drive():
 			two_Way()
 		elif control_mode == 'angular':
 			angular()
-	else:
-		print('we are not running')
 
 def spawn_thread(function, name, args):
 	try:
