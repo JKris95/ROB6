@@ -21,6 +21,8 @@
 import rospy
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
+from std_msgs.msg import String
+
 
 
 class Obstacle():
