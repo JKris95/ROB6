@@ -39,26 +39,27 @@ class Obstacle():
                     self.scan_filter.append(scan.ranges[i])
 
     def obstacle(self, steps, start, distance, direction):
-        while not rospy.is_shutdown():
-            msg = rospy.wait_for_message("/scan", LaserScan)
-            self.scan_filter = []
-            msg_ranges_lenght = len(msg.ranges)
-            for i in range(steps):
-                if msg.ranges[start] >= self.LIDAR_ERR:
-                    self.scan_filter.append(msg.ranges[start])
-                    start = (start + 1) % msg_ranges_lenght
+        msg = rospy.wait_for_message("/scan", LaserScan)
+        self.scan_filter = []
+        msg_ranges_lenght = len(msg.ranges)
+        for i in range(steps):
+            if msg.ranges[start] >= self.LIDAR_ERR:
+                self.scan_filter.append(msg.ranges[start])
+            start = (start + 1) % msg_ranges_lenght
+	    print(start)
 
-            if min(self.scan_filter) < distance:
-                self.pub.publish(direction)
-                print(direction)
+        if self.scan_filter and min(self.scan_filter) < distance:
+            #self.pub.publish(direction)
+	    #print(self.scan_filter)
+            print(direction)
 
-            else:
-                self.pub.publish('Nothing')
-                print('Nothing')
+        else:
+            self.pub.publish('Nothing')
+            #print('Nothing')
 
 
 def main():
-    rospy.init_node('turtlebot3_obstacle')
+    #rospy.init_node('turtlebot3_obstacle')
     try:
         obstacle = Obstacle()
     except rospy.ROSInterruptException:
