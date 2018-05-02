@@ -52,6 +52,7 @@ class GUI_select_difficulty(GUI_base):
 		self.difficulty_2 = tk.Button(self.frame, text = 'Difficulty 2', width = 25, command = lambda *args:[player.medium(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
 		self.difficulty_3 = tk.Button(self.frame, text = 'Difficulty 3', width = 25, command = lambda *args:[player.hard(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
 		self.difficulty_4 = tk.Button(self.frame, text = 'Difficulty 4', width = 25, command = lambda *args:[player.very_hard(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
+		self.flip = tk.Checkbutton(self.frame, text = 'Flip', width = 25, variable = player.flip_directions, onvalue = True, offvalue = False)
 		self.append_window_list(self.quitButton,self.frame, self.difficulty_1, self.difficulty_2, self.difficulty_3, self.difficulty_4)
 		self.packer(self.window_list)
        
