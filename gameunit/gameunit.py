@@ -13,11 +13,9 @@ displayunit_connection = []
 displayunit_address = '192.168.1.44' 
 HOST=''
 PORT=50007
-game_is_running = False
 conesInGame = False
 receive_threads_created = False
 times_lock = _thread.allocate_lock()
-times = {'start': 0, 'end': 0}
 game_instance = GameType()
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -62,7 +60,7 @@ def receive(connection, address):
 	while True:
 		game_event_raw = connection.recv(1024)
 		times_lock.acquire()
-		times['end']=time.time()
+		game_instance.time_tracking['end']=time.time()
 		times_lock.release()
 		game_event = json.loads(game_event_raw.decode())
 		print("Event received: " + str(game_event))
@@ -94,7 +92,6 @@ def Clock_game(event):
 	print (game_instance.category)
 
 def startTheGame():
-	global game_is_running
 	global receive_threads_created
 	print ("click!")
 	if not receive_threads_created:
@@ -104,7 +101,7 @@ def startTheGame():
 			except:
 				print ("Error: unable to start thread")
 		receive_threads_created = True	# Only create threads once
-	game_is_running = True
+	game_instance.game_is_running = True
 	del(game_instance.event_list[:]) #Ensure that correct hits from previous game doesn't carry over
 	start_game()
 
@@ -166,16 +163,15 @@ def guiThread():
 
 def battle_game_over(Battle_events):
 	#if battle events contains a true set game is running = false
-	global game_is_running
 	for i, x in enumerate(Battle_events):
 		print ("index " +str(i) + str(x) + " in batle_events")
 		time.sleep(0.1)
 		if x["role"] == True:
 			print("You won")
-			game_is_running = False
+			game_instance.game_is_running = False
 			# Send signal to turtlebots telling them to go back to start 
 			break
-
+			
 def start_game():
 		print ("starting game...")
 		game_instance.makeList(game_instance.nr_cones, game_instance.coneInfo)
@@ -189,7 +185,6 @@ def start_game():
 		game_instance.findContent(game_instance.category, game_instance.nr_cones, game_instance.coneInfo) # takes the return of randomCorrect and stores it in index. 
 		print("We found the content", game_instance.coneInfo)
 		game_instance.sendConeInfo(all_connections, game_instance.coneInfo)
-		times['start']=time.time()
 		print("Send cone info is done")
 		game_instance.packDUInfo(game_instance.DUInfo, game_instance.coneInfo)
 		game_instance.sendDisplayunitInfo(game_instance.DUInfo, displayunit_connection)
@@ -211,11 +206,11 @@ socket_bind(HOST,PORT,numberofclients+1)
 socket_accept(numberofclients,displayunit_address)
 
 while True:
-	if game_is_running == True:
+	if game_instance.game_is_running == True:
 		if game_instance.game_type == 'battle':
 			battle_game_over(game_instance.event_list)
 		else:
-			pass #coop_game_over()
+			game_instance.coop_game(5.0, 2)
 
 
 
