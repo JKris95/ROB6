@@ -83,9 +83,10 @@ class GUI_player_screen(GUI_base):
 		self.img_player = tk.PhotoImage(file='./%s.gif' % player.player_info['name'])
 		self.player_avatar_label = tk.Label(self.frame, image=self.img_player) #width = 25, height = 25,
 		self.player_avatar_label.pack(side=tk.LEFT)
-		self.player_name_label = tk.Label(self.frame, text=player.player_info['name'])
+		self.player_name_label = tk.Label(self.frame, text=player.player_info['name'], width = 25,)
 		self.player_name_label.pack()
 		self.img_robot = tk.PhotoImage(file='./%s.gif' % player.player_info['robot'])
+		self.img_robot = self.img_robot.subsample(32)
 		self.robot_img_label = tk.Label(self.frame, image=self.img_robot)
 		self.robot_img_label.pack(side=tk.LEFT)
 		self.append_window_list(self.quitButton,self.frame)
