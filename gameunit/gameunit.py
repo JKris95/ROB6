@@ -210,7 +210,7 @@ while True:
 		if game_instance.game_type == 'battle':
 			battle_game_over(game_instance.event_list)
 		else:
-			game_instance.coop_game(5.0, 2)
+			game_instance.coop_game(connections=all_connections)
 
 
 
