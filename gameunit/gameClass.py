@@ -9,8 +9,6 @@ times = ['0100','0200','0300','0400','0500','0600','0700','0800','0900','1000','
 
 
 class GameType():
-
-
 	def __init__(self, nrOfCones=None, nrOfTrue=None, category=None):
 		if category == None:
 			self.category = ''
@@ -111,12 +109,12 @@ class GameType():
 
 ###COOP SPECIFIC###
 
-def determine_coop_outcome(self, time_limit, consecutive_corrects):
+	def determine_coop_outcome(self, time_limit, consecutive_corrects):
 		""" Returns True if the coop game was won under the conditions of param "time_limit" and param "consecutive_corrects".
-        Returns False in case the game was lost. """
+		Returns False in case the game was lost. """
 		elapsed_time = 0
 		correct_hit_at = 0
-        for hit in range(consecutive_corrects):
+		for hit in range(consecutive_corrects):
 			while elapsed_time < time_limit: # wait for event
 				if len(self.event_list) > self.nr_of_events: # A new event has happened
 					self.nr_of_events = len(self.event_list) # Keep track of how many events have happened
@@ -125,8 +123,8 @@ def determine_coop_outcome(self, time_limit, consecutive_corrects):
 						correct_hit_at = time.time()
 						self.correct_hits.append(recent_event['time'])
 						nr_of_correct_hits = len(self.correct_hits)
-                        if nr_of_correct_hits == 1:
-							threading._start_new_thread(function = start_counter, args = (time_limit))
+						if nr_of_correct_hits == 1:
+							threading._start_new_thread(function = self.start_counter, args = (time_limit))
 							self.allow_sound = True
 						elif nr_of_correct_hits == consecutive_corrects:
 							return True
@@ -137,12 +135,12 @@ def determine_coop_outcome(self, time_limit, consecutive_corrects):
 						return False
 				if correct_hit_at > 0: # We only want track time if a correct cone has been hit, otherwise keep elapsed time at 0
 					elapsed_time = time.time()-correct_hit_at
-            if elapsed_time < time_limit: # We simply broke the loop because a correct cone was hit and want to look for another hit
-                break
-            else: # We broke the loop because time_elapsed exceeded time_limit
-			    print("Time ran out")
+			if elapsed_time < time_limit: # We simply broke the loop because a correct cone was hit and want to look for another hit
+				break
+			else: # We broke the loop because time_elapsed exceeded time_limit
+				print("Time ran out")
 				self.allow_sound = False
-			    return False
+				return False
 		self.allow_sound = False
 		return True
 	
@@ -152,10 +150,10 @@ def determine_coop_outcome(self, time_limit, consecutive_corrects):
 			for second in range(int(time_limit)):
 				print(second)
 				time.sleep(1)
-            
+			
 
-	def coop_game(self, time_limit=5.0, consecutive_corrects=2, connections):
-		if determine_coop_outcome(time_limit, consecutive_corrects) == True
+	def coop_game(self, connections, time_limit=5.0, consecutive_corrects=2):
+		if self.determine_coop_outcome(time_limit, consecutive_corrects) == True:
 			print("Congratulation, you won")
 			self.game_is_running = False
 		else:
@@ -164,13 +162,13 @@ def determine_coop_outcome(self, time_limit, consecutive_corrects):
 
 	def reroll(self, connections):
 		self.coneInfo = shuffle(self.coneInfo)
-		self.sendConeInfo(all_connections, defaultContent=b'questionmark')
-		self.sendConeInfo(all_connections, self.coneInfo)
+		self.sendConeInfo(connections, defaultContent=b'questionmark')
+		self.sendConeInfo(connections, self.coneInfo)
 
 
 """
 	def correct_hit(self, time_limit):
-		""" Returns True if a new "correct cone hit" is found. Returns False in all other cases """
+		#Returns True if a new "correct cone hit" is found. Returns False in all other cases
 		nonlocal elapsed_time
 		nonlocal correct_hit_at
 		while True: #Wait for a new event
@@ -205,10 +203,10 @@ def determine_coop_outcome(self, time_limit, consecutive_corrects):
 		self.game_is_running = False
 	
 	def remaining(self, condition):
-        remainer = condition-consecutive_corrects
-        if remainer == 0:
-            return 0 # consecutive_correct cones have been hit in a sequence and the game is won
-        else: #Only one correct cone has been hit, which indicates the start of the counter
+		remainer = condition-consecutive_corrects
+		if remainer == 0:
+			return 0 # consecutive_correct cones have been hit in a sequence and the game is won
+		else: #Only one correct cone has been hit, which indicates the start of the counter
 			return 1
 			
 	

@@ -64,7 +64,7 @@ def receive(connection, address):
 		times_lock.release()
 		game_event = json.loads(game_event_raw.decode())
 		print("Event received: " + str(game_event))
-		game_instance.event_list.append(event_packer(game_event, address = address, time = times['end']-times['start'])) # Write to list containing information on all cones that were hit
+		game_instance.event_list.append(event_packer(game_event, address = address, time = game_instance.time_tracking['end']-game_instance.time_tracking['start'])) # Write to list containing information on all cones that were hit
 		print("Current event list: " + str(game_instance.event_list) + " has length: " + str(len(game_instance.event_list)))
 	
 def Battle_game(event):
