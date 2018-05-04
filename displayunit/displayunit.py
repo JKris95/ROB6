@@ -13,7 +13,7 @@ imageToDisplay = b'Start'
 root = tk.Tk()
 #root.attributes('-fullscreen',True)
 
-image4 = tk.PhotoImage(file="/home/pi/Desktop/rob6/questionmark.gif")
+image4 = tk.PhotoImage(file="./questionmark.gif")
 
 #Declare and initialize all labels
 questionlabel = tk.Label(image=image4)
@@ -53,7 +53,7 @@ while True:
 
 		# This condition is true when battle game is played (1 correct answer)
 		if len(DUInfoParsed) == 1: 
-			path = '/home/pi/Desktop/rob6/%s.gif' % DUInfoParsed[0] #set the path to this desired image
+			path = './%s.gif' % DUInfoParsed[0] #set the path to this desired image
 			left.pack_forget()
 			right.pack_forget()
 			questionlabel.pack_forget()
@@ -68,8 +68,8 @@ while True:
 
 		# This condition is true when co-op is played (2 correct answers)
 		elif len(DUInfoParsed) == 2:
-			path1 = '/home/pi/Desktop/rob6/%s.gif' % DUInfoParsed[0] #set the path to this desired image
-			path2 = '/home/pi/Desktop/rob6/%s.gif' % DUInfoParsed[1] #set the path to this desired image
+			path1 = './%s.gif' % DUInfoParsed[0] #set the path to this desired image
+			path2 = './%s.gif' % DUInfoParsed[1] #set the path to this desired image
 			questionlabel.pack_forget()
 			answerlabel.pack_forget()
 			answerlabel1.pack_forget()
