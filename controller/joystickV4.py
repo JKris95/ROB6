@@ -49,14 +49,14 @@ class GUI_select_robot(GUI_base):
 class GUI_select_difficulty(GUI_base):
 	def __init__(self, master):
 		GUI_base.__init__(self,master)
-		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, height = 25, command = lambda *args:[self.close_window(GUI_select_robot)])
-		self.difficulty_1 = tk.Button(self.frame, text = 'Difficulty 1', width = 25, height = 25, command = lambda *args:[player.easy(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
-		self.difficulty_2 = tk.Button(self.frame, text = 'Difficulty 2', width = 25, height = 25, command = lambda *args:[player.medium(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
-		self.difficulty_3 = tk.Button(self.frame, text = 'Difficulty 3', width = 25, height = 25, command = lambda *args:[player.hard(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
-		self.difficulty_4 = tk.Button(self.frame, text = 'Difficulty 4', width = 25, height = 25, command = lambda *args:[player.very_hard(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
+		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, height = 5, command = lambda *args:[self.close_window(GUI_select_robot)])
+		self.difficulty_1 = tk.Button(self.frame, text = 'Difficulty 1', width = 25, height = 5, command = lambda *args:[player.easy(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
+		self.difficulty_2 = tk.Button(self.frame, text = 'Difficulty 2', width = 25, height = 5, command = lambda *args:[player.medium(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
+		self.difficulty_3 = tk.Button(self.frame, text = 'Difficulty 3', width = 25, height = 5, command = lambda *args:[player.hard(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
+		self.difficulty_4 = tk.Button(self.frame, text = 'Difficulty 4', width = 25, height = 5, command = lambda *args:[player.very_hard(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
 		self.cb_var = tk.BooleanVar()
 		self.flip = tk.Checkbutton(self.frame, text = 'Flip', width = 25, variable = self.cb_var, onvalue = True, offvalue = False, command=self.change_flip_state)
-		self.append_window_list(self.quitButton,self.frame, self.difficulty_1, self.difficulty_2, self.difficulty_3, self.difficulty_4, self.flip)
+		self.append_window_list(self.quitButton, self.frame, self.difficulty_1, self.difficulty_2, self.difficulty_3, self.difficulty_4, self.flip)
 		self.packer(self.window_list)
 	
 	def change_flip_state(self):
@@ -68,11 +68,11 @@ class GUI_select_difficulty(GUI_base):
 class GUI_select_player(GUI_base):
 	def __init__(self, master):
 		GUI_base.__init__(self,master)
-		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, height = 25, command = lambda *args:[self.close_window(GUI_select_difficulty)])
-		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, height = 25, command = lambda *args:[player.change_settings(player.player_info,['name'],['Martin']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, height = 25, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, height = 25,  command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, height = 25, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, height = 5, command = lambda *args:[self.close_window(GUI_select_difficulty)])
+		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'],['Martin']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, height = 5,  command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
 		self.append_window_list(self.quitButton,self.frame, self.player_martin, self.player_nina, self.player_natasja, self.player_guest)
 		self.packer(self.window_list)
 
@@ -81,11 +81,12 @@ class GUI_player_screen(GUI_base):
 		GUI_base.__init__(self,master)
 		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = lambda *args:[change_dict_pair(status, 'running', False), self.close_window(GUI_select_player)])
 		self.img_player = tk.PhotoImage(file='./%s.gif' % player.player_info['name'])
-		self.player_avatar_label = tk.Label(width = 25, height = 25,self.frame, image=self.img_player)
+		self.player_avatar_label = tk.Label(self.frame, image=self.img_player) #width = 25, height = 25,
 		self.player_avatar_label.pack(side=tk.LEFT)
-		self.player_name_label = tk.Label(self.frame, text=player.player_info['name'])
+		self.player_name_label = tk.Label(self.frame, text=player.player_info['name'], width = 25,)
 		self.player_name_label.pack()
 		self.img_robot = tk.PhotoImage(file='./%s.gif' % player.player_info['robot'])
+		#self.img_robot = self.img_robot.subsample()
 		self.robot_img_label = tk.Label(self.frame, image=self.img_robot)
 		self.robot_img_label.pack(side=tk.LEFT)
 		self.append_window_list(self.quitButton,self.frame)
