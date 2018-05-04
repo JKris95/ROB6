@@ -1,5 +1,6 @@
-from random import randrange
+from random import randrange, shuffle
 import json
+import time
 
 colors = ['red', 'green','blue','orange','purple','yellow']
 animals = ['cow','dog','chicken','cat','zebra']
@@ -22,11 +23,16 @@ class GameType():
 			self.nr_true = 0
 		else:
 			self.nr_true = nrOfTrue #will be dependent on type of game and not changed by user.
+		
+		self.time_tracking = {'start': 0, 'end': 0}
 		self.game_type = ''
 		self.coneInfo=[]
 		self.DUInfo=[]
 		self.event_list = []
+		self.nr_of_events = 0
+		self.correct_hits = [] #List with times of all correct cone hits
 		self.makeList(self.nr_cones, self.coneInfo)
+		self.game_is_running = False
 		
 
 	def makeList(self, nrOfCones, coneInformation):
@@ -63,8 +69,8 @@ class GameType():
 							break
 					coneInformation[i]["Content"] = contents[pickedNumbers[i]]
 
-	# A function to pack all info content to be send to the display unit, i.e all correct coneinfo
 	def packDUInfo(self, displayunitInfo, coneInformation=None, defaultContent=None):
+		"""A function to pack all info content to be send to the display unit, i.e all correct coneinfo"""
 		if not coneInformation:
 			print("Content information is empty")
 		del displayunitInfo[:]
@@ -77,14 +83,14 @@ class GameType():
 				displayunitInfo.append(defaultContent)
 		print(displayunitInfo)
 
-
-	#send roles and content to each cone - Every cone receives a dictionary with role and content
 	def sendConeInfo(self, all_connections, coneInformation=None, defaultContent=None):
+		"""send roles and content to each cone - Every cone receives a dictionary with role and content"""
 		if coneInformation:
 			for i in range(len(all_connections)):
 				enConeInformation = json.dumps(coneInformation[i])
 				enConeInformation = enConeInformation.encode()
 				all_connections[i].sendall(enConeInformation)
+			self.time_tracking['start'] = time.time()
 		elif defaultContent:
 			for conn in all_connections:
 				conn.sendall(defaultContent)
@@ -100,3 +106,56 @@ class GameType():
 		else:
 			enDUInfo = json.dumps(DUInfo).encode()
 		displayunitconnection[0].sendall(enDUInfo) #Send to the one and only display unit
+
+	
+	
+
+###COOP SPECIFIC###
+	def correct_hit(self, time_limit):
+		""" Returns True if a new "correct cone hit" is found. Returns False in all other cases """
+		nonlocal elapsed_time
+		nonlocal correct_hit_at
+		while True: #Wait for a new event
+			while elapsed_time < time_limit:
+				if len(self.event_list) > self.nr_of_events: # A new event has happened
+					self.nr_of_events = len(self.event_list)
+					recent_event = self.event_list[-1] # last element of event_list - a dictionary with role, address and time keys 
+					if recent_event['role'] == True:
+						self.correct_hits.append(recent_event['time'])
+						correct_hit_at = time.time()
+						return True
+					else:
+						print("A wrong cone was hit")
+						return False
+				if correct_hit_at > 0: # We only want track time if a correct cone has been hit, otherwise keep elapsed time at 0
+					elapsed_time = time.time()-correct_hit_at
+			print("Time ran out")
+			return False
+
+	
+
+	def coop_game(self, time_limit, consecutive_corrects):
+		elapsed_time = 0 # May need to be changed to a mutable type and passed to correct_hit()
+		correct_hit_at = 0 # May need to be changed to a mutable type and passed to correct_hit()
+		for hit in range(consecutive_corrects): #Maybe include the for loop in correct hit to avoid potential scope issues
+			if not self.correct_hit(time_limit):
+				print("you lost")
+				self.reroll()
+				break
+			else:
+				pass #Do some displayunit work to indicate the state of the game
+		self.game_is_running = False
+		
+			
+	def reroll(self):
+		self.coneInfo = shuffle(self.coneInfo)
+		self.sendConeInfo(all_connections, defaultContent=b'questionmark')
+		self.sendConeInfo(all_connections, self.coneInfo)
+
+
+	def coop_won(self, time_limit=5.0):
+		if len(self.correct_hits) % 2 == 0:
+			last_two = self.event_list[-2:]
+			return self.correct_hits[-1]-self.correct_hits[-2] < time_limit
+		else:
+			print("Only one correct cone has been hit")

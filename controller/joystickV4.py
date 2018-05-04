@@ -59,8 +59,8 @@ class GUI_select_difficulty(GUI_base):
 	
 	def change_flip_state(self):
 		print ("variable is {0}".format(self.cb_var.get()))
-		player.flipped = self.cb_var.get() #gets the current value of cb_var and puts it into player.flipped
-		print("This is player.flipped", player.flipped)
+		player.flip_directions = self.cb_var.get() #gets the current value of cb_var and puts it into player.flipped
+		print("This is player.flipped", player.flip_directions)
 
 
 class GUI_select_player(GUI_base):
