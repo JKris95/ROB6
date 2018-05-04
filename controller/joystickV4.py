@@ -81,7 +81,7 @@ class GUI_player_screen(GUI_base):
 		GUI_base.__init__(self,master)
 		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, command = lambda *args:[change_dict_pair(status, 'running', False), self.close_window(GUI_select_player)])
 		self.img_player = tk.PhotoImage(file='./%s.gif' % player.player_info['name'])
-		self.player_avatar_label = tk.Label(width = 25, height = 25,self.frame, image=self.img_player)
+		self.player_avatar_label = tk.Label(self.frame, image=self.img_player) #width = 25, height = 25,
 		self.player_avatar_label.pack(side=tk.LEFT)
 		self.player_name_label = tk.Label(self.frame, text=player.player_info['name'])
 		self.player_name_label.pack()
