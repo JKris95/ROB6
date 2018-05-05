@@ -19,7 +19,7 @@ GPIO.setup(36, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Pin 36 = GPIO16
 
 #Setup of root window for the GUI and the different images 
 root = tk.Tk()
-root.attributes('-fullscreen',True)
+#root.attributes('-fullscreen',True)
 
 image6 = tk.PhotoImage(file="/home/pi/Desktop/wav/wrong.gif")
 incorrectlabel = tk.Label(image=image6)
