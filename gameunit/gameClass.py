@@ -2,6 +2,7 @@ from random import randrange, shuffle
 import json
 import time
 import threading
+import pygame
 
 colors = ['red', 'green','blue','orange','purple','yellow']
 animals = ['cow','dog','chicken','cat','zebra']
@@ -81,7 +82,8 @@ class GameType():
 				if coneInformation[i]["Role"] == 'True':
 					displayunitInfo.append(coneInformation[i]["Content"])
 		if defaultContent:
-			displayunitInfo.append(defaultContent)
+			for i in range(self.nr_true):
+				displayunitInfo.append(defaultContent)
 		print(displayunitInfo)
 
 	def sendConeInfo(self, all_connections, coneInformation=None, defaultContent=None):
@@ -106,6 +108,7 @@ class GameType():
 		#	enDUInfo = DUInfo.encode()
 		else:
 			enDUInfo = json.dumps(DUInfo).encode()
+			print('send to displayunit', enDUInfo, type(enDUInfo))
 		displayunitconnection[0].sendall(enDUInfo) #Send to the one and only display unit
 
 ###COOP SPECIFIC###
@@ -116,59 +119,79 @@ class GameType():
 		elapsed_time = 0
 		correct_hit_time = None
 		nr_of_correct_hits = 0
+		print('Determining the outcome..')
 		while elapsed_time < time_limit: # wait for event
 			if len(self.event_list) > self.nr_of_events: # A new event has happened
+				print("A new cone was hit")
 				self.nr_of_events = len(self.event_list) # Keep track of how many events have happened
 				recent_event = self.event_list[-1] # last element of event_list - a dictionary with role, address and time keys 
 				if recent_event['role'] == True:
 					nr_of_correct_hits += 1
-					if self.nr_of_correct_hits == 1: #The timer should start when the first correct cone is hit
-						correct_hit_time = recent_event['time']
+					print("it was correct")
+					if nr_of_correct_hits == 1: #The timer should start when the first correct cone is hit
+						correct_hit_time = time.time()
+						print("Time of first hit", correct_hit_time)
 						self.allow_sound = True
-						threading._start_new_thread(self.start_counter, (time_limit,)) #A new thread informs of the time available for the remaining correct hits
+						threading._start_new_thread(self.start_counter, (self.time_limit,)) #A new thread informs of the time available for the remaining correct hits
 					elif nr_of_correct_hits == consecutive_corrects:
 						self.allow_sound = False
-						return (True, nr_of_correct_hits, elapsed_time)
+						return (True, 0, elapsed_time) 
 				else:
 					print("A wrong cone was hit")
 					self.allow_sound = False
-					return (False, nr_of_correct_hits, elapsed_time)
+					if nr_of_correct_hits == 0:
+						return (False, 2, elapsed_time) # Fail condition 2: Wrong cone hit first
+					elif nr_of_correct_hits == 1:
+						return (False, 3, elapsed_time) # Fail condition 3: Wrong cone hit after correct cone
 			if correct_hit_time: # We only want track time if a correct cone has been hit, otherwise keep elapsed time at 0
 				elapsed_time = time.time()-correct_hit_time
-				print("elapsed time: ", elapsed_time)
+				#print("elapsed time: ", elapsed_time)
  		# We broke the loop because time_elapsed exceeded time_limit
 		print("Time ran out")
 		self.allow_sound = False
-		return (False, nr_of_correct_hits, elapsed_time)
+		return (False, 1, elapsed_time) # Fail condition 1: Time expired
 	
 	
 	def start_counter(self, time_limit):
-		while self.allow_sound:
-			for second in range(1, int(time_limit+1)):
-				print(second)
-				time.sleep(1)
+		start_pos = 20 - time_limit
+		while self.allow_sound:	
+			path = 'countdown.mp3'  #ændre path alt efter hvor scriptet kører fra, denne virker hvis det køres fra /gameunit.
+			pygame.mixer.music.load(path)
+			pygame.mixer.music.play(0,start_pos)
+			time.sleep(time_limit)
+		pygame.mixer.music.stop() #this is after the while loop, if the while loop breaks from change in bool value, 
 			
 
 	def coop_game(self, cone_connections, DU_connection, time_limit=5.0, consecutive_corrects=2):
-		outcome = self.determine_coop_outcome(time_limit, consecutive_corrects) #outcome = (game_outcome(bool), game_state(int), and elapsed_time(float))
-		if outcome[0] == True:
-			print("Congratulation, you won")
-			self.game_is_running = False
-			self.packDUInfo(self.DUInfo, defaultContent='victory')
-			self.sendDisplayunitInfo(self.DUInfo, DU_connection)
-		else:
-			print("You lost")
-			self.reroll(cone_connections, outcome[1], outcome[2])
+		while True:
+			print('playing coop')	
+			outcome = self.determine_coop_outcome(time_limit, consecutive_corrects) #outcome = (game_outcome(bool), game_state(int), and elapsed_time(float))
+			print(outcome)
+			if outcome[0] == True:
+				print("Congratulation, you won")
+				self.game_is_running = False
+				#self.packDUInfo(self.DUInfo, defaultContent='victory')
+				#self.sendDisplayunitInfo(self.DUInfo, DU_connection)
+				return
+			else:
+				print("You lost")
+				self.reroll(cone_connections, outcome[1], outcome[2])
 
 	def reroll(self, connections, fail_condition, elapsed_time):
-		if fail_condition == 0:
+		if fail_condition == 2:
 			time.sleep(5) #Necessary because the cones utilize a 5 second sleep to show correct/wrong sign
 			shuffle(self.coneInfo)
 			self.sendConeInfo(connections, defaultContent=b'questionmark')
 			time.sleep(1)
 			self.sendConeInfo(connections, self.coneInfo)
 		elif fail_condition == 1:
-			time.sleep(self.time_limit-elapsed_time) #Necessary because the cones utilize a 5 second sleep to show correct/wrong sign
+			time.sleep(5) #Necessary because the cones utilize a 5 second sleep to show correct/wrong sign
+			shuffle(self.coneInfo)
+			self.sendConeInfo(connections, defaultContent=b'questionmark')
+			time.sleep(1)
+			self.sendConeInfo(connections, self.coneInfo)
+		elif fail_condition == 3:
+			time.sleep(self.time_limit-elapsed_time + 5) #Necessary because the cones utilize a 5 second sleep to show correct/wrong sign
 			shuffle(self.coneInfo)
 			self.sendConeInfo(connections, defaultContent=b'questionmark')
 			time.sleep(1)
