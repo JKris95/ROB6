@@ -174,12 +174,10 @@ def battle_game_over(Battle_events):
 			
 def start_game():
 		print ("starting game...")
-		game_instance.makeList(game_instance.nr_cones, game_instance.coneInfo)
-		game_instance.packDUInfo(game_instance.DUInfo, defaultContent = "questionmark")
-		game_instance.sendDisplayunitInfo(game_instance.DUInfo, displayunit_connection)
+		game_instance.makeList(game_instance.nr_cones, game_instance.coneInfo, game_instance.time_limit)
 		game_instance.sendConeInfo(all_connections, defaultContent= b"questionmark")
 		print("Send question marks is done")
-		time.sleep(5)
+		time.sleep(1)
 		game_instance.findCorrectCones(game_instance.nr_cones, game_instance.nr_true, game_instance.coneInfo)
 		print("We found the correct cones")
 		game_instance.findContent(game_instance.category, game_instance.nr_cones, game_instance.coneInfo) # takes the return of randomCorrect and stores it in index. 
@@ -209,8 +207,8 @@ while True:
 	if game_instance.game_is_running == True:
 		if game_instance.game_type == 'battle':
 			battle_game_over(game_instance.event_list)
-		else:
-			game_instance.coop_game(connections=all_connections)
+		elif game_instance.game_type == 'coop':
+			game_instance.coop_game(all_connections, displayunit_connection, game_instance.time_limit, )
 
 
 

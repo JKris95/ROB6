@@ -43,7 +43,6 @@ questionlabel.pack()
 root.update()
 
 while True:
-		x = s.recv(1024) #  First, receive a questionmark - not displayed
 		DUInfoUnparsed = s.recv(1024) # Receive questions / correct answers
 		print(DUInfoUnparsed)
 		DUInfoParsed = json.loads(DUInfoUnparsed.decode()) #Recover a list from the bytes that were sent

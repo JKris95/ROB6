@@ -7,6 +7,7 @@ import pygame
 import _thread
 import json
 #Run at boot comment Checking
+coneInfoParsed = b'0'
 role = b'Start'
 imageToDisplay = b'Start'  
 buttonstate = False
@@ -55,19 +56,22 @@ root.update()
 
 #Loop of the game 
 def receiveThread():
+	global coneInfoParsed
+	global role 
+	global imageToDisplay
+	global imageIsUpdated
 	i=1
 	while True:
-		global imageToDisplay
+		# Questionmark 
 		imageToDisplay = s.recv(1024) #receive information on what image to display. 
 		imageToDisplay = imageToDisplay.decode()
 		print(imageToDisplay)
-		global imageIsUpdated
 		imageIsUpdated = True
-		
+
+		# Actual content
 		coneInfoUnparsed = s.recv(1024)
 		coneInfoParsed = json.loads(coneInfoUnparsed.decode())
 		print(coneInfoParsed)
-		global role 
 		role = coneInfoParsed["Role"]
 		print("role is", role)
 		imageToDisplay = coneInfoParsed["Content"]
@@ -77,8 +81,8 @@ def receiveThread():
 		i+1
 
 def buttonThread():
+	global buttonstate
 	while True:
-		global buttonstate
 		buttonstate = GPIO.input(36) #When of of the buttons is actuated GPIO.input(36) will turn TRUE.
 		#if buttonstate = True:
 			#time.sleep(0.5) # To avoid queing of data sent to the game unit when buttonstate goes high
@@ -109,7 +113,7 @@ while True:
 			root.update()
 			correctsound.play()
 			s.sendall(b'{"role": 1, "time": 5}')
-			time.sleep(5) #Leave the correct label on the screen for 5 seconds before displaying the question mark again. 
+			time.sleep(coneInfoParsed['time_limit']) #Leave the correct label on the screen for 5 seconds(default) or in case of coop for the  specified time limit
 			correctlabel.pack_forget()
 			questionlabel.pack()
 			root.update()
