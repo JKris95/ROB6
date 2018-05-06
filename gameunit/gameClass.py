@@ -95,6 +95,7 @@ class GameType():
 				enConeInformation = json.dumps(coneInformation[i])
 				enConeInformation = enConeInformation.encode()
 				all_connections[i].sendall(enConeInformation)
+				print(str(enConeInformation) + 'was sent')
 			self.time_tracking['start'] = time.time()
 		elif defaultContent:
 			for conn in all_connections:
@@ -183,22 +184,31 @@ class GameType():
 
 	def reroll(self, connections, fail_condition, elapsed_time):
 		if fail_condition == 2:
-			time.sleep(5) #Necessary because the cones utilize a 5 second sleep to show correct/wrong sign
+			print('Game lost because the first cone hit was wrong')
+			print('elapsed time: ', elapsed_time)
+			print('Sleeping for ', 6)
+			time.sleep(6) #Necessary because the cones utilize a 5 second sleep to show correct/wrong sign
 			shuffle(self.coneInfo)
 			self.sendConeInfo(connections, defaultContent=b'questionmark')
-			time.sleep(1)
+			time.sleep(3)
 			self.sendConeInfo(connections, self.coneInfo)
 		elif fail_condition == 1:
-			time.sleep(5) #Necessary because the cones utilize a 5 second sleep to show correct/wrong sign
+			print('Game lost because time expired')
+			print('elapsed time: ', elapsed_time)
+			print('Sleeping for ', 2)
+			time.sleep(2) #Necessary because the cones utilize a 5 second sleep to show correct/wrong sign
 			shuffle(self.coneInfo)
 			self.sendConeInfo(connections, defaultContent=b'questionmark')
-			time.sleep(1)
+			time.sleep(3)
 			self.sendConeInfo(connections, self.coneInfo)
 		elif fail_condition == 3:
-			time.sleep(self.time_limit-elapsed_time + 5) #Necessary because the cones utilize a 5 second sleep to show correct/wrong sign
+			print('Game lost because wrong cone was hit after correct')
+			print('elapsed time: ', elapsed_time)
+			print('Sleeping for ', (self.time_limit-elapsed_time) + 5)
+			time.sleep((self.time_limit-elapsed_time) + 5) #Necessary because the cones utilize a 5 second sleep to show correct/wrong sign
 			shuffle(self.coneInfo)
 			self.sendConeInfo(connections, defaultContent=b'questionmark')
-			time.sleep(1)
+			time.sleep(3)
 			self.sendConeInfo(connections, self.coneInfo)
 
 

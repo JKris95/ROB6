@@ -211,7 +211,6 @@ while True:
 			battle_game_over(game_instance.event_list)
 		elif game_instance.game_type == 'coop':
 			game_instance.coop_game(all_connections, displayunit_connection, game_instance.time_limit)
-time.sleep(1)
 
 
 		
