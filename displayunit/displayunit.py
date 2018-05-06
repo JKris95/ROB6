@@ -57,8 +57,6 @@ while True:
 		# This condition is true when battle game is played (1 correct answer)
 		if len(DUInfoParsed) == 1: 
 			path = './gifs/%s.gif' % DUInfoParsed[0] #set the path to this desired image
-			left.pack_forget()
-			right.pack_forget()
 			questionlabel.pack_forget()
 			answerlabel.pack_forget()
 			answerlabel1.pack_forget()
