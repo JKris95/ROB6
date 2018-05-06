@@ -4,6 +4,8 @@ import time
 import threading
 import pygame
 
+pygame.mixer.init()
+
 colors = ['red', 'green','blue','orange','purple','yellow']
 animals = ['cow','dog','chicken','cat','zebra']
 times = ['0100','0200','0300','0400','0500','0600','0700','0800','0900','1000','1100','1200']
@@ -119,6 +121,8 @@ class GameType():
 		elapsed_time = 0
 		correct_hit_time = None
 		nr_of_correct_hits = 0
+		self.nr_of_events = 0
+		del(self.event_list[:])
 		print('Determining the outcome..')
 		while elapsed_time < time_limit: # wait for event
 			if len(self.event_list) > self.nr_of_events: # A new event has happened
@@ -155,7 +159,7 @@ class GameType():
 	def start_counter(self, time_limit):
 		start_pos = 20 - time_limit
 		while self.allow_sound:	
-			path = 'countdown.mp3'  #ændre path alt efter hvor scriptet kører fra, denne virker hvis det køres fra /gameunit.
+			path = 'gameunit/countdown.mp3'  #ændre path alt efter hvor scriptet kører fra, denne virker hvis det køres fra /gameunit.
 			pygame.mixer.music.load(path)
 			pygame.mixer.music.play(0,start_pos)
 			time.sleep(time_limit)

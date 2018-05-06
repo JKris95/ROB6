@@ -204,12 +204,14 @@ socket_bind(HOST,PORT,numberofclients+1)
 socket_accept(numberofclients,displayunit_address)
 
 while True:
+	print('game state: ', game_instance.game_is_running)
 	if game_instance.game_is_running == True:
+		print('looking for a game to play')
 		if game_instance.game_type == 'battle':
 			battle_game_over(game_instance.event_list)
 		elif game_instance.game_type == 'coop':
 			game_instance.coop_game(all_connections, displayunit_connection, game_instance.time_limit)
-
+time.sleep(1)
 
 
 		
