@@ -42,26 +42,28 @@ connect(s, HOST, PORT)
 questionlabel.pack()
 root.update()
 
+left = tk.Frame(root, borderwidth=2, relief="solid")
+right = tk.Frame(root, borderwidth=2, relief="solid")
+left.pack(side="left", expand=True, fill="both")
+right.pack(side="right", expand=True, fill="both")
+
 while True:
 		DUInfoUnparsed = s.recv(1024) # Receive questions / correct answers
 		print(DUInfoUnparsed)
 		DUInfoParsed = json.loads(DUInfoUnparsed.decode()) #Recover a list from the bytes that were sent
 		print(DUInfoParsed)
-		left = tk.Frame(root, borderwidth=2, relief="solid")
-		right = tk.Frame(root, borderwidth=2, relief="solid")
+
 
 		# This condition is true when battle game is played (1 correct answer)
 		if len(DUInfoParsed) == 1: 
 			path = './gifs/%s.gif' % DUInfoParsed[0] #set the path to this desired image
-			left.pack_forget()
-			right.pack_forget()
 			questionlabel.pack_forget()
 			answerlabel.pack_forget()
 			answerlabel1.pack_forget()
 			answerlabel2.pack_forget()
 			#Display the image at the path
 			image = tk.PhotoImage(file=path) 
-			answerlabel = tk.Label(image=image)
+			answerlabel = tk.Label(left, image=image)
 			answerlabel.pack()
 			root.update()
 
@@ -80,7 +82,5 @@ while True:
 			image2 = tk.PhotoImage(file=path2) 
 			answerlabel2 = tk.Label(right, image=image2)
 			answerlabel2.pack() #SPECIAL PACK IS NEEDED
-			left.pack(side="left", expand=True, fill="both")
-			right.pack(side="right", expand=True, fill="both")
 			root.update()
 
