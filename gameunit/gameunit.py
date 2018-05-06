@@ -103,6 +103,7 @@ def startTheGame():
 		receive_threads_created = True	# Only create threads once
 	game_instance.game_is_running = True
 	del(game_instance.event_list[:]) #Ensure that correct hits from previous game doesn't carry over
+	game_instance.nr_of_events = 0 # Reinitialize nr_of_events since even_list is cleared
 	start_game()
 
 def startConnection():
@@ -180,7 +181,7 @@ def start_game():
 		time.sleep(1)
 		game_instance.findCorrectCones(game_instance.nr_cones, game_instance.nr_true, game_instance.coneInfo)
 		print("We found the correct cones")
-		game_instance.findContent(game_instance.category, game_instance.nr_cones, game_instance.coneInfo) # takes the return of randomCorrect and stores it in index. 
+		game_instance.findContent(game_instance.category, game_instance.nr_cones, game_instance.coneInfo)
 		print("We found the content", game_instance.coneInfo)
 		game_instance.sendConeInfo(all_connections, game_instance.coneInfo)
 		print("Send cone info is done")
@@ -204,7 +205,6 @@ socket_bind(HOST,PORT,numberofclients+1)
 socket_accept(numberofclients,displayunit_address)
 
 while True:
-	print('game state: ', game_instance.game_is_running)
 	if game_instance.game_is_running == True:
 		print('looking for a game to play')
 		if game_instance.game_type == 'battle':

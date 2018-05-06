@@ -33,7 +33,7 @@ class GameType():
 		self.DUInfo=[]
 		self.event_list = []
 		self.nr_of_events = 0
-		self.nr_of_correct_hits = 0
+		self.nr_of_correct_hits = 0 #Not used
 		self.makeList(self.nr_cones, self.coneInfo, self.time_limit)
 		self.game_is_running = False
 		self.allow_sound = False
@@ -84,8 +84,7 @@ class GameType():
 				if coneInformation[i]["Role"] == 'True':
 					displayunitInfo.append(coneInformation[i]["Content"])
 		if defaultContent:
-			for i in range(self.nr_true):
-				displayunitInfo.append(defaultContent)
+			displayunitInfo.append(defaultContent)
 		print(displayunitInfo)
 
 	def sendConeInfo(self, all_connections, coneInformation=None, defaultContent=None):
@@ -122,8 +121,8 @@ class GameType():
 		elapsed_time = 0
 		correct_hit_time = None
 		nr_of_correct_hits = 0
-		self.nr_of_events = 0
-		del(self.event_list[:])
+		#self.nr_of_events = 0
+		#del(self.event_list[:])
 		print('Determining the outcome..')
 		while elapsed_time < time_limit: # wait for event
 			if len(self.event_list) > self.nr_of_events: # A new event has happened
@@ -148,7 +147,7 @@ class GameType():
 						return (False, 2, elapsed_time) # Fail condition 2: Wrong cone hit first
 					elif nr_of_correct_hits == 1:
 						return (False, 3, elapsed_time) # Fail condition 3: Wrong cone hit after correct cone
-			if correct_hit_time: # We only want track time if a correct cone has been hit, otherwise keep elapsed time at 0
+			if correct_hit_time: # We only want to track time if a correct cone has been hit, otherwise keep elapsed time at 0
 				elapsed_time = time.time()-correct_hit_time
 				#print("elapsed time: ", elapsed_time)
  		# We broke the loop because time_elapsed exceeded time_limit
@@ -188,27 +187,33 @@ class GameType():
 			print('elapsed time: ', elapsed_time)
 			print('Sleeping for ', 6)
 			time.sleep(6) #Necessary because the cones utilize a 5 second sleep to show correct/wrong sign
+			print('coneinfo before shuffle', self.coneInfo)
 			shuffle(self.coneInfo)
 			self.sendConeInfo(connections, defaultContent=b'questionmark')
 			time.sleep(3)
+			print('coneinfo to be send after shuffling', self.coneInfo)
 			self.sendConeInfo(connections, self.coneInfo)
 		elif fail_condition == 1:
 			print('Game lost because time expired')
 			print('elapsed time: ', elapsed_time)
 			print('Sleeping for ', 2)
 			time.sleep(2) #Necessary because the cones utilize a 5 second sleep to show correct/wrong sign
+			print('coneinfo before shuffle', self.coneInfo)
 			shuffle(self.coneInfo)
 			self.sendConeInfo(connections, defaultContent=b'questionmark')
 			time.sleep(3)
+			print('coneinfo to be send after shuffling', self.coneInfo)
 			self.sendConeInfo(connections, self.coneInfo)
 		elif fail_condition == 3:
 			print('Game lost because wrong cone was hit after correct')
 			print('elapsed time: ', elapsed_time)
 			print('Sleeping for ', (self.time_limit-elapsed_time) + 5)
 			time.sleep((self.time_limit-elapsed_time) + 5) #Necessary because the cones utilize a 5 second sleep to show correct/wrong sign
+			print('coneinfo before shuffle', self.coneInfo)
 			shuffle(self.coneInfo)
 			self.sendConeInfo(connections, defaultContent=b'questionmark')
 			time.sleep(3)
+			print('coneinfo to be send after shuffling', self.coneInfo)
 			self.sendConeInfo(connections, self.coneInfo)
 
 
