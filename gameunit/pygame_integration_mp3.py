@@ -19,4 +19,4 @@ def start_countdowm_music(length_countdown):
 
     pygame.mixer.music.stop() #this is after the while loop, if the while loop breaks from change in bool value, 
 
-start_countdowm_music(7)
+start_countdowm_music(3)

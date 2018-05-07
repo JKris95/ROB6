@@ -1,4 +1,4 @@
-from TurtlebotObstacle import Obstacle
+from TurtlebotObstacleClass import Obstacle
 import rospy
 import time
 
