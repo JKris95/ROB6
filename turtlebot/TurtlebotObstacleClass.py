@@ -23,6 +23,10 @@ from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 from std_msgs.msg import String
 import numpy as np
+import time
+
+state = 'Nothing'
+rospy.Subscriber("/state", String, state)
 
 
 class Obstacle():
@@ -49,9 +53,14 @@ class Obstacle():
 			if self.msg.ranges[start] >= self.LIDAR_ERR and self.msg.ranges[start] <= distance:
 				self.scan_filter.append(self.msg.ranges[start])
 			start = (start + 1) % msg_ranges_lenght
+		self.checkList(self.scan_filter, 0.17, 0.19, 10, direction)
+		self.checkList(self.scan_filter, 0.185, 0.25, 9, direction)
+		self.checkList(self.scan_filter, 0.212, 0.232, 8, direction)
+		self.checkList(self.scan_filter, 0.261, 0.281, 6, direction)
+		self.checkList(self.scan_filter, 0.28, 0.3, 3, direction)
 		#print(start)
 
-		if np.mean(self.scan_filter) >= 0.18 and len(self.scan_filter) >= 10:
+		'''if np.mean(self.scan_filter) >= 0.18 and len(self.scan_filter) >= 10:
 			self.pub.publish(direction)
 			print(direction)
 			self.is_detected = 1
@@ -82,7 +91,33 @@ class Obstacle():
 			#print('Nothing')
 
 		else:
-			self.is_detected = 0
+			self.is_detected = 0'''
+
+	def checkList(self, the_list, minimum, maximum, chunk, direction):
+		for i in range(len(the_list)-1):
+			if the_list[i] >= minimum and the_list[i] <= maximum:
+				hits = 1
+				for j in range(1,chunk):
+					ite = i+j
+					try:
+						if the_list[ite] >= minimum and the_list[ite] <= maximum:
+							hits +=1
+						if hits == chunk and state is not 'Going_Back':
+							print("equal at:", i)
+							self.pub.publish(direction)
+							time.sleep(0.5)
+							self.pub.publish('Nothing')
+							return True
+					
+					except IndexError:
+						print("shits happends")
+						return False
+		return False  
+
+def state(data): #Subscriber which listen to topic state
+	global state 
+	state = data.data
+
 
 def main():
 	#rospy.init_node('turtlebot3_obstacle')
