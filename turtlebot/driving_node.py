@@ -10,21 +10,21 @@ from std_msgs.msg import String
 HOST = ''
 PORT = 50007
 lin,ang = 0.0,0.0
-detected = 'Nothing'
+state = 'Nothing'
 
 
 
 #Function definitions goes here.
 def publish_cmd_vel():
 
-	#Function that creates the node, and publishes to the topic /cmd_vel and subscribe to /det_ang. 
+	#Function that creates the node, and publishes to the topic /cmd_vel and subscribe to /state 
 
 	pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5) #queqe size can be adjusted maybe
-	rospy.Subscriber("/det_ang", String, detection)
+	rospy.Subscriber("/state", String, state)
 	rospy.init_node('post_office')
 	rate = rospy.Rate(10) #10 hz executing on the node
 	while not rospy.is_shutdown():
-		while detected == 'Nothing': #checking the rospy.is_shutdown() flag and then doing work. You have to check is_shutdown() to check if your program should exit (e.g. if there is a Ctrl-C or otherwise).
+		while state == 'Nothing': #checking the rospy.is_shutdown() flag and then doing work. You have to check is_shutdown() to check if your program should exit (e.g. if there is a Ctrl-C or otherwise).
 			twist.linear.x = lin; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = ang #angular has to be .z value to change
 			try:
@@ -33,12 +33,12 @@ def publish_cmd_vel():
 			except:
 				print('unable to publish')
 		#rospy.loginfo(twist) #debugging: performs triple-duty: the messages get printed to screen, it gets written to the Node's log file, and it gets written to rosout. rosout is a handy for debugging: you can pull up messages using rqt_console instead of having to find the console window with your Node's output.
-		if detected == 'Front': #What to do if the turtlebot detects something in front of it
+		if stata == 'Front': #What to do if the turtlebot detects something in front of it
 			twist.linear.x = -0.2; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 #angular has to be .z value to change
 			pub.publish(twist)
 			time.sleep(0.5)
-		if detected == 'Back': #What to do if the turtlebot detects something in front of it
+		if state == 'Back': #What to do if the turtlebot detects something in front of it
 			twist.linear.x = 0.2; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 #angular has to be .z value to change
 			pub.publish(twist)
@@ -62,10 +62,10 @@ def recv_from_controller():
 		ang = move_info['ang']
 		#print(type(lin), lin, type(ang), ang)
 
-def detection(data):
-	global detected 
-	detected = data.data
-	#print(detected)
+def state(data): #Subscriber which listen to topic state
+	global state 
+	state = data.data
+	#print(state)
 
 
 
