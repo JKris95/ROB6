@@ -58,6 +58,10 @@ class Obstacle():
 		self.checkList(self.scan_filter, 0.212, 0.232, 8, direction)
 		self.checkList(self.scan_filter, 0.261, 0.281, 6, direction)
 		self.checkList(self.scan_filter, 0.28, 0.3, 3, direction)
+		if state == 'Victory'
+			self.checkList(self.scan_filter, 0.14, 0.18, 5, direction)
+
+
 		#print(start)
 
 		'''if np.mean(self.scan_filter) >= 0.18 and len(self.scan_filter) >= 10:
