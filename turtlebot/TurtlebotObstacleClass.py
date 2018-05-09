@@ -60,43 +60,41 @@ class Obstacle():
 				self.pub.publish(direction)
 
 		elif np.mean(self.scan_filter) >= 0.18 and len(self.scan_filter) >= 10:
-            self.pub.publish(direction)
-            print(direction)
-            self.is_detected = 1
+			self.pub.publish(direction)
+			print(direction)
+			self.is_detected = 1
 
 
-        elif np.mean(self.scan_filter) >= 0.195 and len(self.scan_filter) >= 9:
-            self.pub.publish(direction)
-            print(direction)
-            self.is_detected = 1
+		elif np.mean(self.scan_filter) >= 0.195 and len(self.scan_filter) >= 9:
+			self.pub.publish(direction)
+			print(direction)
+			self.is_detected = 1
 
 
-        elif np.mean(self.scan_filter) >= 0.222 and len(self.scan_filter) >= 8:
-            self.pub.publish(direction)
-            print(direction)
-            self.is_detected = 1
+		elif np.mean(self.scan_filter) >= 0.222 and len(self.scan_filter) >= 8:
+			self.pub.publish(direction)
+			print(direction)
+			self.is_detected = 1
 
 
-        elif np.mean(self.scan_filter) >= 0.271 and len(self.scan_filter) >= 6:
-            self.pub.publish(direction)
-            print(direction)
-            self.is_detected = 1
+		elif np.mean(self.scan_filter) >= 0.271 and len(self.scan_filter) >= 6:
+			self.pub.publish(direction)
+			print(direction)
+			self.is_detected = 1
 
 
-        elif np.mean(self.scan_filter) >= 0.291 and len(self.scan_filter) >= 3:
-            self.pub.publish(direction)
-            print(direction)
-            self.is_detected = 1
+		elif np.mean(self.scan_filter) >= 0.291 and len(self.scan_filter) >= 3:
+			self.pub.publish(direction)
+			print(direction)
+			self.is_detected = 1
+
+		elif self.is_detected == 0:
+			self.pub.publish('Nothing')
+			#print('Nothing')
 
 
-
-        elif self.is_detected == 0:
-            self.pub.publish('Nothing')
-            #print('Nothing')
-
-
-        else:
-            self.is_detected = 0
+		else:
+			self.is_detected = 0
 							
 
 
