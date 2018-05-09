@@ -131,7 +131,7 @@ class GameType():
 				recent_event = self.event_list[self.nr_of_events-1]
 				if recent_event['role'] == True:
 					print("You won")
-					if not self.loop_game
+					if not self.loop_game:
 						self.game_is_running = False
 					self.send_info(turtle_conns, defaultContent=b'go back') #Send signal to turtlebots telling them to go back to start 
 					return
