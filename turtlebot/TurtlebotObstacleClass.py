@@ -31,7 +31,7 @@ def turtlebot_state_function(data): #Subscriber which listen to topic state
 	global turtlebot_state_variable 
 	turtlebot_state_variable = data.data
 
-rospy.Subscriber("/turtlebot_state", String, turtlebot_state_variable)
+rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
 
 
 class Obstacle():
@@ -40,6 +40,8 @@ class Obstacle():
 		self.pub.publish('Nothing')
 		self.LIDAR_ERR = 0.05
 		self.is_detected = 0
+		self.nothing_send = 0
+
 
 	def get_scan(self, data, min_val, max_val):
 		scan = LaserScan()
@@ -60,41 +62,47 @@ class Obstacle():
 				self.scan_filter.append(self.msg.ranges[start])
 			start = (start + 1) % msg_ranges_lenght
 		
-		if turtlebot_state == 'hit':
+		if turtlebot_state_variable == 'hit':
 			if self.checkList(self.scan_filter, 0.14, 0.18, 5) == True:
 				self.pub.publish(direction)
+				self.noting_send = 0
 
-		elif np.mean(self.scan_filter) >= 0.18 and len(self.scan_filter) >= 10:
+		elif np.mean(self.scan_filter) >= 0.18 and len(self.scan_filter) >= 11:
 			self.pub.publish(direction)
 			print(direction)
 			self.is_detected = 1
+			self.nothing_send = 0
 
 
 		elif np.mean(self.scan_filter) >= 0.195 and len(self.scan_filter) >= 9:
 			self.pub.publish(direction)
 			print(direction)
 			self.is_detected = 1
-
+			self.nothing_send = 0
 
 		elif np.mean(self.scan_filter) >= 0.222 and len(self.scan_filter) >= 8:
 			self.pub.publish(direction)
 			print(direction)
 			self.is_detected = 1
+			self.nothing_send = 0
 
 
 		elif np.mean(self.scan_filter) >= 0.271 and len(self.scan_filter) >= 6:
 			self.pub.publish(direction)
 			print(direction)
 			self.is_detected = 1
+			self.nothing_send = 0
 
 
 		elif np.mean(self.scan_filter) >= 0.291 and len(self.scan_filter) >= 3:
 			self.pub.publish(direction)
 			print(direction)
 			self.is_detected = 1
+			self.nothing_send = 0
 
-		elif self.is_detected == 0:
+		elif self.is_detected == 0 and self.nothing_send == 0:
 			self.pub.publish('Nothing')
+			self.nothing_send = 1
 			#print('Nothing')
 
 

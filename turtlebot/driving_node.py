@@ -20,7 +20,7 @@ def publish_cmd_vel():
 	#Function that creates the node, and publishes to the topic /cmd_vel and subscribe to /state 
 
 	pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5) #queqe size can be adjusted maybe
-	rospy.Subscriber("/turtlebot_state", String, turtlebot_state)
+	rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
 	rospy.init_node('post_office')
 	rate = rospy.Rate(10) #10 hz executing on the node
 	while not rospy.is_shutdown():
