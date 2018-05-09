@@ -54,7 +54,7 @@ class Obstacle():
 				self.scan_filter.append(self.msg.ranges[start])
 			start = (start + 1) % msg_ranges_lenght
 		
-		if state == 'Cone_hit'
+		if state == 'Cone_hit':
 			self.checkList(self.scan_filter, 0.14, 0.18, 5)
 
 
