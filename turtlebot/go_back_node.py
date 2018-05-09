@@ -23,7 +23,9 @@ while True:
         pub.publish('Going_Back')
         Goback.goto(position, quaternion)
         pub.publish('Nothing')
-    elif data == 'Victory'
-        pub.publish('Victory')
+    elif data == 'Cone_hit'
+        pub.publish('Cone_hit')
+        time.sleep(1)
+        pub.publish('Nothing')
     #elif data == 'STOP':
         #Goback.shutdown()
