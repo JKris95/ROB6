@@ -5,8 +5,8 @@ import socket
 from std_msgs.msg import String
 
 #Connecet to server
-HOST = '192.168.1.36'  
-PORT = 8888
+HOST = '192.168.1.39'  
+PORT = 50007
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)        
 s.connect((HOST, PORT))
 
@@ -23,8 +23,8 @@ while True:
         pub.publish('Going_Back')
         Goback.goto(position, quaternion)
         pub.publish('Nothing')
-    elif data == 'Cone_hit'
-        pub.publish('Cone_hit')
+    elif data == 'hit'
+        pub.publish('hit')
         time.sleep(1)
         pub.publish('Nothing')
     #elif data == 'STOP':

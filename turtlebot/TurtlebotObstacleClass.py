@@ -54,47 +54,37 @@ class Obstacle():
 				self.scan_filter.append(self.msg.ranges[start])
 			start = (start + 1) % msg_ranges_lenght
 		
-		if state == 'Cone_hit':
+		if state == 'hit':
 			if self.checkList(self.scan_filter, 0.14, 0.18, 5) == True:
 				self.pub.publish(direction)
 
-		elif np.mean(self.scan_filter) >= 0.18 and len(self.scan_filter) >= 10:
-			if self.checkList(self.scan_filter, 0.17, 0.19, 9) == True:
-				self.pub.publish(direction)
-				print(direction)
-				self.is_detected = 1
+		elif self.checkList(self.scan_filter, 0.17, 0.19, 10) == True:
+			self.pub.publish(direction)
+			self.is_detected = 1
 
-		elif np.mean(self.scan_filter) >= 0.195 and len(self.scan_filter) >= 9:
-			if self.checkList(self.scan_filter, 0.185, 0.25, 8) == True:
-				self.pub.publish(direction)
-				print(direction)
-				self.is_detected = 1
+		elif self.checkList(self.scan_filter, 0.185, 0.25, 9) == True:
+			self.pub.publish(direction)
+            self.is_detected = 1
 
-		elif np.mean(self.scan_filter) >= 0.222 and len(self.scan_filter) >= 8:
-			if self.checkList(self.scan_filter, 0.212, 0.232, 7) == True:
-				self.pub.publish(direction)
-				print(direction)
-				self.is_detected = 1
+		elif self.checkList(self.scan_filter, 0.212, 0.232, 8) == True:
+			self.pub.publish(direction)
+            self.is_detected = 1
 
-		elif np.mean(self.scan_filter) >= 0.271 and len(self.scan_filter) >= 6:
-			if self.checkList(self.scan_filter, 0.261, 0.281, 5) == True:
-				self.pub.publish(direction)
-				print(direction)
-				self.is_detected = 1
+		elif self.checkList(self.scan_filter, 0.261, 0.281, 6) == True:
+			self.pub.publish(direction)
+			self.is_detected = 1
 
-		elif np.mean(self.scan_filter) >= 0.291 and len(self.scan_filter) >= 3:
-			if self.checkList(self.scan_filter, 0.28, 0.3, 2) == True:
-				self.pub.publish(direction)
-				print(direction)
-				self.is_detected = 1
-
-
+		elif self.checkList(self.scan_filter, 0.28, 0.3, 3) == True:
+			self.pub.publish(direction)
+			self.is_detected = 1
+        
 		elif self.is_detected == 0:
-			self.pub.publish('Nothing')
-			#print('Nothing')
+            self.pub.publish('Nothing')
 
-		else:
-			self.is_detected = 0
+        else:
+            self.is_detected = 0
+							
+
 
 	def checkList(self, the_list, minimum, maximum, chunk):
 		for i in range(len(the_list)-1):

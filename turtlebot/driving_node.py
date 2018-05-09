@@ -24,7 +24,7 @@ def publish_cmd_vel():
 	rospy.init_node('post_office')
 	rate = rospy.Rate(10) #10 hz executing on the node
 	while not rospy.is_shutdown():
-		while state == 'Nothing' or state == 'Cone_hit': #checking the rospy.is_shutdown() flag and then doing work. You have to check is_shutdown() to check if your program should exit (e.g. if there is a Ctrl-C or otherwise).
+		while state == 'Nothing' or state == 'hit': #checking the rospy.is_shutdown() flag and then doing work. You have to check is_shutdown() to check if your program should exit (e.g. if there is a Ctrl-C or otherwise).
 			twist.linear.x = lin; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = ang #angular has to be .z value to change
 			try:
