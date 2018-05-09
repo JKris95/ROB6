@@ -9,7 +9,6 @@ import json
 #Global variables
 all_connections = {'cones': [], 'displayunit': [], 'turtlebots': []}
 all_addresses = {'cones': [], 'displayunit': [], 'turtlebots': []}
-nr_of_clients = {'cones': 3, 'displayunit': 1, 'turtlebots': 1}
 turtlebot_ips = ['192.168.1.38', '192.168.1.39', '192.168.1.36']
 displayunit_address = ['192.168.1.44']
 HOST=''
@@ -85,13 +84,13 @@ def receive(connection, address):
 def Battle_game(event):
 	print ("You have chosen the battle game")
 	game_instance.nr_true = 1
-	game_instance.nr_cones = nr_of_clients['cones']
+	game_instance.nr_cones = game_instance.nr_of_clients['cones']
 	game_instance.game_type = 'battle'
 
 def Coop_game(event):
 	print ("You have chosen the coop game")
 	game_instance.nr_true = 2
-	game_instance.nr_cones = nr_of_clients['cones']
+	game_instance.nr_cones = game_instance.nr_of_clients['cones']
 	game_instance.game_type = 'coop'
 
 def Animal_game(event):
@@ -131,7 +130,7 @@ def guiThread():
 
 		def sliderValue(event):
 			print(slider.get())
-			nr_of_clients['cones'] = slider.get()
+			game_instance.nr_of_clients['cones'] = slider.get()
 
 		text1 = Text(root, height=15, width=40)
 		photo=PhotoImage(file='gameunit/pylogo.gif')
@@ -175,16 +174,16 @@ def guiThread():
 		connect_button.pack()
 
 		root.mainloop()
-			
+		
 def start_game():
 		print ("starting game...")
-		game_instance.makeList(game_instance.nr_cones, game_instance.coneInfo, game_instance.time_limit)
+		game_instance.makeList(game_instance.coneInfo, game_instance.time_limit)
 		game_instance.send_info(all_connections['cones'], defaultContent= b"questionmark")
 		print("Send question marks is done")
 		time.sleep(1)
-		game_instance.findCorrectCones(game_instance.nr_cones, game_instance.nr_true, game_instance.coneInfo)
+		game_instance.findCorrectCones(game_instance.nr_true, game_instance.coneInfo)
 		print("We found the correct cones")
-		game_instance.findContent(game_instance.category, game_instance.nr_cones, game_instance.coneInfo)
+		game_instance.findContent(game_instance.category, game_instance.coneInfo)
 		print("We found the content", game_instance.coneInfo)
 		game_instance.send_info(all_connections['cones'], game_instance.coneInfo)
 		print("Send cone info is done")
@@ -205,17 +204,19 @@ while True:
 		break
 
 #Establish connection to all units
-socket_bind(s, HOST, PORT, sum(nr_of_clients.values()))
-socket_accept(sum(nr_of_clients.values()), all_connections, all_addresses)
+socket_bind(s, HOST, PORT, sum(game_instance.nr_of_clients.values()))
+socket_accept(sum(game_instance.nr_of_clients.values()), all_connections, all_addresses)
 
 while True:
 	if game_instance.game_is_running == True:
 		print('looking for a game to play')
 		if game_instance.game_type == 'battle':
 			game_instance.battle_game(all_connections['turtlebots'])
+
 		elif game_instance.game_type == 'coop':
 			game_instance.coop_game(all_connections['cones'], all_connections['displayunit'], all_connections['turtlebots'], game_instance.time_limit)
-	time.sleep(0.2)
+			
+
 
 
 		

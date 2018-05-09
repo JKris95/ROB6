@@ -13,6 +13,7 @@ times = ['0100','0200','0300','0400','0500','0600','0700','0800','0900','1000','
 
 class GameType():
 	def __init__(self, nrOfCones=None, nrOfTrue=None, category=None):
+		self.nr_of_clients = {'cones': 3, 'displayunit': 1, 'turtlebots': 1}
 		if category == None:
 			self.category = ''
 		else:	
@@ -20,7 +21,7 @@ class GameType():
 		if nrOfCones == None:
 			self.nr_cones = 0
 		else:
-			self.nr_cones = nrOfCones
+			self.nr_of_clients['cones'] = nrOfCones
 		if nrOfTrue == None:
 			self.nr_true = 0
 		else:
@@ -34,31 +35,32 @@ class GameType():
 		self.event_list = []
 		self.nr_of_events = 0
 		self.nr_of_correct_hits = 0 #Not used
-		self.makeList(self.nr_cones, self.coneInfo, self.time_limit)
+		self.makeList(self.coneInfo, self.time_limit)
 		self.game_is_running = False
 		self.allow_sound = False
+		self.loop_game = False
 		
 		
 
-	def makeList(self, nrOfCones, coneInformation, coop_time_limit):
+	def makeList(self, coneInformation, coop_time_limit):
 		if len(self.coneInfo) < 3: # Added to avoid that coneinfo increases in length every time a game starts
-			for i in range(nrOfCones):
+			for i in range(self.nr_of_clients['cones']):
 				coneInformation.append({"Role": 'False', "Content": 'questionmark', 'time_limit': self.time_limit})
 	
-	def findCorrectCones(self, nrOfCones, nrOfTrue, coneInformation):
+	def findCorrectCones(self, nrOfTrue, coneInformation):
 		pickedNumbers = []
 		#Clean cone information
 		for entry in coneInformation:
 			entry['Role']='False'
 		for i in range(nrOfTrue):
 			while True:
-				x = randrange(0, nrOfCones)
+				x = randrange(0, self.nr_of_clients['cones'])
 				if x not in pickedNumbers:
 					coneInformation[x]["Role"] = 'True'
 					pickedNumbers.append(x)
 					break
 
-	def findContent(self, categoryName, nrOfCones,coneInformation): # lets the gamemaster chose what game category the questions should come from. 
+	def findContent(self, categoryName, coneInformation): # lets the gamemaster chose what game category the questions should come from. 
 		pickedNumbers = []
 
 		for category, contents in [
@@ -67,7 +69,7 @@ class GameType():
 			('clocks', times)
 		]:
 			if categoryName==category:
-				for i in range(nrOfCones):
+				for i in range(self.nr_of_clients['cones']):
 					while True:
 						pick = randrange(0,len(contents)) 
 						if pick not in pickedNumbers:
@@ -117,19 +119,23 @@ class GameType():
 			print('send to displayunit', enDUInfo, type(enDUInfo))
 		displayunit_connection[0].sendall(enDUInfo) #Send to the one and only display unit
 
+	def random_category(self, *args):
+		pass
+
 	def battle_game(self, turtle_conns):
 		self.nr_of_events = len(self.event_list)
 		while True:
 			if len(self.event_list) > self.nr_of_events:
-				self.send_info(turtle_conns, defaultContent=b'hit')
+				
 				self.nr_of_events +=1
 				recent_event = self.event_list[self.nr_of_events-1]
 				if recent_event['role'] == True:
 					print("You won")
-					self.game_is_running = False
+					if not self.loop_game
+						self.game_is_running = False
 					self.send_info(turtle_conns, defaultContent=b'go back') #Send signal to turtlebots telling them to go back to start 
 					return
-
+				self.send_info(turtle_conns, defaultContent=b'hit')
 ###COOP SPECIFIC###
 
 	def determine_coop_outcome(self, turtle_conns, time_limit, consecutive_corrects):
@@ -143,7 +149,6 @@ class GameType():
 		while elapsed_time < time_limit: # wait for event
 			if len(self.event_list) > self.nr_of_events: # A new event has happened
 				print("A new cone was hit")
-				self.send_info(turtle_conns, defaultContent=b'hit')
 				self.nr_of_events += 1 # Keep track of how many events have happened
 				recent_event = self.event_list[self.nr_of_events-1] # last element of event_list - a dictionary with role, address and time keys 
 				if recent_event['role'] == True:
@@ -153,15 +158,18 @@ class GameType():
 						correct_hit_time = time.time()
 						print("Time of first hit", correct_hit_time)
 						threading._start_new_thread(self.start_counter, (self.time_limit,)) #A new thread informs of the time available for the remaining correct hits
+						self.send_info(turtle_conns, defaultContent=b'hit')
 					elif nr_of_correct_hits == consecutive_corrects:
 						#pygame.mixer.music.stop()
-						return (True, 0, elapsed_time) 
+						return (True, 0, elapsed_time)
 				else:
 					print("A wrong cone was hit")
 					self.allow_sound = False
 					if nr_of_correct_hits == 0:
+						self.send_info(turtle_conns, defaultContent=b'hit')
 						return (False, 2, elapsed_time) # Fail condition 2: Wrong cone hit first
 					elif nr_of_correct_hits == 1:
+						self.send_info(turtle_conns, defaultContent=b'hit')
 						pygame.mixer.music.stop()
 						return (False, 3, elapsed_time) # Fail condition 3: Wrong cone hit after correct cone
 			if correct_hit_time: # We only want to track time if a correct cone has been hit, otherwise keep elapsed time at 0
@@ -188,11 +196,12 @@ class GameType():
 			print(outcome)
 			if outcome[0] == True:
 				print("Congratulation, you won")
-				self.game_is_running = False
+				if not self.loop_game:
+					self.game_is_running = False
 				self.packDUInfo(self.DUInfo, defaultContent='victory')
 				self.sendDisplayunitInfo(self.DUInfo, DU_connection)
-				pygame.mixer.music.stop()
 				self.send_info(turtle_conns, defaultContent=b'go back')
+				pygame.mixer.music.stop()
 				return
 			else:
 				print("You lost")
