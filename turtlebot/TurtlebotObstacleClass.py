@@ -53,42 +53,44 @@ class Obstacle():
 			if self.msg.ranges[start] >= self.LIDAR_ERR and self.msg.ranges[start] <= distance:
 				self.scan_filter.append(self.msg.ranges[start])
 			start = (start + 1) % msg_ranges_lenght
-		self.checkList(self.scan_filter, 0.28, 0.3, 3, direction)
+		
 		if state == 'Cone_hit'
+			self.checkList(self.scan_filter, 0.14, 0.18, 5)
+
 
 
 		#print(start)
 
 		if np.mean(self.scan_filter) >= 0.18 and len(self.scan_filter) >= 10:
-			self.checkList(self.scan_filter, 0.17, 0.19, 10, direction)
+			self.checkList(self.scan_filter, 0.17, 0.19, 10)
 			if self.checkList() == True:
 				self.pub.publish(direction)
 				print(direction)
 				self.is_detected = 1
 
 		elif np.mean(self.scan_filter) >= 0.195 and len(self.scan_filter) >= 9:
-			self.checkList(self.scan_filter, 0.185, 0.25, 9, direction)
+			self.checkList(self.scan_filter, 0.185, 0.25, 9)
 			if self.checkList == True:
 				self.pub.publish(direction)
 				print(direction)
 				self.is_detected = 1
 
 		elif np.mean(self.scan_filter) >= 0.222 and len(self.scan_filter) >= 8:
-			self.checkList(self.scan_filter, 0.212, 0.232, 8, direction)
+			self.checkList(self.scan_filter, 0.212, 0.232, 8)
 			if self.checkList() == True:
 				self.pub.publish(direction)
 				print(direction)
 				self.is_detected = 1
 
 		elif np.mean(self.scan_filter) >= 0.271 and len(self.scan_filter) >= 6:
-			self.checkList(self.scan_filter, 0.261, 0.281, 6, direction)
+			self.checkList(self.scan_filter, 0.261, 0.281, 6)
 			if self.checkList == True:
 				self.pub.publish(direction)
 				print(direction)
 				self.is_detected = 1
 
 		elif np.mean(self.scan_filter) >= 0.291 and len(self.scan_filter) >= 3:
-			self.checkList(self.scan_filter, 0.14, 0.18, 5, direction)
+			self.checkList(self.scan_filter, 0.28, 0.3, 3)
 			if self.checkList() == True:
 				self.pub.publish(direction)
 				print(direction)
@@ -112,11 +114,9 @@ class Obstacle():
 						if the_list[ite] >= minimum and the_list[ite] <= maximum:
 							hits +=1
 						if hits == chunk and state is not 'Going_Back':
-							print("equal at:", i)
 							return True
 					
 					except IndexError:
-						print("shits happends")
 						return False
 		return False  
 
