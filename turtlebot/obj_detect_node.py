@@ -3,7 +3,6 @@ import rospy
 import time
 
 rospy.init_node('turtlebot3_obstacle', anonymous=True)
-
 Obstacles = Obstacle()
 
 while True:
@@ -13,6 +12,7 @@ while True:
     Obstacles.obstacle(100, 130, 0.3, 'Back')
     #end = time.time()
     #print(end-start)
+
 
 
 

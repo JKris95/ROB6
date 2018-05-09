@@ -23,6 +23,10 @@ from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 from std_msgs.msg import String
 import numpy as np
+import time
+
+state = 'Nothing'
+rospy.Subscriber("/state", String, state)
 
 
 class Obstacle():
@@ -49,40 +53,72 @@ class Obstacle():
 			if self.msg.ranges[start] >= self.LIDAR_ERR and self.msg.ranges[start] <= distance:
 				self.scan_filter.append(self.msg.ranges[start])
 			start = (start + 1) % msg_ranges_lenght
-		#print(start)
+		
+		if state == 'hit':
+			if self.checkList(self.scan_filter, 0.14, 0.18, 5) == True:
+				self.pub.publish(direction)
 
-		if np.mean(self.scan_filter) >= 0.18 and len(self.scan_filter) >= 10:
-			self.pub.publish(direction)
-			print(direction)
-			self.is_detected = 1
-
-		elif np.mean(self.scan_filter) >= 0.195 and len(self.scan_filter) >= 9:
-			self.pub.publish(direction)
-			print(direction)
-			self.is_detected = 1
-
-		elif np.mean(self.scan_filter) >= 0.222 and len(self.scan_filter) >= 8:
-			self.pub.publish(direction)
-			print(direction)
-			self.is_detected = 1
-
-		elif np.mean(self.scan_filter) >= 0.271 and len(self.scan_filter) >= 6:
-			self.pub.publish(direction)
-			print(direction)
-			self.is_detected = 1
-
-		elif np.mean(self.scan_filter) >= 0.291 and len(self.scan_filter) >= 3:
-			self.pub.publish(direction)
-			print(direction)
-			self.is_detected = 1
+		elif np.mean(self.scan_filter) >= 0.18 and len(self.scan_filter) >= 10:
+            self.pub.publish(direction)
+            print(direction)
+            self.is_detected = 1
 
 
-		elif self.is_detected == 0:
-			self.pub.publish('Nothing')
-			#print('Nothing')
+        elif np.mean(self.scan_filter) >= 0.195 and len(self.scan_filter) >= 9:
+            self.pub.publish(direction)
+            print(direction)
+            self.is_detected = 1
 
-		else:
-			self.is_detected = 0
+
+        elif np.mean(self.scan_filter) >= 0.222 and len(self.scan_filter) >= 8:
+            self.pub.publish(direction)
+            print(direction)
+            self.is_detected = 1
+
+
+        elif np.mean(self.scan_filter) >= 0.271 and len(self.scan_filter) >= 6:
+            self.pub.publish(direction)
+            print(direction)
+            self.is_detected = 1
+
+
+        elif np.mean(self.scan_filter) >= 0.291 and len(self.scan_filter) >= 3:
+            self.pub.publish(direction)
+            print(direction)
+            self.is_detected = 1
+
+
+
+        elif self.is_detected == 0:
+            self.pub.publish('Nothing')
+            #print('Nothing')
+
+
+        else:
+            self.is_detected = 0
+							
+
+
+	def checkList(self, the_list, minimum, maximum, chunk):
+		for i in range(len(the_list)-1):
+			if the_list[i] >= minimum and the_list[i] <= maximum:
+				hits = 1
+				for j in range(1,chunk):
+					ite = i+j
+					try:
+						if the_list[ite] >= minimum and the_list[ite] <= maximum:
+							hits +=1
+						if hits == chunk and state is not 'Going_Back':
+							return True
+					
+					except IndexError:
+						return False
+		return False  
+
+def state(data): #Subscriber which listen to topic state
+	global state 
+	state = data.data
+
 
 def main():
 	#rospy.init_node('turtlebot3_obstacle')
