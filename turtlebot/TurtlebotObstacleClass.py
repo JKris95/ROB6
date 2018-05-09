@@ -25,8 +25,13 @@ from std_msgs.msg import String
 import numpy as np
 import time
 
-turtlebot_state = 'Nothing'
-rospy.Subscriber("/turtlebot_state", String, turtlebot_state)
+turtlebot_state_variable = 'Nothing'
+
+def turtlebot_state_function(data): #Subscriber which listen to topic state
+	global turtlebot_state_variable 
+	turtlebot_state_variable = data.data
+
+rospy.Subscriber("/turtlebot_state", String, turtlebot_state_variable)
 
 
 class Obstacle():
@@ -113,10 +118,6 @@ class Obstacle():
 					except IndexError:
 						return False
 		return False  
-
-def turtlebot_state(data): #Subscriber which listen to topic state
-	global turtlebot_state 
-	turtlebot_state = data.data
 
 
 def main():

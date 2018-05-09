@@ -10,7 +10,7 @@ from std_msgs.msg import String
 HOST = ''
 PORT = 50000
 lin,ang = 0.0,0.0
-turtlebot_state = 'Nothing'
+turtlebot_state_variable = 'Nothing'
 
 
 
@@ -24,7 +24,7 @@ def publish_cmd_vel():
 	rospy.init_node('post_office')
 	rate = rospy.Rate(10) #10 hz executing on the node
 	while not rospy.is_shutdown():
-		while turtlebot_state == 'Nothing' or turtlebot_state == 'hit': #checking the rospy.is_shutdown() flag and then doing work. You have to check is_shutdown() to check if your program should exit (e.g. if there is a Ctrl-C or otherwise).
+		while turtlebot_state_variable == 'Nothing' or turtlebot_state_variable == 'hit': #checking the rospy.is_shutdown() flag and then doing work. You have to check is_shutdown() to check if your program should exit (e.g. if there is a Ctrl-C or otherwise).
 			twist.linear.x = lin; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = ang #angular has to be .z value to change
 			try:
@@ -33,12 +33,12 @@ def publish_cmd_vel():
 			except:
 				print('unable to publish')
 		#rospy.loginfo(twist) #debugging: performs triple-duty: the messages get printed to screen, it gets written to the Node's log file, and it gets written to rosout. rosout is a handy for debugging: you can pull up messages using rqt_console instead of having to find the console window with your Node's output.
-		if turtlebot_state == 'Front': #What to do if the turtlebot detects something in front of it
+		if turtlebot_state_variable == 'Front': #What to do if the turtlebot detects something in front of it
 			twist.linear.x = -0.2; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 #angular has to be .z value to change
 			pub.publish(twist)
 			time.sleep(0.5)
-		if turtlebot_state == 'Back': #What to do if the turtlebot detects something in front of it
+		if turtlebot_state_variable == 'Back': #What to do if the turtlebot detects something in front of it
 			twist.linear.x = 0.2; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 #angular has to be .z value to change
 			pub.publish(twist)
@@ -62,9 +62,9 @@ def recv_from_controller():
 		ang = move_info['ang']
 		#print(type(lin), lin, type(ang), ang)
 
-def turtlebot_state(data): #Subscriber which listen to topic state
-	global turtlebot_state 
-	turtlebot_state = data.data
+def turtlebot_state_function(data): #Subscriber which listen to topic state
+	global turtlebot_state_variable 
+	turtlebot_state_variable = data.data
 	#print(state)
 
 
