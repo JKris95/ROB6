@@ -104,7 +104,7 @@ class Obstacle():
 		else:
 			self.is_detected = 0
 
-	def checkList(self, the_list, minimum, maximum, chunk, direction):
+	def checkList(self, the_list, minimum, maximum, chunk):
 		for i in range(len(the_list)-1):
 			if the_list[i] >= minimum and the_list[i] <= maximum:
 				hits = 1
