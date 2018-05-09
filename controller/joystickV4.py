@@ -284,7 +284,7 @@ def angular():
 
 """Global variables"""
 player = playerClass.Player()
-PORT = 50007
+PORT = 50000
 turtle_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 status = {'running':False}
 
