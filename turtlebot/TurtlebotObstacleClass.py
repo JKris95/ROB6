@@ -25,15 +25,23 @@ from std_msgs.msg import String
 import numpy as np
 import time
 
-state = 'Nothing'
-rospy.Subscriber("/state", String, state)
+turtlebot_state_variable = 'Nothing'
+
+def turtlebot_state_function(data): #Subscriber which listen to topic state
+	global turtlebot_state_variable 
+	turtlebot_state_variable = data.data
+
+rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
 
 
 class Obstacle():
 	def __init__(self):
-		self.pub = rospy.Publisher('det_ang', String, queue_size=10)
+		self.pub = rospy.Publisher('/turtlebot_state', String, queue_size=10)
+		self.pub.publish('Nothing')
 		self.LIDAR_ERR = 0.05
 		self.is_detected = 0
+		self.nothing_send = 0
+
 
 	def get_scan(self, data, min_val, max_val):
 		scan = LaserScan()
@@ -54,48 +62,52 @@ class Obstacle():
 				self.scan_filter.append(self.msg.ranges[start])
 			start = (start + 1) % msg_ranges_lenght
 		
-		if state == 'hit':
+		if turtlebot_state_variable == 'hit':
 			if self.checkList(self.scan_filter, 0.14, 0.18, 5) == True:
 				self.pub.publish(direction)
+				self.noting_send = 0
 
-		elif np.mean(self.scan_filter) >= 0.18 and len(self.scan_filter) >= 10:
-            self.pub.publish(direction)
-            print(direction)
-            self.is_detected = 1
-
-
-        elif np.mean(self.scan_filter) >= 0.195 and len(self.scan_filter) >= 9:
-            self.pub.publish(direction)
-            print(direction)
-            self.is_detected = 1
+		elif np.mean(self.scan_filter) >= 0.18 and len(self.scan_filter) >= 11:
+			self.pub.publish(direction)
+			print(direction)
+			self.is_detected = 1
+			self.nothing_send = 0
 
 
-        elif np.mean(self.scan_filter) >= 0.222 and len(self.scan_filter) >= 8:
-            self.pub.publish(direction)
-            print(direction)
-            self.is_detected = 1
+		elif np.mean(self.scan_filter) >= 0.195 and len(self.scan_filter) >= 9:
+			self.pub.publish(direction)
+			print(direction)
+			self.is_detected = 1
+			self.nothing_send = 0
+
+		elif np.mean(self.scan_filter) >= 0.222 and len(self.scan_filter) >= 8:
+			self.pub.publish(direction)
+			print(direction)
+			self.is_detected = 1
+			self.nothing_send = 0
 
 
-        elif np.mean(self.scan_filter) >= 0.271 and len(self.scan_filter) >= 6:
-            self.pub.publish(direction)
-            print(direction)
-            self.is_detected = 1
+		elif np.mean(self.scan_filter) >= 0.271 and len(self.scan_filter) >= 6:
+			self.pub.publish(direction)
+			print(direction)
+			self.is_detected = 1
+			self.nothing_send = 0
 
 
-        elif np.mean(self.scan_filter) >= 0.291 and len(self.scan_filter) >= 3:
-            self.pub.publish(direction)
-            print(direction)
-            self.is_detected = 1
+		elif np.mean(self.scan_filter) >= 0.291 and len(self.scan_filter) >= 3:
+			self.pub.publish(direction)
+			print(direction)
+			self.is_detected = 1
+			self.nothing_send = 0
+
+		elif self.is_detected == 0 and self.nothing_send == 0:
+			self.pub.publish('Nothing')
+			self.nothing_send = 1
+			#print('Nothing')
 
 
-
-        elif self.is_detected == 0:
-            self.pub.publish('Nothing')
-            #print('Nothing')
-
-
-        else:
-            self.is_detected = 0
+		else:
+			self.is_detected = 0
 							
 
 
@@ -108,16 +120,12 @@ class Obstacle():
 					try:
 						if the_list[ite] >= minimum and the_list[ite] <= maximum:
 							hits +=1
-						if hits == chunk and state is not 'Going_Back':
+						if hits == chunk:
 							return True
 					
 					except IndexError:
 						return False
 		return False  
-
-def state(data): #Subscriber which listen to topic state
-	global state 
-	state = data.data
 
 
 def main():
