@@ -13,7 +13,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
 
 #Publisher
-pub = rospy.Publisher('state', String, queue_size=10)
+pub = rospy.Publisher('turtlebot_state', String, queue_size=10)
 
 #Create object and declare global cordinates for robots returning position
 Goback = GoToPose()

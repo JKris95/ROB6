@@ -25,13 +25,13 @@ from std_msgs.msg import String
 import numpy as np
 import time
 
-state = 'Nothing'
-rospy.Subscriber("/state", String, state)
+turtlebot_state = 'Nothing'
+rospy.Subscriber("/turtlebot_state", String, turtlebot_state)
 
 
 class Obstacle():
 	def __init__(self):
-		self.pub = rospy.Publisher('det_ang', String, queue_size=10)
+		self.pub = rospy.Publisher('/turtlebot_state', String, queue_size=10)
 		self.pub.publish('Nothing')
 		self.LIDAR_ERR = 0.05
 		self.is_detected = 0
@@ -55,7 +55,7 @@ class Obstacle():
 				self.scan_filter.append(self.msg.ranges[start])
 			start = (start + 1) % msg_ranges_lenght
 		
-		if state == 'hit':
+		if turtlebot_state == 'hit':
 			if self.checkList(self.scan_filter, 0.14, 0.18, 5) == True:
 				self.pub.publish(direction)
 
@@ -109,16 +109,16 @@ class Obstacle():
 					try:
 						if the_list[ite] >= minimum and the_list[ite] <= maximum:
 							hits +=1
-						if hits == chunk and state is not 'Going_Back':
+						if hits == chunk:
 							return True
 					
 					except IndexError:
 						return False
 		return False  
 
-def state(data): #Subscriber which listen to topic state
-	global state 
-	state = data.data
+def turtlebot_state(data): #Subscriber which listen to topic state
+	global turtlebot_state 
+	turtlebot_state = data.data
 
 
 def main():
