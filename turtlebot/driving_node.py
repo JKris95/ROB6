@@ -8,7 +8,7 @@ from std_msgs.msg import String
 
 #Global variables go here.
 HOST = ''
-PORT = 50007
+PORT = 50000
 lin,ang = 0.0,0.0
 state = 'Nothing'
 
@@ -33,7 +33,7 @@ def publish_cmd_vel():
 			except:
 				print('unable to publish')
 		#rospy.loginfo(twist) #debugging: performs triple-duty: the messages get printed to screen, it gets written to the Node's log file, and it gets written to rosout. rosout is a handy for debugging: you can pull up messages using rqt_console instead of having to find the console window with your Node's output.
-		if stata == 'Front': #What to do if the turtlebot detects something in front of it
+		if state == 'Front': #What to do if the turtlebot detects something in front of it
 			twist.linear.x = -0.2; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 #angular has to be .z value to change
 			pub.publish(twist)
@@ -72,26 +72,22 @@ def state(data): #Subscriber which listen to topic state
 #While True loop retrying to accept a connection if the old breaks dowm. TODO: Check if the thread gets killed if the connection drops. If not kill it.
 while True:
 
-	try:
 		#Creation of socket object and accept of incoming connection. NB! s.accept() blocks untill a connection is made.
-		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		s.bind((HOST, PORT))
-		s.listen(1) #the parameter 1 indicates only 1 connection will be accepted.
-		conn, addr = s.accept()
-		print ('Connected by', addr)
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	s.bind((HOST, PORT))
+	s.listen(1) #the parameter 1 indicates only 1 connection will be accepted.
+	conn, addr = s.accept()
+	print ('Connected by', addr)
 
-		#Creation of object from the Twist() class. This object is used as a message type on to publish on the topic /cmd_vel.
-		twist = Twist()
+	#Creation of object from the Twist() class. This object is used as a message type on to publish on the topic /cmd_vel.
+	twist = Twist()
 
-		#Starting a thread to feed information from the connected controller into the global variables lin and ang.		
-		thread.start_new_thread( recv_from_controller, ())    
+	#Starting a thread to feed information from the connected controller into the global variables lin and ang.		
+	thread.start_new_thread( recv_from_controller, ())    
 
-		while True:     
-			publish_cmd_vel()
+	while True:     
+		publish_cmd_vel()
 			
-			#rospy.ROSInterruptException: #rospy.ROSInterruptException exception, which can be thrown by rospy.sleep() and rospy.Rate.sleep() methods when Ctrl-C is pressed or your Node is otherwise shutdown. NB! We have not placed any rates on our communication yet. 
-			#pass
+		#rospy.ROSInterruptException: #rospy.ROSInterruptException exception, which can be thrown by rospy.sleep() and rospy.Rate.sleep() methods when Ctrl-C is pressed or your Node is otherwise shutdown. NB! We have not placed any rates on our communication yet. 
+		#pass
 
-	except:
-		print("An error occured, restarting the program")
-		#rospy.loginfo("The post office is restarting") 

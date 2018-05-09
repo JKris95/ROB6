@@ -4,8 +4,10 @@ import time
 import socket
 from std_msgs.msg import String
 
+rospy.init_node('go_back', anonymous=True)
+
 #Connecet to server
-HOST = '192.168.1.39'  
+HOST = '192.168.1.34'  
 PORT = 50007
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)        
 s.connect((HOST, PORT))
@@ -23,7 +25,7 @@ while True:
         pub.publish('Going_Back')
         Goback.goto(position, quaternion)
         pub.publish('Nothing')
-    elif data == 'hit'
+    elif data == 'hit':
         pub.publish('hit')
         time.sleep(1)
         pub.publish('Nothing')

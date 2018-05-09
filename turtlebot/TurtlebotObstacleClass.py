@@ -32,6 +32,7 @@ rospy.Subscriber("/state", String, state)
 class Obstacle():
 	def __init__(self):
 		self.pub = rospy.Publisher('det_ang', String, queue_size=10)
+		self.pub.publish('Nothing')
 		self.LIDAR_ERR = 0.05
 		self.is_detected = 0
 
