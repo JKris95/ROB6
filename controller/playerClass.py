@@ -17,6 +17,7 @@ class Player():
 		self.flip_directions = False # Determines if directions should be randomly flipped when driving
 		self.flipped = False # Keeps track of whether directions have been flipped or not
 		
+
 	def change_settings(self, settings, keys, values):
 		"""change or add one or multiple key-value pairs of a given dictionary
 		settings: dictionary to change\nkeys: list of keys to change or add\n
@@ -92,9 +93,15 @@ class Player():
 				else:
 					self.flipped = False
 
-	def unflip(self):
+	def reverse_directions(self):
+		"""Reverses directions to return to default after flipping. 
+			Can also be applied to accomodate left-handed participants"""
 		for key, value in self.speeds.items():
 			self.speeds[key] = -value
+			self.flipped = False
+	
+	
+
 
 #Should possibly encapsulate the send_dict lines in the Joystick file
 	def accelerate(self, rate): 

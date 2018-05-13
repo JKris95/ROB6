@@ -50,7 +50,7 @@ class GUI_connect_devices(GUI_base):
 		GUI_base.__init__(self,master)
 		self.connect_button = tk.Button(self.frame, text = 'Connect', command = lambda *args:[self.unpacker(self.window_list), self.create_connection()])
 		self.nr_cones_slider = tk.Scale(self.frame, from_=1, to=3, orient = tk.HORIZONTAL, label="Number of cones")
-		self.nr_turtlebots_slider = tk.Scale(self.frame, from_=1, to=2, orient = tk.HORIZONTAL, label="Number of Turtlebots")
+		self.nr_turtlebots_slider = tk.Scale(self.frame, from_=0, to=2, orient = tk.HORIZONTAL, label="Number of Turtlebots")
 		self.append_window_list(self.connect_button, self.nr_cones_slider, self.nr_turtlebots_slider)
 		self.packer(self.window_list)
 
@@ -74,17 +74,17 @@ class GUI_game_settings(GUI_base): #TODO: make the button presses to stuff
 		GUI_base.__init__(self,master)
 		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, height = 5, command = lambda *args:[self.close_window(GUI_select_game_type)])
 
-		
+		self.timer_seconds = tk.Scale(self.frame, from_=1, to=20, orient = tk.HORIZONTAL, label="Number seconds")
+		self.timer_seconds.set(10) #sets the starting position to 10
 		if game_instance.game_type == 'coop': 
-			self.timer_seconds = tk.Scale(self.frame, from_=1, to=20, orient = tk.HORIZONTAL, label="Number seconds")
-			self.timer_seconds.set(10) #sets the starting position to 10
 			self.append_window_list(self.timer_seconds)
+			setattr(game_instance, 'nr_true', 2)
 		
 		self.MODES = [
-			("Colors"),
-			("Animals"),
-			("Clocks"),
-			("Random"),
+			("colors"),
+			("animals"),
+			("times"),
+			("random"),
 		]
 
 		self.v = tk.StringVar()
@@ -94,7 +94,7 @@ class GUI_game_settings(GUI_base): #TODO: make the button presses to stuff
 			self.b = tk.Radiobutton(self.frame, text=text, variable=self.v, value=text)
 			self.append_window_list(self.b)
 
-		self.start_game = tk.Button(self.frame, text = 'START', width = 25, height = 5, command = lambda *args:[self.unpacker(self.window_list), setattr(game_instance, 'category', self.v.get()), startTheGame(), self.new_window(GUI_running_window)])
+		self.start_game = tk.Button(self.frame, text = 'START', width = 25, height = 5, command = lambda *args:[self.unpacker(self.window_list), setattr(game_instance, 'category', self.v.get()), setattr(game_instance, 'time_limit', self.timer_seconds.get()), startTheGame(), self.new_window(GUI_running_window)])
 		self.append_window_list(self.frame, self.start_game, self.quitButton)
 		self.packer(self.window_list)
 		
@@ -192,29 +192,6 @@ def receive(connection, address):
 		game_instance.event_list.append(event_packer(game_event, address = address, time = game_instance.time_tracking['end']-game_instance.time_tracking['start'])) # Write to list containing information on all cones that were hit
 		print("Current event list: " + str(game_instance.event_list) + " has length: " + str(len(game_instance.event_list)))
 	
-def Battle_game(event):
-	print ("You have chosen the battle game")
-	game_instance.nr_true = 1
-	game_instance.nr_cones = game_instance.nr_of_clients['cones']
-	game_instance.game_type = 'battle'
-
-def Coop_game(event):
-	print ("You have chosen the coop game")
-	game_instance.nr_true = 2
-	game_instance.nr_cones = game_instance.nr_of_clients['cones']
-	game_instance.game_type = 'coop'
-
-def Animal_game(event):
-	game_instance.category = 'animals'
-	print (game_instance.category)
-
-def Color_game(event):
-	game_instance.category = 'colors'
-	print (game_instance.category)
-
-def Clock_game(event):
-	game_instance.category = 'clocks'
-	print (game_instance.category)
 
 def startTheGame():
 	global receive_threads_created
@@ -228,63 +205,9 @@ def startTheGame():
 		receive_threads_created = True	# Only create threads once
 	game_instance.game_is_running = True
 	del(game_instance.event_list[:]) #Ensure that correct hits from previous game doesn't carry over
-	game_instance.nr_of_events = 0 # Reinitialize nr_of_events since even_list is cleared
-	start_game()
-
-def startConnection():
-	global conesInGame
-	conesInGame = True
-
-def guiThread():
-	while True:
-		root = Tk()
-
-		def sliderValue(event):
-			print(slider.get())
-			game_instance.nr_of_clients['cones'] = slider.get()
-
-		text1 = Text(root, height=15, width=40)
-		photo=PhotoImage(file='gameunit/pylogo.gif')
-		text1.insert(END,'\n')
-		text1.image_create(END, image=photo)
-
-		text1.pack(side=LEFT)
+	#game_instance.nr_of_events = 0 # Reinitialize nr_of_events since even_list is cleared
 
 
-		GAMETYPES = [
-		("Battle", Battle_game),
-		("Coop", Coop_game),
-		]
-
-		for text, callback in GAMETYPES:
-			b = Radiobutton(root, text=text)
-			b.bind("<Button-1>", callback)
-			b.pack(anchor=W)
-
-
-		MODES = [
-		("Animals", Animal_game),
-		("Colors", Color_game),
-		("Clocks", Clock_game),
-		("New category", Animal_game),
-		]
-
-		for text, callback in MODES:
-			b = Radiobutton(root, text=text)
-			b.bind("<Button-1>", callback)
-			b.pack(anchor=W)
-
-		slider = Scale(root, from_=1, to=3, orient=HORIZONTAL, label="Number of cones",)
-		slider.bind("<ButtonRelease-1>",sliderValue)
-		slider.pack()
-
-		start_button = Button(root, text="Start", command=startTheGame)
-		start_button.pack()
-
-		connect_button = Button(root, text="Connect", command=startConnection)
-		connect_button.pack()
-
-		root.mainloop()
 		
 def start_game():
 		print ("starting game...")
@@ -294,7 +217,7 @@ def start_game():
 		time.sleep(1)
 		game_instance.findCorrectCones(game_instance.nr_true, game_instance.coneInfo)
 		print("We found the correct cones")
-		game_instance.findContent(game_instance.category, game_instance.coneInfo)
+		game_instance.findContent(game_instance.get_category(game_instance.category), game_instance.coneInfo)
 		print("We found the content", game_instance.coneInfo)
 		game_instance.send_info(all_connections['cones'], game_instance.coneInfo)
 		print("Send cone info is done")
@@ -308,20 +231,9 @@ try:
 except:
    print ("Error: unable to start thread")
 
-"""
-#tilføj knap og lad dem slide
-while True:
-	if conesInGame == True:
-		print("moving on")
-		break
-
-#Establish connection to all units
-socket_bind(s, HOST, PORT, sum(game_instance.nr_of_clients.values()))
-socket_accept(sum(game_instance.nr_of_clients.values()), all_connections, all_addresses)
-"""
-
 while True:
 	if game_instance.game_is_running == True:
+		start_game()
 		print('looking for a game to play')
 		if game_instance.game_type == 'battle':
 			game_instance.battle_game(all_connections['turtlebots'])

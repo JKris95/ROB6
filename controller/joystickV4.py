@@ -198,7 +198,7 @@ def eight_Way():
 			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', 0.0) ]))
 			wait_for_input()
 	if player.flipped:
-		player.unflip()
+		player.reverse_directions()
 
 def four_Way():
 	random.seed()
@@ -228,7 +228,7 @@ def four_Way():
 			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', 0.0) ]))
 			wait_for_input()
 	if player.flipped:
-		player.unflip()
+		player.reverse_directions()
 
 def two_Way():
 	random.seed()
@@ -250,7 +250,7 @@ def two_Way():
 			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', 0.0) ]))
 			wait_for_input()
 	if player.flipped:
-		player.unflip()
+		player.reverse_directions()
 		
 def angular():
 	random.seed()
@@ -280,7 +280,7 @@ def angular():
 			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', 0.0) ]))
 			wait_for_input()
 	if player.flipped:
-		player.unflip()
+		player.reverse_directions()
 
 """Global variables"""
 player = playerClass.Player()
@@ -289,7 +289,7 @@ turtle_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 status = {'running':False}
 
 #Initialize thread object
-drive_thread = threading.Thread(target=drive, name='driving', args=(player.control_mode,))
+#drive_thread = threading.Thread(target=drive, name='driving', args=(player.control_mode,))
 
 #GPIO
 CHANNELS = (32, 36, 38, 40) # FORWARD, LEFT, RIGHT, BACK

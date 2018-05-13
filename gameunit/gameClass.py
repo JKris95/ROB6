@@ -23,7 +23,7 @@ class GameType():
 		else:
 			self.nr_of_clients['cones'] = nrOfCones
 		if nrOfTrue == None:
-			self.nr_true = 0
+			self.nr_true = 1
 		else:
 			self.nr_true = nrOfTrue #will be dependent on type of game and not changed by user.
 		
@@ -39,6 +39,7 @@ class GameType():
 		self.game_is_running = False
 		self.allow_sound = False
 		self.loop_game = False
+		self.category_names = ['colors', 'animals', 'times']
 		
 		
 
@@ -60,13 +61,20 @@ class GameType():
 					pickedNumbers.append(x)
 					break
 
+	def get_category(self, category_name):
+		if category_name in self.category_names:
+			return category_name
+		elif category_name == 'random':
+			return self.category_names[randrange(0,len(self.category_names))]
+
+
 	def findContent(self, categoryName, coneInformation): # lets the gamemaster chose what game category the questions should come from. 
 		pickedNumbers = []
 
 		for category, contents in [
 			('animals', animals),
 			('colors', colors),
-			('clocks', times)
+			('times', times)
 		]:
 			if categoryName==category:
 				for i in range(self.nr_of_clients['cones']):
@@ -119,9 +127,6 @@ class GameType():
 			print('send to displayunit', enDUInfo, type(enDUInfo))
 		displayunit_connection[0].sendall(enDUInfo) #Send to the one and only display unit
 
-	def random_category(self, *args):
-		pass
-
 	def battle_game(self, turtle_conns):
 		self.nr_of_events = len(self.event_list)
 		while True:
@@ -145,14 +150,16 @@ class GameType():
 		correct_hit_time = None
 		nr_of_correct_hits = 0
 		self.nr_of_events = len(self.event_list)
+		cones_hit = []
 		print('Determining the outcome..')
 		while elapsed_time < time_limit: # wait for event
 			if len(self.event_list) > self.nr_of_events: # A new event has happened
 				print("A new cone was hit")
 				self.nr_of_events += 1 # Keep track of how many events have happened
 				recent_event = self.event_list[self.nr_of_events-1] # last element of event_list - a dictionary with role, address and time keys 
-				if recent_event['role'] == True:
+				if recent_event['role'] == True and recent_event['address'] not in cones_hit:
 					nr_of_correct_hits += 1
+					cones_hit.append(recent_event['address'])
 					print("it was correct")
 					if nr_of_correct_hits == 1: #The timer should start when the first correct cone is hit
 						correct_hit_time = time.time()
@@ -162,7 +169,7 @@ class GameType():
 					elif nr_of_correct_hits == consecutive_corrects:
 						#pygame.mixer.music.stop()
 						return (True, 0, elapsed_time)
-				else:
+				elif recent_event['role'] == False:
 					print("A wrong cone was hit")
 					self.allow_sound = False
 					if nr_of_correct_hits == 0:
