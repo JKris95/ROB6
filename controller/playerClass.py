@@ -30,6 +30,15 @@ class Player():
 		self.speeds['ang_lin'] = round(ang_lin * self.max_lin_speed, 2) #New linear speed for curved movement
 		self.speeds['ang_ang'] = round(ang_ang * self.max_ang_speed, 2) #New angular speed for curved movement    
 
+	def very_easy(self):
+		try:
+			self.speeds['ang'] = 0.5 * self.max_ang_speed
+			self.control_mode = 'rotation'
+			print('difficulty changed')
+			print(self.speeds.items(), self.control_mode, self.flip_directions)
+		except:
+			print('Did not change all parameters')
+
 	def easy(self):
 		try:
 			self.speeds['lin'] = 1.0 * self.max_lin_speed
