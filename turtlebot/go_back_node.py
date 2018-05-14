@@ -12,6 +12,11 @@ PORT = 50007
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)        
 s.connect((HOST, PORT))
 
+
+def turtlebot_state_function(data):
+    if data.data == 'White turtlebot hit' or data.data == 'Black turtlebot hit':
+        s.sendall(data.data)
+
 #Publisher
 pub = rospy.Publisher('turtlebot_state', String, queue_size=10)
 #Subscriber
@@ -35,7 +40,4 @@ while True:
     #elif data == 'STOP':
         #Goback.shutdown()
 
-def turtlebot_state_function(data):
-    if data.data == 'White turtlebot hit' or data.data == 'Black turtlebot hit':
-        s.sendall(data.data)
     
