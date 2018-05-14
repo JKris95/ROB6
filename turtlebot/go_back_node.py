@@ -35,7 +35,7 @@ while True:
     #elif data == 'STOP':
         #Goback.shutdown()
 
-def turtlebot_state_function(data)
-    if data.data == 'White turtlebot hit' or data.data == 'Black turtlebot hit'
+def turtlebot_state_function(data):
+    if data.data == 'White turtlebot hit' or data.data == 'Black turtlebot hit':
         s.sendall(data.data)
     

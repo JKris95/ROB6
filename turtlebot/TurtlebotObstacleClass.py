@@ -62,7 +62,7 @@ class Obstacle():
 				self.scan_filter.append(self.msg.ranges[start])
 			start = (start + 1) % msg_ranges_lenght
 
-		if turtlebot_state_variable is not 'Going_Back'
+		if turtlebot_state_variable is not 'Going_Back':
 			if turtlebot_state_variable == 'hit':
 				if self.checkList(self.scan_filter, 0.14, 0.187, 5) == True:
 					self.pub.publish(direction)
