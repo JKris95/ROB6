@@ -9,7 +9,7 @@ import json
 #Global variables
 all_connections = {'cones': [], 'displayunit': [], 'turtlebots': []}
 all_addresses = {'cones': [], 'displayunit': [], 'turtlebots': []}
-turtlebot_ips = ['192.168.1.38', '192.168.1.39', '192.168.1.36']
+turtlebot_ips = ['192.168.1.38', '192.168.1.39', '192.168.1.36', '192.168.1.40']
 displayunit_address = ['192.168.1.44']
 HOST=''
 PORT=50007
