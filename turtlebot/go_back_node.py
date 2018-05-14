@@ -14,6 +14,9 @@ s.connect((HOST, PORT))
 
 #Publisher
 pub = rospy.Publisher('turtlebot_state', String, queue_size=10)
+#Subscriber
+rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
+
 
 #Create object and declare global cordinates for robots returning position
 Goback = GoToPose()
@@ -31,3 +34,8 @@ while True:
         pub.publish('Nothing')
     #elif data == 'STOP':
         #Goback.shutdown()
+
+def turtlebot_state_function(data)
+    if data.data == 'White turtlebot hit' or data.data == 'Black turtlebot hit'
+        s.sendall(data.data)
+    
