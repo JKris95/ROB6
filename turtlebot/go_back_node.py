@@ -29,7 +29,7 @@ position = {'x': 0, 'y' : 0}
 quaternion = {'r1' : 0.000, 'r2' : 0.000, 'r3' : 0.000, 'r4' : 1.000} 
 while True:
     data = s.recv(1024)
-    if data == 'Goback':
+    if data == 'go back':
         pub.publish('Going_Back')
         Goback.goto(position, quaternion)
         pub.publish('Nothing')

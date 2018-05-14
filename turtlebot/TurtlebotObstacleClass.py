@@ -64,13 +64,13 @@ class Obstacle():
 
 		if turtlebot_state_variable is not 'Going_Back':
 			if turtlebot_state_variable == 'hit':
-				if self.checkList(self.scan_filter, 0.14, 0.187, 5) == True:
+				if self.checkList(self.scan_filter, 0.14, 0.189, 4) == True:
 					self.pub.publish(direction)
 					self.noting_send = 0
 					time.sleep(0.3)
 					self.pub.publish('X turtelbot hit')
 
-			elif len(self.scan_filter)-(-24*np.mean(self.scan_filter)+12) >= 0:
+			elif len(self.scan_filter)-(-24*np.mean(self.scan_filter)+13) >= 0:
 				self.pub.publish(direction)
 				print(direction)
 				self.is_detected = 1
