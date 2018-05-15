@@ -68,7 +68,7 @@ class Obstacle():
 					self.pub.publish(direction)
 					self.noting_send = 0
 					time.sleep(0.3)
-					self.pub.publish('X turtelbot hit')
+					self.pub.publish('turtle_hit')
 
 			elif len(self.scan_filter)-(-24*np.mean(self.scan_filter)+13) >= 0:
 				self.pub.publish(direction)

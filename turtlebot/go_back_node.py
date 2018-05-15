@@ -1,21 +1,13 @@
 import rospy
 from go_back_class import GoToPose
 import time
-import socket
 from std_msgs.msg import String
 
+topic_status_value
 rospy.init_node('go_back', anonymous=True)
 
-#Connecet to server
-HOST = '192.168.1.34'  
-PORT = 50007
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)        
-s.connect((HOST, PORT))
-
-
 def turtlebot_state_function(data):
-    if data.data == 'White turtlebot hit' or data.data == 'Black turtlebot hit':
-        s.sendall(data.data)
+    topic_status_value = data.data:
 
 #Publisher
 pub = rospy.Publisher('turtlebot_state', String, queue_size=10)
@@ -28,14 +20,9 @@ Goback = GoToPose()
 position = {'x': 0, 'y' : 0}
 quaternion = {'r1' : 0.000, 'r2' : 0.000, 'r3' : 0.000, 'r4' : 1.000} 
 while True:
-    data = s.recv(1024)
-    if data == 'go back':
+    if topic_status_value == 'go back':
         pub.publish('Going_Back')
         Goback.goto(position, quaternion)
-        pub.publish('Nothing')
-    elif data == 'hit':
-        pub.publish('hit')
-        time.sleep(1)
         pub.publish('Nothing')
     #elif data == 'STOP':
         #Goback.shutdown()
