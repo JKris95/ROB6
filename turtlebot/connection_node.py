@@ -16,17 +16,17 @@ while True:
     except:
         print("did not connect")
 
-rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
-pub = rospy.Publisher('turtlebot_state', String, queue_size=10)
-
-
 def turtlebot_state_function(data):
     if data.data == 'turtle_hit':
         s.sendall(b'hit')
 
+rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
+pub = rospy.Publisher('turtlebot_state', String, queue_size=10)
+
+
 while True:
 	data = s.recv(1024)
 	pub.publish(data)
-    if data == 'hit':
-        time.sleep(1)
-        pub.publish('Nothing')
+	if data == 'hit':
+		time.sleep(1)
+		pub.publish('Nothing')

@@ -40,7 +40,7 @@ class GUI_select_robot(GUI_base):
 		self.img_robot_1 = tk.PhotoImage(file='./192.168.1.38.gif')
 		self.img_robot_2 = tk.PhotoImage(file='./192.168.1.39.gif')  
 		self.button_robot_1 = tk.Button(self.frame, image=self.img_robot_1, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.38']), connect((turtle_conn, player.player_info['robot'], PORT), (gameunit_conn, GAMEUNIT_IP, GAMEUNIT_PORT)), self.unpacker(self.window_list), self.new_window(GUI_select_difficulty)])
-		self.button_robot_2 = tk.Button(self.frame, image=self.img_robot_2, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.39']), connect((turtle_conn, player.player_info['robot'], PORT), (gameunit_conn, GAMEUNIT_IP, GAMEUNIT_PORT)), self.unpacker(self.window_list), self.new_window(GUI_select_difficulty)])
+		self.button_robot_2 = tk.Button(self.frame, image=self.img_robot_2, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.39']), Connect(player.player_info['robot'], PORT, turtle_conn), Connect(GAMEUNIT_IP, GAMEUNIT_PORT, gameunit_conn), self.unpacker(self.window_list), self.new_window(GUI_select_difficulty)])
 		self.append_window_list(self.frame)
 		self.button_robot_1.pack(side=tk.LEFT)
 		self.button_robot_2.pack(side=tk.LEFT)
@@ -142,10 +142,11 @@ def connect(*args):
 	while 1:
 		try:
 			for comm_info in args:
+				print(comm_info)
 				comm_info[0].connect(comm_info[1], comm_info[2])
 			break
 		except:
-			print("Couldn't connect to unit with address " + comm_info[1]) 
+			pass#print("Couldn't connect to unit with address " + comm_info[1]) 
 
 def wait_for_input():
 	"""While joystick is idle nothing is done. When joystick is activated again 
@@ -317,7 +318,7 @@ def angular():
 """Global variables"""
 player = playerClass.Player()
 PORT = 50000 # port for communication between controller and turtlebots
-GAMEUNIT_PORT = 50070
+GAMEUNIT_PORT = 50007
 GAMEUNIT_IP = '192.168.1.34'
 turtle_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #Turtlebot communication
 gameunit_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #Game unit communication
