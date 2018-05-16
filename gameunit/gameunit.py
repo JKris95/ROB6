@@ -271,7 +271,9 @@ try:
 except:
 	print ("Error: unable to start main thread")
 
-if all_connections['turtlebots']:
+if game_instance.nr_of_clients['turtlebots']:
+	while len(all_connections) < game_instance.nr_of_clients['turtlebots']:
+		pass
 	for conn, address in zip(all_connections['turtlebots'], all_addresses['turtlebots']):
 		try:
 			_thread.start_new_thread( recv_from_turtlebot, (conn, address))

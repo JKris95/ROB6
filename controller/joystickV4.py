@@ -49,14 +49,14 @@ class GUI_select_robot(GUI_base):
 class GUI_select_difficulty(GUI_base):
 	def __init__(self, master):
 		GUI_base.__init__(self,master)
-		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, height = 5, command = lambda *args:[self.close_window(GUI_select_robot)])
+		#self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, height = 5, command = lambda *args:[self.close_window(GUI_select_robot)])
 		self.difficulty_1 = tk.Button(self.frame, text = 'Difficulty 1', width = 25, height = 5, command = lambda *args:[player.easy(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
 		self.difficulty_2 = tk.Button(self.frame, text = 'Difficulty 2', width = 25, height = 5, command = lambda *args:[player.medium(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
 		self.difficulty_3 = tk.Button(self.frame, text = 'Difficulty 3', width = 25, height = 5, command = lambda *args:[player.hard(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
 		self.difficulty_4 = tk.Button(self.frame, text = 'Difficulty 4', width = 25, height = 5, command = lambda *args:[player.very_hard(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
 		self.cb_var = tk.BooleanVar()
 		self.flip = tk.Checkbutton(self.frame, text = 'Flip', width = 25, variable = self.cb_var, onvalue = True, offvalue = False, command=self.change_flip_state)
-		self.append_window_list(self.quitButton, self.frame, self.difficulty_1, self.difficulty_2, self.difficulty_3, self.difficulty_4, self.flip)
+		self.append_window_list( self.frame, self.difficulty_1, self.difficulty_2, self.difficulty_3, self.difficulty_4, self.flip)
 		self.packer(self.window_list)
 	
 	def change_flip_state(self):
@@ -69,11 +69,21 @@ class GUI_select_player(GUI_base):
 	def __init__(self, master):
 		GUI_base.__init__(self,master)
 		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, height = 5, command = lambda *args:[self.close_window(GUI_select_difficulty)])
+<<<<<<< HEAD
 		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Martin']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([ ('name', player.player_info['name']), ('robot', player.player_info['robot']) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
 		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([('name', player.player_info['name']), ('robot', player.player_info['robot']) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
 		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, height = 5,  command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([('name', player.player_info['name']), ('robot', player.player_info['robot']) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
 		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([('name', player.player_info['name']), ('robot', player.player_info['robot']) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
 		self.append_window_list(self.quitButton,self.frame, self.player_martin, self.player_nina, self.player_natasja, self.player_guest)
+=======
+		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'],['Martin']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, height = 5,  command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.reverse_var = tk.BooleanVar()
+		self.reverse_directions = tk.Checkbutton(self.frame, text = 'Reverse', width = 25, variable = self.reverse_var, onvalue = True, offvalue = False, command=player.reverse_directions)
+		self.append_window_list(self.quitButton,self.frame, self.player_martin, self.player_nina, self.player_natasja, self.player_guest, self.reverse_directions)
+>>>>>>> 784a491a35fe122c60cc64005979953e9c2d59b4
 		self.packer(self.window_list)
 
 class GUI_player_screen(GUI_base):
@@ -95,7 +105,7 @@ class GUI_player_screen(GUI_base):
 
 def main(): 
 	root = tk.Tk()
-	root.attributes('-fullscreen',True)
+	#root.attributes('-fullscreen',True)
 	GUI_select_robot(root)
 	root.mainloop()
 
