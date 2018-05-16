@@ -142,10 +142,11 @@ def connect(*args):
 	while 1:
 		try:
 			for comm_info in args:
+				print(comm_info)
 				comm_info[0].connect(comm_info[1], comm_info[2])
 			break
 		except:
-			print("Couldn't connect to unit with address " + comm_info[1]) 
+			#print("Couldn't connect to unit with address " + comm_info[1]) 
 
 def wait_for_input():
 	"""While joystick is idle nothing is done. When joystick is activated again 
