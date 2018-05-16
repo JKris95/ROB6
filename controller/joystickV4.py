@@ -39,8 +39,8 @@ class GUI_select_robot(GUI_base):
 		GUI_base.__init__(self,master)
 		self.img_robot_1 = tk.PhotoImage(file='./192.168.1.38.gif')
 		self.img_robot_2 = tk.PhotoImage(file='./192.168.1.39.gif')  
-		self.button_robot_1 = tk.Button(self.frame, image=self.img_robot_1, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.38']), Connect(player.player_info['robot'], PORT, turtle_conn),self.unpacker(self.window_list), self.new_window(GUI_select_difficulty)])
-		self.button_robot_2 = tk.Button(self.frame, image=self.img_robot_2, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.39']), Connect(player.player_info['robot'], PORT, turtle_conn),self.unpacker(self.window_list), self.new_window(GUI_select_difficulty)])
+		self.button_robot_1 = tk.Button(self.frame, image=self.img_robot_1, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.38']), connect((turtle_conn, player.player_info['robot'], PORT), (gameunit_conn, GAMEUNIT_IP, GAMEUNIT_PORT)), self.unpacker(self.window_list), self.new_window(GUI_select_difficulty)])
+		self.button_robot_2 = tk.Button(self.frame, image=self.img_robot_2, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.39']), connect((turtle_conn, player.player_info['robot'], PORT), (gameunit_conn, GAMEUNIT_IP, GAMEUNIT_PORT)), self.unpacker(self.window_list), self.new_window(GUI_select_difficulty)])
 		self.append_window_list(self.frame)
 		self.button_robot_1.pack(side=tk.LEFT)
 		self.button_robot_2.pack(side=tk.LEFT)
@@ -69,10 +69,10 @@ class GUI_select_player(GUI_base):
 	def __init__(self, master):
 		GUI_base.__init__(self,master)
 		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, height = 5, command = lambda *args:[self.close_window(GUI_select_difficulty)])
-		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'],['Martin']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, height = 5,  command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Martin']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([ ('name', player.player_info['name']), ('robot', player.player_info['robot']) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([('name', player.player_info['name']), ('robot', player.player_info['robot']) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, height = 5,  command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([('name', player.player_info['name']), ('robot', player.player_info['robot']) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([('name', player.player_info['name']), ('robot', player.player_info['robot']) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
 		self.append_window_list(self.quitButton,self.frame, self.player_martin, self.player_nina, self.player_natasja, self.player_guest)
 		self.packer(self.window_list)
 
@@ -133,6 +133,17 @@ def Connect(HOST, PORT, socket_object):
 			break
 		except:
 			print("Couldn't connect to TurtleBot with address " + HOST) 
+
+def connect(*args):
+	"""Connects to the desired units corresponding to the info
+	passed to it through args. args hold be tuples consisting of (socket, host, port)"""
+	while 1:
+		try:
+			for comm_info in args:
+				comm_info[0].connect(comm_info[1], comm_info[2])
+			break
+		except:
+			print("Couldn't connect to unit with address " + comm_info[1]) 
 
 def wait_for_input():
 	"""While joystick is idle nothing is done. When joystick is activated again 
@@ -303,8 +314,11 @@ def angular():
 
 """Global variables"""
 player = playerClass.Player()
-PORT = 50000
-turtle_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+PORT = 50000 # port for communication between controller and turtlebots
+GAMEUNIT_PORT = 50070
+GAMEUNIT_IP = '192.168.1.34'
+turtle_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #Turtlebot communication
+gameunit_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #Game unit communication
 status = {'running':False}
 
 #Initialize thread object

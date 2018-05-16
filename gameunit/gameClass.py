@@ -13,7 +13,7 @@ times = ['0100','0200','0300','0400','0500','0600','0700','0800','0900','1000','
 
 class GameType():
 	def __init__(self, nrOfCones=None, nrOfTrue=None, category=None):
-		self.nr_of_clients = {'cones': 3, 'displayunit': 1, 'turtlebots': 1}
+		self.nr_of_clients = {'cones': 3, 'displayunit': 1, 'turtlebots': 1, 'controllers': 0}
 		if category == None:
 			self.category = ''
 		else:	
@@ -33,6 +33,7 @@ class GameType():
 		self.coneInfo=[]
 		self.DUInfo=[]
 		self.event_list = []
+		self.hit_by_player = []
 		self.nr_of_events = 0
 		self.nr_of_correct_hits = 0 #Not used
 		self.makeList(self.coneInfo, self.time_limit)
@@ -40,6 +41,7 @@ class GameType():
 		self.allow_sound = False
 		self.loop_game = False
 		self.category_names = ['colors', 'animals', 'times']
+		self.players = []
 		
 		
 
