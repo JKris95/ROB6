@@ -318,7 +318,7 @@ def angular():
 """Global variables"""
 player = playerClass.Player()
 PORT = 50000 # port for communication between controller and turtlebots
-GAMEUNIT_PORT = 50070
+GAMEUNIT_PORT = 50007
 GAMEUNIT_IP = '192.168.1.34'
 turtle_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #Turtlebot communication
 gameunit_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #Game unit communication
