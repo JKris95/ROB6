@@ -13,7 +13,7 @@ times = ['0100','0200','0300','0400','0500','0600','0700','0800','0900','1000','
 
 class GameType():
 	def __init__(self, nrOfCones=None, nrOfTrue=None, category=None):
-		self.nr_of_clients = {'cones': 3, 'displayunit': 1, 'turtlebots': 1, 'controllers': 0}
+		self.nr_of_clients = {'cones': 3, 'displayunit': 1, 'turtlebots': 1, 'controllers': 1}
 		if category == None:
 			self.category = ''
 		else:	

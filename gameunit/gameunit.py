@@ -7,9 +7,9 @@ from gameClass import GameType
 import json
 
 #Global variables
-all_connections = {'cones': [], 'displayunit': [], 'turtlebots': [], 'turtlebot_masters': []}
+all_connections = {'cones': [], 'displayunit': [], 'turtlebots': [], 'turtlebot_masters': [], 'controllers':[]}
 all_addresses = {'cones': [], 'displayunit': [], 'turtlebots': [], 'turtlebot_masters': [], 'controllers':[]}
-turtlebot_ips = ['192.168.1.36', '192.168.1.40']
+turtlebot_ips = ['192.168.1.36', '192.168.1.40','192.168.1.38', '192.168.1.39' ]
 controller_ips = ['192.168.1.43', '192.168.1.45']
 displayunit_address = ['192.168.1.44']
 HOST=''
@@ -219,6 +219,11 @@ def recv_from_controller(connection):
 def recv_from_turtlebot(connection, address):
 	# Lets try to capture all data en event list
 	# Lets make a list with the names of all hits
+	while len(game_instance.players) < game_instance.nr_of_clients['controllers']:
+		pass
+
+	print("spagetti")
+
 	for player in game_instance.players:
 		if player['robot'] == address:
 			player_name = player['name']
@@ -276,14 +281,16 @@ try:
 except:
 	print ("Error: unable to start main thread")
 
-if game_instance.nr_of_clients['turtlebots']:
-	while len(all_connections) < game_instance.nr_of_clients['turtlebots']:
-		pass
-	for conn, address in zip(all_connections['turtlebots'], all_addresses['turtlebots']):
-		try:
-			_thread.start_new_thread( recv_from_turtlebot, (conn, address[0]))
-		except:
-			print ("Error: unable to start main thread")
+#if game_instance.nr_of_clients['turtlebots']:
+while len(all_connections['turtlebots']) < game_instance.nr_of_clients['turtlebots']:
+	pass
+
+
+for conn, address in zip(all_connections['turtlebots'], all_addresses['turtlebots']):
+	try:
+		_thread.start_new_thread( recv_from_turtlebot, (conn, address[0]))
+	except:
+		print ("Error: unable to start main thread")
 
 while True:
 	if game_instance.game_is_running == True:
