@@ -68,22 +68,13 @@ class GUI_select_difficulty(GUI_base):
 class GUI_select_player(GUI_base):
 	def __init__(self, master):
 		GUI_base.__init__(self,master)
-		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, height = 5, command = lambda *args:[self.close_window(GUI_select_difficulty)])
-<<<<<<< HEAD
-		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Martin']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([ ('name', player.player_info['name']), ('robot', player.player_info['robot']) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([('name', player.player_info['name']), ('robot', player.player_info['robot']) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, height = 5,  command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([('name', player.player_info['name']), ('robot', player.player_info['robot']) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([('name', player.player_info['name']), ('robot', player.player_info['robot']) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.append_window_list(self.quitButton,self.frame, self.player_martin, self.player_nina, self.player_natasja, self.player_guest)
-=======
-		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'],['Martin']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, height = 5,  command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'],['Martin']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([ ('name', player.player_info['name']), ('robot', player.player_info['robot']) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([ ('name', player.player_info['name']), ('robot', player.player_info['robot']) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, height = 5,  command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([ ('name', player.player_info['name']), ('robot', player.player_info['robot']) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([ ('name', player.player_info['name']), ('robot', player.player_info['robot']) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
 		self.reverse_var = tk.BooleanVar()
 		self.reverse_directions = tk.Checkbutton(self.frame, text = 'Reverse', width = 25, variable = self.reverse_var, onvalue = True, offvalue = False, command=player.reverse_directions)
 		self.append_window_list(self.quitButton,self.frame, self.player_martin, self.player_nina, self.player_natasja, self.player_guest, self.reverse_directions)
->>>>>>> 784a491a35fe122c60cc64005979953e9c2d59b4
 		self.packer(self.window_list)
 
 class GUI_player_screen(GUI_base):
@@ -263,10 +254,10 @@ def rotate_by_default():
 			if GPIO.input(channel) == False:
 				print ('Forward')
 				send_dict(turtle_conn, dict([ ('lin', player.speeds['lin']), ('ang', 0.0) ]))
-		if GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(36) == True and GPIO.input(38) == True:
-			print('rotate')
-			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', player.speeds['ang'])]))
-			wait_for_input()
+			elif GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(36) == True and GPIO.input(38) == True:
+				print('rotate')
+				send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', player.speeds['ang'])]))
+				wait_for_input()
 	if player.flipped:
 		player.reverse_directions()
 
