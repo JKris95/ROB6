@@ -206,8 +206,8 @@ def recv_from_controller(connection):
 				if player['name'] == person['name'] and player['robot'] == person['robot']:
 					print('player is already registered - returning.')
 					return	
-			for i in range(len(game_instance.players)):
-				if i['robot'] == player['robot ']:
+			for i, person in enumerate(game_instance.players):
+				if person['robot'] == player['robot ']:
 					game_instance.players.pop(i)
 					print('removed player: ', game_instance.players[i])
 					game_instance.players.append(player)
@@ -219,11 +219,15 @@ def recv_from_controller(connection):
 def recv_from_turtlebot(connection, address):
 	# Lets try to capture all data en event list
 	# Lets make a list with the names of all hits
-	while len(game_instance.players) < 2:
-		pass
+	for player in game_instance.players:
+		if player['robot'] == address:
+			player_name = player['name']
+			break
+	print(address, player_name)
 	while True:
 		hit = connection.recv(1024)
-		game_instance.hit_by_player.append()
+		game_instance.nr_of_turtle_events += 1
+		game_instance.event_list[game_instance.nr_of_turtle_events-1]['player'] = player_name
 
 
 
@@ -259,11 +263,12 @@ def start_game():
 		game_instance.packDUInfo(game_instance.DUInfo, game_instance.coneInfo)
 		game_instance.sendDisplayunitInfo(game_instance.DUInfo, all_connections['displayunit'])
 		print("Send display unit info is done")
-		for conn in all_connections['controllers']:
-			try:
-				_thread.start_new_thread(recv_from_controller (conn,))
-			except:
-				pass
+		if all_connections['controllers']:
+			for conn in all_connections['controllers']:
+				try:
+					_thread.start_new_thread(recv_from_controller (conn,))
+				except:
+					print("Couldn't start thread for controller")
 		time.sleep(2)
 
 try:
@@ -276,10 +281,9 @@ if game_instance.nr_of_clients['turtlebots']:
 		pass
 	for conn, address in zip(all_connections['turtlebots'], all_addresses['turtlebots']):
 		try:
-			_thread.start_new_thread( recv_from_turtlebot, (conn, address))
+			_thread.start_new_thread( recv_from_turtlebot, (conn, address[0]))
 		except:
 			print ("Error: unable to start main thread")
-
 
 while True:
 	if game_instance.game_is_running == True:

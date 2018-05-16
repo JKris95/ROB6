@@ -35,6 +35,7 @@ class GameType():
 		self.event_list = []
 		self.hit_by_player = []
 		self.nr_of_events = 0
+		self.nr_of_turtle_events = 0
 		self.nr_of_correct_hits = 0 #Not used
 		self.makeList(self.coneInfo, self.time_limit)
 		self.game_is_running = False
