@@ -7,9 +7,10 @@ from gameClass import GameType
 import json
 
 #Global variables
-all_connections = {'cones': [], 'displayunit': [], 'turtlebots': []}
-all_addresses = {'cones': [], 'displayunit': [], 'turtlebots': []}
-turtlebot_ips = ['192.168.1.38', '192.168.1.39', '192.168.1.36', '192.168.1.40']
+all_connections = {'cones': [], 'displayunit': [], 'turtlebots': [], 'turtlebot_masters': []}
+all_addresses = {'cones': [], 'displayunit': [], 'turtlebots': [], 'turtlebot_masters': [], 'controllers':[]}
+turtlebot_ips = ['192.168.1.36', '192.168.1.40']
+controller_ips = ['192.168.1.43', '192.168.1.45']
 displayunit_address = ['192.168.1.44']
 HOST=''
 PORT=50007
@@ -79,6 +80,8 @@ class GUI_game_settings(GUI_base): #TODO: make the button presses to stuff
 		if game_instance.game_type == 'coop': 
 			self.append_window_list(self.timer_seconds)
 			setattr(game_instance, 'nr_true', 2)
+		elif game_instance.game_type == 'battle':
+			setattr(game_instance, 'nr_true', 1)
 		
 		self.MODES = [
 			("colors"),
@@ -160,6 +163,9 @@ def socket_accept(numberofclients, connections, addresses): # accepting a fixed 
 			all_connections['displayunit'].append(conn)
 			all_addresses['displayunit'].append(address)
 			print("Connected to displayunit:" +address[0])
+		elif address[0] in controller_ips:
+			all_connections['controllers'].append(conn)
+			all_addresses['controllers'].append(address)
 		else:
 			all_connections['cones'].append(conn)
 			all_addresses['cones'].append(address)
@@ -192,6 +198,35 @@ def receive(connection, address):
 		game_instance.event_list.append(event_packer(game_event, address = address, time = game_instance.time_tracking['end']-game_instance.time_tracking['start'])) # Write to list containing information on all cones that were hit
 		print("Current event list: " + str(game_instance.event_list) + " has length: " + str(len(game_instance.event_list)))
 	
+def recv_from_controller(connection):
+	while True:
+		try:
+			player = json.loads(connection.recv(1024).decode())
+			for person in game_instance.players:
+				if player['name'] == person['name'] and player['robot'] == person['robot']:
+					print('player is already registered - returning.')
+					return	
+			for i in range(len(game_instance.players)):
+				if i['robot'] == player['robot ']:
+					game_instance.players.pop(i)
+					print('removed player: ', game_instance.players[i])
+					game_instance.players.append(player)
+					print('added player: ', player)
+					return
+		except:
+			print('Was not informed of any players')
+
+def recv_from_turtlebot(connection, address):
+	# Lets try to capture all data en event list
+	# Lets make a list with the names of all hits
+	while len(game_instance.players) < 2:
+		pass
+	while True:
+		hit = connection.recv(1024)
+		game_instance.hit_by_player.append()
+
+
+
 
 def startTheGame():
 	global receive_threads_created
@@ -224,12 +259,27 @@ def start_game():
 		game_instance.packDUInfo(game_instance.DUInfo, game_instance.coneInfo)
 		game_instance.sendDisplayunitInfo(game_instance.DUInfo, all_connections['displayunit'])
 		print("Send display unit info is done")
-		time.sleep(7)
+		for conn in all_connections['controllers']:
+			try:
+				_thread.start_new_thread(recv_from_controller (conn,))
+			except:
+				pass
+		time.sleep(2)
 
 try:
    _thread.start_new_thread( main, ())
 except:
-   print ("Error: unable to start thread")
+	print ("Error: unable to start main thread")
+
+if game_instance.nr_of_clients['turtlebots']:
+	while len(all_connections) < game_instance.nr_of_clients['turtlebots']:
+		pass
+	for conn, address in zip(all_connections['turtlebots'], all_addresses['turtlebots']):
+		try:
+			_thread.start_new_thread( recv_from_turtlebot, (conn, address))
+		except:
+			print ("Error: unable to start main thread")
+
 
 while True:
 	if game_instance.game_is_running == True:
