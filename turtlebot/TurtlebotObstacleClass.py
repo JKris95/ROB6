@@ -64,13 +64,11 @@ class Obstacle():
 
 		if turtlebot_state_variable is not 'Going_Back':
 			if turtlebot_state_variable == 'hit':
-				for i in range(0,30): #Look for a bit to see if you have hit a cone
-					if self.checkList(self.scan_filter, 0.14, 0.189, 4) == True:
-						self.pub.publish(direction)
-						self.noting_send = 0
-						time.sleep(0.3)
-						self.pub.publish('turtle_hit')
-				turtlebot_state_variable = 'Nothing'
+				if self.checkList(self.scan_filter, 0.14, 0.189, 4) == True:
+					self.pub.publish(direction)
+					self.noting_send = 0
+					time.sleep(0.3)
+					self.pub.publish('turtle_hit')
 
 			elif len(self.scan_filter)-(-24*np.mean(self.scan_filter)+13) >= 0:
 				self.pub.publish(direction)
