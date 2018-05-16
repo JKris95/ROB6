@@ -20,5 +20,5 @@ while True:
 	data = s.recv(1024)
 	pub.publish(data)
     if data == 'hit':
-        time.sleep(0.5)
+        time.sleep(1)
         pub.publish('Nothing')
