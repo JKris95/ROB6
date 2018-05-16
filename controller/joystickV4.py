@@ -40,7 +40,7 @@ class GUI_select_robot(GUI_base):
 		self.img_robot_1 = tk.PhotoImage(file='./192.168.1.38.gif')
 		self.img_robot_2 = tk.PhotoImage(file='./192.168.1.39.gif')  
 		self.button_robot_1 = tk.Button(self.frame, image=self.img_robot_1, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.38']), connect((turtle_conn, player.player_info['robot'], PORT), (gameunit_conn, GAMEUNIT_IP, GAMEUNIT_PORT)), self.unpacker(self.window_list), self.new_window(GUI_select_difficulty)])
-		self.button_robot_2 = tk.Button(self.frame, image=self.img_robot_2, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.39']), connect((turtle_conn, player.player_info['robot'], PORT), (gameunit_conn, GAMEUNIT_IP, GAMEUNIT_PORT)), self.unpacker(self.window_list), self.new_window(GUI_select_difficulty)])
+		self.button_robot_2 = tk.Button(self.frame, image=self.img_robot_2, command = lambda *args:[player.change_settings(player.player_info, ['robot'], ['192.168.1.39']), Connect(player.player_info['robot'], PORT, turtle_conn), Connect(GAMEUNIT_IP, GAMEUNIT_PORT, gameunit_conn), self.unpacker(self.window_list), self.new_window(GUI_select_difficulty)])
 		self.append_window_list(self.frame)
 		self.button_robot_1.pack(side=tk.LEFT)
 		self.button_robot_2.pack(side=tk.LEFT)
