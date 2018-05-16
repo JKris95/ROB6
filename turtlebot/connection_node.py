@@ -19,3 +19,6 @@ def turtlebot_state_function(data):
 while True:
 	data = s.recv(1024)
 	pub.publish(data)
+    if data == 'hit'
+        time.sleep(0.5)
+        pub.publish('Nothing')
