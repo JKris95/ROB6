@@ -214,30 +214,33 @@ def recv_from_controller(connection):
 	print("we got into recv_from_trolly")
 	
 	while True:
-		try:
-			player = json.loads(connection.recv(1024).decode())
-			print("this is the player i loaded", player)
-			print(game_instance.players, "g i d p")
+		while True:
+			try:
+				player = json.loads(connection.recv(1024).decode())
+				break
+			except:
+				print('Was not informed of any player')
 
-			if len(game_instance.players) < game_instance.nr_of_clients["controllers"]:
-				game_instance.players.append(player)
-				print("appended", player)
+		print("this is the player i loaded", player)
+		print(game_instance.players, "g i d p")
 
+		if len(game_instance.players) < game_instance.nr_of_clients["controllers"]:
+			game_instance.players.append(player)
+			print("appended", player)
+		else:
 			for person in game_instance.players:
 				print("this is person", person)
 				if player['name'] == person['name'] and player['robot'] == person['robot']:
 					print('player is already registered - returning.')
+					continue
 
-			for i, person in enumerate(game_instance.players):
-				print(i, "i", person, "person", player, "player")
-				if person['robot'] == player['robot']:
-					game_instance.players.pop(i)
-					print('removed player: ', game_instance.players[i])
-					game_instance.players.append(player)
-					print('added player: ', player)
-
-		except:
-			print('Was not informed of any players')
+		for i, person in enumerate(game_instance.players):
+			print("person ", i, person, "player", player,)
+			if person['robot'] == player['robot']:
+				game_instance.players.pop(i)
+				print('removed player: ', game_instance.players[i])
+				game_instance.players.append(player)
+				print('added player: ', player)
 
 def recv_from_turtlebot(connection, address):
 	# Lets try to capture all data en event list
@@ -305,7 +308,6 @@ def start_controller_thread():
 				test_it +=1
 			except:
 				print("Couldn't start thread for controller")
-	time.sleep(2)
 
 
 
