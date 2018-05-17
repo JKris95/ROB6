@@ -21,7 +21,6 @@ position = {'x': 0, 'y' : 0}
 quaternion = {'r1' : 0.000, 'r2' : 0.000, 'r3' : 0.000, 'r4' : 1.000} 
 while True:
     if topic_status_value == 'go back':
-        pub.publish('Going_Back')
         Goback.goto(position, quaternion)
         pub.publish('Nothing')
     #elif data == 'STOP':
