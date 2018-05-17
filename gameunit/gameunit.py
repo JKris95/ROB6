@@ -257,8 +257,9 @@ def recv_from_turtlebot(connection, address):
 	print(address, player_name)
 	while True:
 		hit = connection.recv(1024)
-<<<<<<< HEAD
 		game_instance.nr_of_turtle_events += 1 #Using a class attribute because both threads running the function should share the variable
+		print(game_instance.nr_of_turtle_events, "TE")
+		print(len(game_instance.event_list), "L EL")
 		if game_instance.nr_of_turtle_events == len(game_instance.event_list):
 			game_instance.event_list[game_instance.nr_of_turtle_events-1]['player'] = player_name
 		elif game_instance.nr_of_turtle_events > len(game_instance.event_list): # In case of false positive from a turtlebot that did not hit a cone
@@ -268,18 +269,8 @@ def recv_from_turtlebot(connection, address):
 				game_instance.event_list[entry]['player'] = 'NaN'
 			game_instance.nr_of_turtle_events = len(game_instance.event_list)
 			game_instance.event_list[game_instance.nr_of_turtle_events-1]['player'] = player_name
-=======
-		print("hit:", hit)
-		game_instance.nr_of_turtle_events += 1
-		print(game_instance.nr_of_turtle_events, "TE")
-		print(len(game_instance.event_list), "L EL")
-		game_instance.event_list[game_instance.nr_of_turtle_events-1]['player'] = player_name
->>>>>>> 49372683af41e7ec759edbab65684869efedf14c
 
 			
-
-
-
 def startTheGame():
 	global receive_threads_created
 	print ("click!")
