@@ -58,6 +58,7 @@ class GUI_connect_devices(GUI_base):
 	def create_connection(self): 
 		game_instance.nr_of_clients["cones"] = self.nr_cones_slider.get()
 		game_instance.nr_of_clients["turtlebots"] = self.nr_turtlebots_slider.get()
+		game_instance.nr_of_clients['controllers'] = self.nr_turtlebots_slider.get()
 		socket_bind(s, HOST, PORT, sum(game_instance.nr_of_clients.values()))
 		socket_accept(sum(game_instance.nr_of_clients.values()), all_connections, all_addresses)
 		self.new_window(GUI_select_game_type)
@@ -231,9 +232,18 @@ def recv_from_turtlebot(connection, address):
 	print(address, player_name)
 	while True:
 		hit = connection.recv(1024)
-		game_instance.nr_of_turtle_events += 1
-		game_instance.event_list[game_instance.nr_of_turtle_events-1]['player'] = player_name
+		game_instance.nr_of_turtle_events += 1 #Using a class attribute because both threads running the function should share the variable
+		if game_instance.nr_of_turtle_events == len(game_instance.event_list):
+			game_instance.event_list[game_instance.nr_of_turtle_events-1]['player'] = player_name
+		elif game_instance.nr_of_turtle_events > len(game_instance.event_list): # In case of false positive from a turtlebot that did not hit a cone
+			game_instance.nr_of_turtle_events = len(game_instance.event_list)
+		elif game_instance.nr_of_turtle_events < len(game_instance.event_list): # In case of false negative
+			for entry in range(game_instance.nr_of_turtle_events-1, len(game_instance.event_list-1)):
+				game_instance.event_list[entry]['player'] = 'NaN'
+			game_instance.nr_of_turtle_events = len(game_instance.event_list)
+			game_instance.event_list[game_instance.nr_of_turtle_events-1]['player'] = player_name
 
+			
 
 
 
@@ -290,7 +300,7 @@ for conn, address in zip(all_connections['turtlebots'], all_addresses['turtlebot
 	try:
 		_thread.start_new_thread( recv_from_turtlebot, (conn, address[0]))
 	except:
-		print ("Error: unable to start main thread")
+		print ("Error: unable to start turtlebot thread")
 
 while True:
 	if game_instance.game_is_running == True:
