@@ -27,8 +27,10 @@ pub = rospy.Publisher('turtlebot_state', String, queue_size=10)
 
 while True:
 	data = s.recv(1024)
+	print(data)
 	if data == 'go back':
 		pub.publish(data)
 	if data == 'hit':
+		pub.publish(data)
 		time.sleep(1)
 		pub.publish('Nothing')
