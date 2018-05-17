@@ -16,6 +16,7 @@ HOST=''
 PORT=50007
 conesInGame = False
 receive_threads_created = False
+controller_started = False
 times_lock = _thread.allocate_lock()
 game_instance = GameType()
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -212,7 +213,6 @@ def receive(connection, address):
 def recv_from_controller(connection):
 	print("we got into recv_from_trolly")
 	
-
 	while True:
 		try:
 			player = json.loads(connection.recv(1024).decode())
@@ -222,13 +222,12 @@ def recv_from_controller(connection):
 			if len(game_instance.players) < game_instance.nr_of_clients["controllers"]:
 				game_instance.players.append(player)
 				print("appended", player)
-				return
 
 			for person in game_instance.players:
 				print("this is person", person)
 				if player['name'] == person['name'] and player['robot'] == person['robot']:
 					print('player is already registered - returning.')
-					return	
+
 			for i, person in enumerate(game_instance.players):
 				print(i, "i", person, "person", player, "player")
 				if person['robot'] == player['robot']:
@@ -236,7 +235,7 @@ def recv_from_controller(connection):
 					print('removed player: ', game_instance.players[i])
 					game_instance.players.append(player)
 					print('added player: ', player)
-					return
+
 		except:
 			print('Was not informed of any players')
 
@@ -248,8 +247,6 @@ def recv_from_turtlebot(connection, address):
 	while len(game_instance.players) < game_instance.nr_of_clients['controllers']:
 		pass
 
-	print("spagetti")
-
 	for player in game_instance.players:
 		if player['robot'] == address:
 			player_name = player['name']
@@ -258,14 +255,14 @@ def recv_from_turtlebot(connection, address):
 	while True:
 		hit = connection.recv(1024)
 		game_instance.nr_of_turtle_events += 1 #Using a class attribute because both threads running the function should share the variable
-		print(game_instance.nr_of_turtle_events, "TE")
-		print(len(game_instance.event_list), "L EL")
+		print(game_instance.nr_of_turtle_events, "Turtle Events ")
+		print(len(game_instance.event_list), "Len Event List")
 		if game_instance.nr_of_turtle_events == len(game_instance.event_list):
 			game_instance.event_list[game_instance.nr_of_turtle_events-1]['player'] = player_name
 		elif game_instance.nr_of_turtle_events > len(game_instance.event_list): # In case of false positive from a turtlebot that did not hit a cone
 			game_instance.nr_of_turtle_events = len(game_instance.event_list)
 		elif game_instance.nr_of_turtle_events < len(game_instance.event_list): # In case of false negative
-			for entry in range(game_instance.nr_of_turtle_events-1, len(game_instance.event_list-1)):
+			for entry in range(game_instance.nr_of_turtle_events-1, len(game_instance.event_list)-1):
 				game_instance.event_list[entry]['player'] = 'NaN'
 			game_instance.nr_of_turtle_events = len(game_instance.event_list)
 			game_instance.event_list[game_instance.nr_of_turtle_events-1]['player'] = player_name
@@ -273,6 +270,7 @@ def recv_from_turtlebot(connection, address):
 			
 def startTheGame():
 	global receive_threads_created
+	global controller_started
 	print ("click!")
 	if not receive_threads_created:
 		for index, conn in enumerate(all_connections['cones']):
@@ -281,12 +279,37 @@ def startTheGame():
 			except:
 				print ("Error: unable to start thread")
 		receive_threads_created = True	# Only create threads once
+	if not controller_started: 
+		start_controller_thread()
+		controller_started = True
+
 	game_instance.game_is_running = True
 	del(game_instance.event_list[:]) #Ensure that correct hits from previous game doesn't carry over
 	#game_instance.nr_of_events = 0 # Reinitialize nr_of_events since even_list is cleared
 	game_instance.nr_of_turtle_events = 0
 
+
+def start_controller_thread():
 		
+	test_it = 0
+	if all_connections['controllers']:
+		print("we are in all conn")
+		for conn in all_connections['controllers']:
+			print("This in the conn", conn)
+			
+			try:
+				print("we are trying")
+				print("number of time we been here", test_it)
+				_thread.start_new_thread(recv_from_controller (conn,))
+				print("startet a recv thread")
+				test_it +=1
+			except:
+				print("Couldn't start thread for controller")
+	time.sleep(2)
+
+
+
+
 def start_game():
 		print ("starting game...")
 		game_instance.makeList(game_instance.coneInfo, game_instance.time_limit)
@@ -302,23 +325,6 @@ def start_game():
 		game_instance.packDUInfo(game_instance.DUInfo, game_instance.coneInfo)
 		game_instance.sendDisplayunitInfo(game_instance.DUInfo, all_connections['displayunit'])
 		print("Send display unit info is done")
-		
-		test_it = 0
-
-		if all_connections['controllers']:
-			print("we are in all conn")
-			for conn in all_connections['controllers']:
-				print("This in the conn", conn)
-				
-				try:
-					print("we are trying")
-					print("number of time we been here", test_it)
-					_thread.start_new_thread(recv_from_controller (conn,))
-					print("startet a recv thread")
-					test_it +=1
-				except:
-					print("Couldn't start thread for controller")
-		time.sleep(2)
 
 try:
    _thread.start_new_thread( main, ())
@@ -328,8 +334,6 @@ except:
 #if game_instance.nr_of_clients['turtlebots']:
 while len(all_connections['turtlebots']) < game_instance.nr_of_clients['turtlebots']:
 	pass
-
-print("italien salad")
 
 for conn, address in zip(all_connections['turtlebots'], all_addresses['turtlebots']):
 	try:
@@ -349,7 +353,7 @@ while True:
 			game_instance.coop_game(all_connections['cones'], all_connections['displayunit'], all_connections['turtlebots'], game_instance.time_limit)
 
 	else:
-		print("fuck")
+		print("Game instance is false")
 
 	time.sleep(3)
 
