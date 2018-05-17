@@ -26,7 +26,7 @@ while True:
 		Back.obstacle_cone('Back')
 		Front.obstacle_not_cone('Front')
     	Back.obstacle_not_cone('Back')
-	elif turtlebot_state_function is not 'go back'
+	elif turtlebot_state_function is not 'go back':
 		Front.obstacle_not_cone('Front')
     	Back.obstacle_not_cone('Back')
     #end = time.time()
