@@ -38,11 +38,14 @@ def publish_cmd_vel():
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 #angular has to be .z value to change
 			pub.publish(twist)
 			time.sleep(0.5)
-		if turtlebot_state_variable == 'Back': #What to do if the turtlebot detects something in front of it
+		elif turtlebot_state_variable == 'Back': #What to do if the turtlebot detects something in front of it
 			twist.linear.x = 0.2; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 #angular has to be .z value to change
 			pub.publish(twist)
 			time.sleep(0.5)
+		elif twist.linear.x is not 0:
+			twist.linear.x = 0; twist.linear.y = 0; twist.linear.z = 0 
+			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 
 
 def recv_from_controller():
 

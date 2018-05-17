@@ -25,14 +25,6 @@ from std_msgs.msg import String
 import numpy as np
 import time
 
-turtlebot_state_variable = 'Nothing'
-
-def turtlebot_state_function(data): #Subscriber which listen to topic state
-	global turtlebot_state_variable 
-	turtlebot_state_variable = data.data
-
-rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
-
 
 class Obstacle():
 	def __init__(self):
@@ -54,23 +46,23 @@ class Obstacle():
 	def get_reading(self):
 		self.msg = rospy.wait_for_message("/scan", LaserScan)
 
-	def obstacle(self, steps, start, distance, direction):
+	def make_list(self, steps, start, distance):
 		self.scan_filter = []
-		msg_ranges_lenght = len(self.msg.ranges)
+		smsg_ranges_lenght = len(self.msg.ranges)
 		for i in range(steps):
 			if self.msg.ranges[start] >= self.LIDAR_ERR and self.msg.ranges[start] <= distance:
 				self.scan_filter.append(self.msg.ranges[start])
 			start = (start + 1) % msg_ranges_lenght
 
-		if turtlebot_state_variable is not 'Going_Back':
-			if turtlebot_state_variable == 'hit':
-				if self.checkList(self.scan_filter, 0.14, 0.189, 4) == True:
-					self.pub.publish(direction)
-					self.noting_send = 0
-					time.sleep(0.3)
-					self.pub.publish('turtle_hit')
+	def obstacle_cone(self, direction)
+		if self.checkList(self.scan_filter, 0.14, 0.189, 4) == True:
+			self.pub.publish(direction)
+			self.noting_send = 0
+			time.sleep(0.3)
+			self.pub.publish('turtle_hit')
 
-			elif len(self.scan_filter)-(-24*np.mean(self.scan_filter)+13) >= 0:
+	def obstacle_not_cone(self, direction)
+			if len(self.scan_filter)-(-24*np.mean(self.scan_filter)+13) >= 0:
 				self.pub.publish(direction)
 				print(direction)
 				self.is_detected = 1
