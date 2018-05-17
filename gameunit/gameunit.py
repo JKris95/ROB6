@@ -110,10 +110,20 @@ class GUI_running_window(GUI_base):
 		self.loop_game = tk.Checkbutton(self.frame, text = 'Loop game', width = 25, variable = self.cb_var, onvalue = True, offvalue = False, command=self.change_loop_state)
 		self.current_game = tk.Label(self.frame, text=game_instance.game_type)
 		self.current_category = tk.Label(self.frame, text=game_instance.category)
-		self.current_player_1 = tk.Label(self.frame, text="Current player1")
-		self.current_player_2 = tk.Label(self.frame, text="Current player2")
-		self.current_correct_answers = tk.Label(self.frame, text="Correct answers")
-		self.append_window_list(self.frame, self.loop_game, self.current_game, self.current_category, self.current_correct_answers, self.current_player_1, self.current_player_2, self.quitButton)
+		
+		try: 
+			self.current_player_1 = tk.Label(self.frame, text=game_instance.players[0]["name"])
+			self.append_window_list(self.current_player_1)
+		except IndexError:
+			print("IndexError 1")
+
+		try:
+			self.current_player_2 = tk.Label(self.frame, text=game_instance.players[1]["name"])
+			self.append_window_list(self.current_player_2)
+		except IndexError:
+			print("IndexError 2")
+		
+		self.append_window_list(self.frame, self.loop_game, self.current_game, self.current_category, self.quitButton)
 		self.packer(self.window_list)
 
 
@@ -199,15 +209,28 @@ def receive(connection, address):
 		print("Current event list: " + str(game_instance.event_list) + " has length: " + str(len(game_instance.event_list)))
 	
 def recv_from_controller(connection):
+	print("we got into recv_from_trolly")
+	
+
 	while True:
 		try:
 			player = json.loads(connection.recv(1024).decode())
+			print("this is the player i loaded", player)
+			print(game_instance.players, "g i d p")
+
+			if len(game_instance.players) < game_instance.nr_of_clients["controllers"]:
+				game_instance.players.append(player)
+				print("appended", player)
+				return
+
 			for person in game_instance.players:
+				print("this is person", person)
 				if player['name'] == person['name'] and player['robot'] == person['robot']:
 					print('player is already registered - returning.')
 					return	
 			for i, person in enumerate(game_instance.players):
-				if person['robot'] == player['robot ']:
+				print(i, "i", person, "person", player, "player")
+				if person['robot'] == player['robot']:
 					game_instance.players.pop(i)
 					print('removed player: ', game_instance.players[i])
 					game_instance.players.append(player)
@@ -219,6 +242,8 @@ def recv_from_controller(connection):
 def recv_from_turtlebot(connection, address):
 	# Lets try to capture all data en event list
 	# Lets make a list with the names of all hits
+	print(len(game_instance.players), "first")
+	print(game_instance.nr_of_clients['controllers'], "sammelign")
 	while len(game_instance.players) < game_instance.nr_of_clients['controllers']:
 		pass
 
@@ -231,7 +256,10 @@ def recv_from_turtlebot(connection, address):
 	print(address, player_name)
 	while True:
 		hit = connection.recv(1024)
+		print("hit:", hit)
 		game_instance.nr_of_turtle_events += 1
+		print(game_instance.nr_of_turtle_events, "TE")
+		print(len(game_instance.event_list), "L EL")
 		game_instance.event_list[game_instance.nr_of_turtle_events-1]['player'] = player_name
 
 
@@ -250,7 +278,7 @@ def startTheGame():
 	game_instance.game_is_running = True
 	del(game_instance.event_list[:]) #Ensure that correct hits from previous game doesn't carry over
 	#game_instance.nr_of_events = 0 # Reinitialize nr_of_events since even_list is cleared
-
+	game_instance.nr_of_turtle_events = 0
 
 		
 def start_game():
@@ -268,10 +296,20 @@ def start_game():
 		game_instance.packDUInfo(game_instance.DUInfo, game_instance.coneInfo)
 		game_instance.sendDisplayunitInfo(game_instance.DUInfo, all_connections['displayunit'])
 		print("Send display unit info is done")
+		
+		test_it = 0
+
 		if all_connections['controllers']:
+			print("we are in all conn")
 			for conn in all_connections['controllers']:
+				print("This in the conn", conn)
+				
 				try:
+					print("we are trying")
+					print("number of time we been here", test_it)
 					_thread.start_new_thread(recv_from_controller (conn,))
+					print("startet a recv thread")
+					test_it +=1
 				except:
 					print("Couldn't start thread for controller")
 		time.sleep(2)
@@ -285,6 +323,7 @@ except:
 while len(all_connections['turtlebots']) < game_instance.nr_of_clients['turtlebots']:
 	pass
 
+print("italien salad")
 
 for conn, address in zip(all_connections['turtlebots'], all_addresses['turtlebots']):
 	try:
@@ -293,6 +332,7 @@ for conn, address in zip(all_connections['turtlebots'], all_addresses['turtlebot
 		print ("Error: unable to start main thread")
 
 while True:
+	
 	if game_instance.game_is_running == True:
 		start_game()
 		print('looking for a game to play')
@@ -301,7 +341,11 @@ while True:
 
 		elif game_instance.game_type == 'coop':
 			game_instance.coop_game(all_connections['cones'], all_connections['displayunit'], all_connections['turtlebots'], game_instance.time_limit)
-			
+
+	else:
+		print("fuck")
+
+	time.sleep(3)
 
 
 
