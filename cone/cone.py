@@ -43,12 +43,13 @@ incorrectsound = pygame.mixer.Sound('/home/pi/Desktop/wav/wrong.wav')
 HOST = '192.168.1.34'    # The remote host, 
 PORT = 50007              # The same port as used by the server
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-try: 
-	s.connect((HOST, PORT))
+while True:
+	try: 
+		s.connect((HOST, PORT))
+		break
 
-except:
-	print("FAILED. Sleep briefly & try again")
-	time.sleep(10)
+	except:
+		print("FAILED. try again")
 
 #Display the questionmark on the screen
 questionlabel.pack()
