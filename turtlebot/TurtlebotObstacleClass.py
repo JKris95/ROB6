@@ -33,6 +33,7 @@ class Obstacle():
 		self.LIDAR_ERR = 0.05
 		self.is_detected = 0
 		self.nothing_sendt = 0
+		self.msg = 0
 
 
 	def get_scan(self, data, min_val, max_val):
@@ -46,22 +47,22 @@ class Obstacle():
 	def get_reading(self):
 		self.msg = rospy.wait_for_message("/scan", LaserScan)
 
-	def make_list(self, steps, start, distance):
+	def make_list(self, steps, start, distance, reading):
 		self.scan_filter = []
-		smsg_ranges_lenght = len(self.msg.ranges)
+		msg_ranges_lenght = len(reading.ranges)
 		for i in range(steps):
-			if self.msg.ranges[start] >= self.LIDAR_ERR and self.msg.ranges[start] <= distance:
-				self.scan_filter.append(self.msg.ranges[start])
+			if reading.ranges[start] >= self.LIDAR_ERR and reading.ranges[start] <= distance:
+				self.scan_filter.append(reading.ranges[start])
 			start = (start + 1) % msg_ranges_lenght
 
-	def obstacle_cone(self, direction)
+	def obstacle_cone(self, direction):
 		if self.checkList(self.scan_filter, 0.14, 0.189, 4) == True:
 			self.pub.publish(direction)
 			self.noting_send = 0
 			time.sleep(0.3)
 			self.pub.publish('turtle_hit')
 
-	def obstacle_not_cone(self, direction)
+	def obstacle_not_cone(self, direction):
 			if len(self.scan_filter)-(-24*np.mean(self.scan_filter)+13) >= 0:
 				self.pub.publish(direction)
 				print(direction)
