@@ -62,6 +62,7 @@ class GUI_connect_devices(GUI_base):
 		game_instance.nr_of_clients['controllers'] = self.nr_turtlebots_slider.get()
 		socket_bind(s, HOST, PORT, sum(game_instance.nr_of_clients.values()))
 		socket_accept(sum(game_instance.nr_of_clients.values()), all_connections, all_addresses)
+		start_controller_thread()
 		self.new_window(GUI_select_game_type)
 	
 class GUI_select_game_type(GUI_base): 
@@ -170,18 +171,19 @@ def socket_accept(numberofclients, connections, addresses): # accepting a fixed 
 		if address[0] in turtlebot_ips:
 			all_connections['turtlebots'].append(conn)
 			all_addresses['turtlebots'].append(address)
-			print("Connected to turtlebot:" +address[0])
+			print("Connected to turtlebot: " +address[0])
 		elif address[0] in displayunit_address:
 			all_connections['displayunit'].append(conn)
 			all_addresses['displayunit'].append(address)
-			print("Connected to displayunit:" +address[0])
+			print("Connected to displayunit: " +address[0])
 		elif address[0] in controller_ips:
 			all_connections['controllers'].append(conn)
 			all_addresses['controllers'].append(address)
+			print('Connected to controller: ' + address[0])
 		else:
 			all_connections['cones'].append(conn)
 			all_addresses['cones'].append(address)
-			print("Connected to cone:" +address[0])
+			print("Connected to cone: " +address[0])
 	print('\nEstablished connections')
 	for name in all_connections.keys():
 		print(name+': ' + str(len(all_connections[name])))
@@ -227,20 +229,25 @@ def recv_from_controller(connection):
 		if len(game_instance.players) < game_instance.nr_of_clients["controllers"]:
 			game_instance.players.append(player)
 			print("appended", player)
-		else:
-			for person in game_instance.players:
-				print("this is person", person)
-				if player['name'] == person['name'] and player['robot'] == person['robot']:
-					print('player is already registered - returning.')
-					continue
 
-		for i, person in enumerate(game_instance.players):
-			print("person ", i, person, "player", player,)
-			if person['robot'] == player['robot']:
-				game_instance.players.pop(i)
-				print('removed player: ', game_instance.players[i])
-				game_instance.players.append(player)
-				print('added player: ', player)
+		elif player_is_registered(game_instance.players, player):
+			print('player is already registered')
+
+		else:
+			for i, person in enumerate(game_instance.players):
+				print("person ", i, person, "player", player,)
+				if person['robot'] == player['robot']:
+					game_instance.players.pop(i)
+					print('removed player: ', game_instance.players[i])
+					game_instance.players.append(player)
+					print('added player: ', player)
+
+def player_is_registered(player_list, player):
+	for person in player_list:
+		print("this is person", person)
+		if player['name'] == person['name'] and player['robot'] == person['robot']:
+			return True
+	return False
 
 def recv_from_turtlebot(connection, address):
 	# Lets try to capture all data en event list
@@ -248,13 +255,13 @@ def recv_from_turtlebot(connection, address):
 	print(len(game_instance.players), "first")
 	print(game_instance.nr_of_clients['controllers'], "sammelign")
 	while len(game_instance.players) < game_instance.nr_of_clients['controllers']:
-		pass
+		time.sleep(0.1)
 
 	for player in game_instance.players:
 		if player['robot'] == address:
 			player_name = player['name']
 			break
-	print(address, player_name)
+	print("I know of the player ", address, player_name)
 	while True:
 		hit = connection.recv(1024)
 		game_instance.nr_of_turtle_events += 1 #Using a class attribute because both threads running the function should share the variable
@@ -282,10 +289,6 @@ def startTheGame():
 			except:
 				print ("Error: unable to start thread")
 		receive_threads_created = True	# Only create threads once
-	if not controller_started: 
-		start_controller_thread()
-		controller_started = True
-
 	game_instance.game_is_running = True
 	del(game_instance.event_list[:]) #Ensure that correct hits from previous game doesn't carry over
 	#game_instance.nr_of_events = 0 # Reinitialize nr_of_events since even_list is cleared
@@ -293,21 +296,18 @@ def startTheGame():
 
 
 def start_controller_thread():
-		
-	test_it = 0
+	test_it = 1
 	if all_connections['controllers']:
-		print("we are in all conn")
+		print("starting controller threads")
 		for conn in all_connections['controllers']:
-			print("This in the conn", conn)
-			
+			print("controller thread number ", test_it)
 			try:
-				print("we are trying")
-				print("number of time we been here", test_it)
 				_thread.start_new_thread(recv_from_controller (conn,))
-				print("startet a recv thread")
-				test_it +=1
 			except:
 				print("Couldn't start thread for controller")
+
+			print("started a controller thread")
+			test_it +=1
 
 
 
@@ -335,7 +335,7 @@ except:
 
 #if game_instance.nr_of_clients['turtlebots']:
 while len(all_connections['turtlebots']) < game_instance.nr_of_clients['turtlebots']:
-	pass
+	time.sleep(0.1)
 
 for conn, address in zip(all_connections['turtlebots'], all_addresses['turtlebots']):
 	try:
