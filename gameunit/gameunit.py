@@ -62,7 +62,6 @@ class GUI_connect_devices(GUI_base):
 		game_instance.nr_of_clients['controllers'] = self.nr_turtlebots_slider.get()
 		socket_bind(s, HOST, PORT, sum(game_instance.nr_of_clients.values()))
 		socket_accept(sum(game_instance.nr_of_clients.values()), all_connections, all_addresses)
-		start_controller_thread()
 		self.new_window(GUI_select_game_type)
 	
 class GUI_select_game_type(GUI_base): 
@@ -108,7 +107,6 @@ class GUI_game_settings(GUI_base): #TODO: make the button presses to stuff
 class GUI_running_window(GUI_base):
 	def __init__(self, master):
 		GUI_base.__init__(self,master)
-		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, height = 5, command = lambda *args:[self.close_window(GUI_game_settings)])
 		self.cb_var = tk.BooleanVar()
 		self.loop_game = tk.Checkbutton(self.frame, text = 'Loop game', width = 25, variable = self.cb_var, onvalue = True, offvalue = False, command=self.change_loop_state)
 		self.current_game = tk.Label(self.frame, text=game_instance.game_type)
@@ -126,14 +124,20 @@ class GUI_running_window(GUI_base):
 		except IndexError:
 			print("IndexError 2")
 		
-		self.append_window_list(self.frame, self.loop_game, self.current_game, self.current_category, self.quitButton)
+		self.append_window_list(self.frame, self.loop_game, self.current_game, self.current_category)
 		self.packer(self.window_list)
-
+		_thread.start_new_thread(self.play_again, ())
 
 	def change_loop_state(self):
 		print ("variable is {0}".format(self.cb_var.get()))
 		game_instance.loop_game = self.cb_var.get() #gets the current value of cb_var and puts it into player.flipped
 
+	def play_again(self):
+		while True:
+			if game_instance.game_is_running == False:
+				self.close_window(GUI_game_settings)
+				break
+			time.sleep(1)
 #GUI END
 
 
@@ -141,7 +145,7 @@ class GUI_running_window(GUI_base):
 def main():
 	root = tk.Tk()
 	#root.attributes('-fullscreen',True)
-	root.geometry('350x250+0+0')
+	root.geometry('450x300+0+0')
 	GUI_connect_devices(root)
 	root.mainloop()
 
@@ -209,22 +213,23 @@ def receive(connection, address):
 		times_lock.release()
 		game_event = json.loads(game_event_raw.decode())
 		print("Event received: " + str(game_event))
-		game_instance.event_list.append(event_packer(game_event, address = address, time = game_instance.time_tracking['end']-game_instance.time_tracking['start'])) # Write to list containing information on all cones that were hit
+		game_instance.event_list.append(event_packer(game_event, address = address, time = (game_instance.time_tracking['end']-game_instance.time_tracking['start']), category = game_instance.category, game_type = game_instance.game_type, game_nr = game_instance.game_nr, date = time.asctime())) # Write to list containing information on all cones that were hit
 		print("Current event list: " + str(game_instance.event_list) + " has length: " + str(len(game_instance.event_list)))
 	
 def recv_from_controller(connection):
-	print("we got into recv_from_trolly")
-	
+	print("we got into recv_from_controller")
+	time.sleep(10)
+	print("just slept 10 seconds")
 	while True:
 		while True:
 			try:
-				player = json.loads(connection.recv(1024).decode())
+				player_raw = connection.recv(1024)
+				player = json.loads(player_raw.decode())
 				break
 			except:
 				print('Was not informed of any player')
 
-		print("this is the player i loaded", player)
-		print(game_instance.players, "g i d p")
+		#print("this is the player i loaded", player)
 
 		if len(game_instance.players) < game_instance.nr_of_clients["controllers"]:
 			game_instance.players.append(player)
@@ -290,9 +295,9 @@ def startTheGame():
 				print ("Error: unable to start thread")
 		receive_threads_created = True	# Only create threads once
 	game_instance.game_is_running = True
-	del(game_instance.event_list[:]) #Ensure that correct hits from previous game doesn't carry over
+	#del(game_instance.event_list[:]) #Ensure that correct hits from previous game doesn't carry over
 	#game_instance.nr_of_events = 0 # Reinitialize nr_of_events since even_list is cleared
-	game_instance.nr_of_turtle_events = 0
+	#game_instance.nr_of_turtle_events = 0
 
 
 def start_controller_thread():
@@ -302,7 +307,7 @@ def start_controller_thread():
 		for conn in all_connections['controllers']:
 			print("controller thread number ", test_it)
 			try:
-				_thread.start_new_thread(recv_from_controller (conn,))
+				_thread.start_new_thread(recv_from_controller, (conn,))
 			except:
 				print("Couldn't start thread for controller")
 
@@ -343,21 +348,31 @@ for conn, address in zip(all_connections['turtlebots'], all_addresses['turtlebot
 	except:
 		print ("Error: unable to start turtlebot thread")
 
+while len(all_connections['controllers']) < game_instance.nr_of_clients['controllers']:
+	time.sleep(0.1)
+print("Starting the controllers thread")
+
+start_controller_thread()
+
+#start_controller_thread()
+print("we passed")
+
 while True:
 	
 	if game_instance.game_is_running == True:
 		start_game()
 		print('looking for a game to play')
+		print(game_instance.game_type, "game type")
 		if game_instance.game_type == 'battle':
 			game_instance.battle_game(all_connections['turtlebots'])
 
 		elif game_instance.game_type == 'coop':
 			game_instance.coop_game(all_connections['cones'], all_connections['displayunit'], all_connections['turtlebots'], game_instance.time_limit)
 
-	else:
-		print("Game instance is false")
+	#else:
+	#	print("Game instance is false")
 
-	time.sleep(3)
+	time.sleep(1)
 
 
 

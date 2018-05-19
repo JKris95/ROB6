@@ -3,6 +3,7 @@ import json
 import time
 import threading
 import pygame
+import pandas as pd 
 
 pygame.mixer.init()
 
@@ -13,7 +14,7 @@ times = ['0100','0200','0300','0400','0500','0600','0700','0800','0900','1000','
 
 class GameType():
 	def __init__(self, nrOfCones=None, nrOfTrue=None, category=None):
-		self.nr_of_clients = {'cones': 3, 'displayunit': 1, 'turtlebots': 1, 'controllers': 1}
+		self.nr_of_clients = {'cones': 0, 'displayunit': 1, 'turtlebots': 1, 'controllers': 1}
 		if category == None:
 			self.category = ''
 		else:	
@@ -43,11 +44,12 @@ class GameType():
 		self.loop_game = False
 		self.category_names = ['colors', 'animals', 'times']
 		self.players = []
-		
+		self.game_nr = 1
+		self.results = pd.DataFrame(self.event_list)
 		
 
 	def makeList(self, coneInformation, coop_time_limit):
-		if len(self.coneInfo) < 3: # Added to avoid that coneinfo increases in length every time a game starts
+		if len(self.coneInfo) < self.nr_of_clients["cones"]: # Added to avoid that coneinfo increases in length every time a game starts
 			for i in range(self.nr_of_clients['cones']):
 				coneInformation.append({"Role": 'False', "Content": 'questionmark', 'time_limit': self.time_limit})
 	
@@ -138,8 +140,15 @@ class GameType():
 				self.nr_of_events +=1
 				recent_event = self.event_list[self.nr_of_events-1]
 				if recent_event['role'] == True:
-					winner = recent_event['player']
-					print(winner + "won")
+					try: 
+						winner = recent_event['player']
+						print(winner + "won")
+					except:
+						print("I do not know who won")
+					
+					self.results = pd.DataFrame(self.event_list)
+					print(self.results, "dataframe")
+					self.game_nr += 1
 					if not self.loop_game:
 						self.game_is_running = False
 					self.send_info(turtle_conns, defaultContent=b'go back') #Send signal to turtlebots telling them to go back to start 
@@ -207,6 +216,9 @@ class GameType():
 			print(outcome)
 			if outcome[0] == True:
 				print("Congratulation, you won")
+				self.results = pd.DataFrame(self.event_list)
+				print(self.results)
+				self.game_nr +=1
 				if not self.loop_game:
 					self.game_is_running = False
 				self.packDUInfo(self.DUInfo, defaultContent='victory')
