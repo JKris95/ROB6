@@ -5,6 +5,10 @@ import tkinter as tk
 import _thread
 from gameClass import GameType
 import json
+from sqlalchemy import create_engine
+
+
+
 
 #Global variables
 all_connections = {'cones': [], 'displayunit': [], 'turtlebots': [], 'turtlebot_masters': [], 'controllers':[]}
@@ -20,6 +24,7 @@ controller_started = False
 times_lock = _thread.allocate_lock()
 game_instance = GameType()
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+engine = create_engine('sqlite:///GAMEDATA.db', echo=False)
 
 #GUI START
 class GUI_base:
@@ -69,9 +74,20 @@ class GUI_select_game_type(GUI_base):
 		GUI_base.__init__(self,master)
 		self.game_battle = tk.Button(self.frame, text = 'Battle', width = 25, height = 5, command = lambda *args:[self.unpacker(self.window_list), setattr(game_instance, 'game_type', 'battle'), self.new_window(GUI_game_settings)])
 		self.game_coop = tk.Button(self.frame, text = 'Coop', width = 25, height = 5, command = lambda *args:[self.unpacker(self.window_list), setattr(game_instance, 'game_type', 'coop'), self.new_window(GUI_game_settings)])
-		self.append_window_list(self.frame, self.game_battle, self.game_coop)
+		self.save_data = tk.Button(self.frame, text = 'Save game data', width = 25, height = 5, command = lambda *args:[self.transfer_dataframe_to_database()])
+		self.append_window_list(self.frame, self.game_battle, self.game_coop, self.save_data)
 		self.packer(self.window_list)
 
+	def transfer_dataframe_to_database(self):
+		game_instance.results.to_sql('game_data', con=engine, if_exists='append')
+		print("Game data saved in database")
+
+	def fetch_data_from_database(self):
+		"""
+		Loads all the data placed into the database. 
+		"""
+		loaded_data = engine.execute("SELECT * FROM game_data").fetchall()
+		print(loaded_data)
 class GUI_game_settings(GUI_base): #TODO: make the button presses to stuff
 	def __init__(self, master):
 		GUI_base.__init__(self,master)
