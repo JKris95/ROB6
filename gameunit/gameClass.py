@@ -112,7 +112,6 @@ class GameType():
 					enConeInformation = enConeInformation.encode()
 					connections[i].sendall(enConeInformation)
 					print(str(enConeInformation) + 'was sent')
-				self.time_tracking['start'] = time.time()
 			elif defaultContent:
 				for conn in connections:
 					conn.sendall(defaultContent)

@@ -229,7 +229,7 @@ def receive(connection, address):
 		times_lock.release()
 		game_event = json.loads(game_event_raw.decode())
 		print("Event received: " + str(game_event))
-		game_instance.event_list.append(event_packer(game_event, address = address, time = (game_instance.time_tracking['end']-game_instance.time_tracking['start']), category = game_instance.category, game_type = game_instance.game_type, game_nr = game_instance.game_nr, date = time.asctime())) # Write to list containing information on all cones that were hit
+		game_instance.event_list.append(event_packer(game_event, address = address, time = (game_instance.time_tracking['end']-game_instance.time_tracking['start']), category = game_instance.category, game_type = game_instance.game_type, game_nr = game_instance.game_nr, date = time.asctime(), control_mode = 'N/A', player = 'N/A')) # Write to list containing information on all cones that were hit
 		print("Current event list: " + str(game_instance.event_list) + " has length: " + str(len(game_instance.event_list)))
 	
 def recv_from_controller(connection):
@@ -254,6 +254,7 @@ def recv_from_controller(connection):
 		elif player_is_registered(game_instance.players, player):
 			print('player is already registered')
 
+
 		else:
 			for i, person in enumerate(game_instance.players):
 				print("person ", i, person, "player", player,)
@@ -264,39 +265,49 @@ def recv_from_controller(connection):
 					print('added player: ', player)
 
 def player_is_registered(player_list, player):
-	for person in player_list:
+	for idx, person in enumerate(player_list):
 		print("this is person", person)
 		if player['name'] == person['name'] and player['robot'] == person['robot']:
+			if player['control_mode'] != person['control_mode']:
+				print('updating control mode')
+				player_list[idx]['control_mode'] = player['control_mode']
 			return True
 	return False
 
 def recv_from_turtlebot(connection, address):
 	# Lets try to capture all data en event list
 	# Lets make a list with the names of all hits
-	print(len(game_instance.players), "first")
-	print(game_instance.nr_of_clients['controllers'], "sammelign")
+	#print(len(game_instance.players), "first")
+	#print(game_instance.nr_of_clients['controllers'], "sammelign")
 	while len(game_instance.players) < game_instance.nr_of_clients['controllers']:
 		time.sleep(0.1)
 
-	for player in game_instance.players:
-		if player['robot'] == address:
-			player_name = player['name']
-			break
-	print("I know of the player ", address, player_name)
+	
 	while True:
+		for player in game_instance.players:
+			if player['robot'] == address:
+				player_name = player['name']
+				control_mode = player['control_mode']
+				break
+		print("I know of the player ", address, player_name)
 		hit = connection.recv(1024)
 		game_instance.nr_of_turtle_events += 1 #Using a class attribute because both threads running the function should share the variable
 		print(game_instance.nr_of_turtle_events, "Turtle Events ")
 		print(len(game_instance.event_list), "Len Event List")
 		if game_instance.nr_of_turtle_events == len(game_instance.event_list):
 			game_instance.event_list[game_instance.nr_of_turtle_events-1]['player'] = player_name
+			game_instance.event_list[game_instance.nr_of_turtle_events-1]['control_mode'] = control_mode
+
 		elif game_instance.nr_of_turtle_events > len(game_instance.event_list): # In case of false positive from a turtlebot that did not hit a cone
 			game_instance.nr_of_turtle_events = len(game_instance.event_list)
+
 		elif game_instance.nr_of_turtle_events < len(game_instance.event_list): # In case of false negative
-			for entry in range(game_instance.nr_of_turtle_events-1, len(game_instance.event_list)-1):
-				game_instance.event_list[entry]['player'] = 'NaN'
 			game_instance.nr_of_turtle_events = len(game_instance.event_list)
 			game_instance.event_list[game_instance.nr_of_turtle_events-1]['player'] = player_name
+			game_instance.event_list[game_instance.nr_of_turtle_events-1]['control_mode'] = control_mode
+			#for entry in range(game_instance.nr_of_turtle_events-1, len(game_instance.event_list)-1):
+			#	game_instance.event_list[entry]['player'] = 'NaN'
+			
 
 			
 def startTheGame():
@@ -330,9 +341,6 @@ def start_controller_thread():
 			print("started a controller thread")
 			test_it +=1
 
-
-
-
 def start_game():
 		print ("starting game...")
 		game_instance.makeList(game_instance.coneInfo, game_instance.time_limit)
@@ -348,6 +356,7 @@ def start_game():
 		game_instance.packDUInfo(game_instance.DUInfo, game_instance.coneInfo)
 		game_instance.sendDisplayunitInfo(game_instance.DUInfo, all_connections['displayunit'])
 		print("Send display unit info is done")
+		game_instance.time_tracking['start'] = time.time()
 
 try:
    _thread.start_new_thread( main, ())
