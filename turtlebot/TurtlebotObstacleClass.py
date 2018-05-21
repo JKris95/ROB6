@@ -58,7 +58,7 @@ class Obstacle():
 	def obstacle_cone(self, direction):
 		if self.checkList(self.scan_filter, 0.14, 0.189, 4) == True:
 			self.pub.publish(direction)
-			self.noting_send = 0
+			self.nothing_sent = 0
 			time.sleep(0.3)
 			self.pub.publish('turtle_hit')
 
@@ -67,11 +67,11 @@ class Obstacle():
 				self.pub.publish(direction)
 				print(direction)
 				self.is_detected = 1
-				self.nothing_sendt = 0
+				self.nothing_sent = 0
 
 			elif self.is_detected == 0 and self.nothing_sendt == 0:
 				self.pub.publish('Nothing')
-				self.nothing_sendt = 1
+				self.nothing_sent = 1
 				#print('Nothing')
 
 			else:

@@ -43,7 +43,7 @@ def publish_cmd_vel():
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 #angular has to be .z value to change
 			pub.publish(twist)
 			time.sleep(0.5)
-		elif twist.linear.x is not 0:
+		elif twist.linear.x != 0 and turtlebot_state_variable != 'go back':
 			twist.linear.x = 0; twist.linear.y = 0; twist.linear.z = 0 
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 
 
