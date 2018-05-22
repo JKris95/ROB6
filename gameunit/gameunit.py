@@ -74,8 +74,8 @@ class GUI_select_game_type(GUI_base):
 		GUI_base.__init__(self,master)
 		self.game_battle = tk.Button(self.frame, text = 'Battle', width = 25, height = 5, command = lambda *args:[self.unpacker(self.window_list), setattr(game_instance, 'game_type', 'battle'), self.new_window(GUI_game_settings)])
 		self.game_coop = tk.Button(self.frame, text = 'Coop', width = 25, height = 5, command = lambda *args:[self.unpacker(self.window_list), setattr(game_instance, 'game_type', 'coop'), self.new_window(GUI_game_settings)])
-		self.save_data = tk.Button(self.frame, text = 'Save game data', width = 25, height = 5, command = lambda *args:[self.transfer_dataframe_to_database()])
-		self.append_window_list(self.frame, self.game_battle, self.game_coop, self.save_data)
+		#self.save_data = tk.Button(self.frame, text = 'Save game data', width = 25, height = 5, command = lambda *args:[self.transfer_dataframe_to_database()])
+		self.append_window_list(self.frame, self.game_battle, self.game_coop)
 		self.packer(self.window_list)
 
 	def transfer_dataframe_to_database(self):
@@ -234,7 +234,7 @@ def receive(connection, address):
 	
 def recv_from_controller(connection):
 	print("we got into recv_from_controller")
-	time.sleep(10)
+	time.sleep(10) #TODO: ask Jakob
 	print("just slept 10 seconds")
 	while True:
 		while True:
@@ -323,8 +323,7 @@ def startTheGame():
 		receive_threads_created = True	# Only create threads once
 	game_instance.game_is_running = True
 	#del(game_instance.event_list[:]) #Ensure that correct hits from previous game doesn't carry over
-	#game_instance.nr_of_events = 0 # Reinitialize nr_of_events since even_list is cleared
-	#game_instance.nr_of_turtle_events = 0
+
 
 
 def start_controller_thread():
@@ -342,6 +341,17 @@ def start_controller_thread():
 			test_it +=1
 
 def start_game():
+		
+		game_instance.results.to_sql('game_data', con=engine, if_exists='append')
+		print("Game data saved in database")
+
+		game_instance.nr_of_events = 0 # Reinitialize nr_of_events since even_list is cleared
+		game_instance.nr_of_turtle_events = 0
+		print("Cleared event list and turtleevents")
+
+		game_instance.send_info(all_connections['turtlebots'], defaultContent=b'Nothing')
+
+
 		print ("starting game...")
 		game_instance.makeList(game_instance.coneInfo, game_instance.time_limit)
 		game_instance.send_info(all_connections['cones'], defaultContent= b"questionmark")
