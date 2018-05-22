@@ -43,8 +43,7 @@ root.update()
 
 left = tk.Frame(root, borderwidth=2, relief="solid")
 right = tk.Frame(root, borderwidth=2, relief="solid")
-left.pack(side="left", expand=True, fill="both")
-right.pack(side="right", expand=True, fill="both")
+
 
 while True:
 		DUInfoUnparsed = s.recv(1024) # Receive questions / correct answers
@@ -60,14 +59,18 @@ while True:
 			answerlabel.pack_forget()
 			answerlabel1.pack_forget()
 			answerlabel2.pack_forget()
+			left.pack_forget()
+			right.pack_forget()
 			#Display the image at the path
 			image = tk.PhotoImage(file=path) 
-			answerlabel = tk.Label(left, image=image)
+			answerlabel = tk.Label(image=image)
 			answerlabel.pack()
 			root.update()
 
 		# This condition is true when co-op is played (2 correct answers)
 		elif len(DUInfoParsed) == 2:
+			left.pack(side="left", expand=True, fill="both")
+			right.pack(side="right", expand=True, fill="both")
 			path1 = './gifs/%s.gif' % DUInfoParsed[0] #set the path to this desired image
 			path2 = './gifs/%s.gif' % DUInfoParsed[1] #set the path to this desired image
 			questionlabel.pack_forget()
