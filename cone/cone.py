@@ -63,11 +63,6 @@ def receiveThread():
 	global imageIsUpdated
 	i=1
 	while True:
-		# Questionmark 
-		imageToDisplay = s.recv(1024) #receive information on what image to display. 
-		imageToDisplay = imageToDisplay.decode()
-		print(imageToDisplay)
-		imageIsUpdated = True
 
 		# Actual content
 		coneInfoUnparsed = s.recv(1024)
@@ -85,8 +80,7 @@ def buttonThread():
 	global buttonstate
 	while True:
 		buttonstate = GPIO.input(36) #When of of the buttons is actuated GPIO.input(36) will turn TRUE.
-		#if buttonstate = True:
-			#time.sleep(0.5) # To avoid queing of data sent to the game unit when buttonstate goes high
+		
 
 try:
    _thread.start_new_thread( receiveThread, ())
@@ -113,10 +107,9 @@ while True:
 			correctlabel.pack()
 			root.update()
 			correctsound.play()
-			s.sendall(b'{"role": 1, "time": 5}')
+			s.sendall(b'{"role": 1}')
 			time.sleep(coneInfoParsed['time_limit']) #Leave the correct label on the screen for 5 seconds(default) or in case of coop for the  specified time limit
 			correctlabel.pack_forget()
-			questionlabel.pack()
 			root.update()
 
 		if role == 'False':
@@ -124,11 +117,15 @@ while True:
 			incorrectlabel.pack()
 			root.update()
 			incorrectsound.play()
-			s.sendall(b'{"role": 0, "time": 5}')
-			time.sleep(5) #Leave the incorrect label on the screen for 5 seconds before displaying the question mark again.
+			s.sendall(b'{"role": 0}')
+			time.sleep(coneInfoParsed['time_limit']) #Leave the incorrect label on the screen for 5 seconds before displaying the question mark again.
 			incorrectlabel.pack_forget()
-			questionlabel.pack()
 			root.update()
+
+		if role == 'Idle':
+				answerlabel.pack_forget()
+				root.update()
+		
 
 
 
