@@ -2,7 +2,6 @@
 import socket
 import time
 import tkinter as tk 
-import _thread
 import json
 
 #
