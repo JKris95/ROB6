@@ -15,7 +15,8 @@ rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
 
 Front = Obstacle()
 Back = Obstacle()
-Cone = Obstacle()
+Cone_front = Obstacle()
+Cone_back = Obstacle()
 
 '''for i in range(0,10):
 	Front.get_reading()
@@ -25,15 +26,21 @@ while True:
 
 while True:
 	#start = time.time()
-	Front.get_reading()
-	Front.make_list(100, 300, 0.3, Front.msg)
-	Back.make_list(100, 130, 0.3, Front.msg)
+
 	if turtlebot_state_variable == 'hit':
-		Cone.make_list(360, 0, 0.2, Front.msg)
-		Cone.obstacle_cone('Front')
+		Front.get_reading()
+		Front.make_list(100, 300, 0.3, Front.msg)
+		Back.make_list(100, 130, 0.3, Front.msg)
+		Cone_front.make_list(178, 271, 0.3, Front.msg)
+		Cone_back.make_list(178, 91, 0.3, Front.msg)
+		Cone_front.obstacle_cone('Front')
+		Cone_back.obstacle_cone('Back')
 		Front.obstacle_not_cone('Front')
 		Back.obstacle_not_cone('Back')
 	elif turtlebot_state_variable != 'go back':
+		Front.get_reading()
+		Front.make_list(100, 300, 0.3, Front.msg)
+		Back.make_list(100, 130, 0.3, Front.msg)
 		Front.obstacle_not_cone('Front')
 		Back.obstacle_not_cone('Back')
     #end = time.time()
