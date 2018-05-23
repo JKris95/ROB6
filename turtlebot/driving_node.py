@@ -11,6 +11,7 @@ HOST = ''
 PORT = 50000
 lin,ang = 0.0,0.0
 turtlebot_state_variable = 'Nothing'
+variable_to_not_spam_topic = 0
 
 
 
@@ -18,7 +19,7 @@ turtlebot_state_variable = 'Nothing'
 def publish_cmd_vel():
 
 	#Function that creates the node, and publishes to the topic /cmd_vel and subscribe to /state 
-
+	global variable_to_not_spam_topic
 	pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5) #queqe size can be adjusted maybe
 	rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
 	rospy.init_node('post_office')
@@ -27,6 +28,7 @@ def publish_cmd_vel():
 		while turtlebot_state_variable == 'Nothing' or turtlebot_state_variable == 'hit': #checking the rospy.is_shutdown() flag and then doing work. You have to check is_shutdown() to check if your program should exit (e.g. if there is a Ctrl-C or otherwise).
 			twist.linear.x = lin; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = ang #angular has to be .z value to change
+			variable_to_not_spam_topic = 1
 			try:
 				pub.publish(twist)
 				rate.sleep()
@@ -43,9 +45,10 @@ def publish_cmd_vel():
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 #angular has to be .z value to change
 			pub.publish(twist)
 			time.sleep(0.5)
-		elif twist.linear.x != 0 and turtlebot_state_variable != 'go back':
+		elif twist.linear.x != 0 and variable_to_not_spam_topic = 1:
 			twist.linear.x = 0; twist.linear.y = 0; twist.linear.z = 0 
-			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 
+			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0
+			variable_to_not_spam_topic = 0
 
 def recv_from_controller():
 
