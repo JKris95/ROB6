@@ -234,8 +234,6 @@ def receive(connection, address):
 	
 def recv_from_controller(connection):
 	print("we got into recv_from_controller")
-	time.sleep(10) #TODO: ask Jakob
-	print("just slept 10 seconds")
 	while True:
 		while True:
 			try:
@@ -322,7 +320,7 @@ def startTheGame():
 				print ("Error: unable to start thread")
 		receive_threads_created = True	# Only create threads once
 	game_instance.game_is_running = True
-	#del(game_instance.event_list[:]) #Ensure that correct hits from previous game doesn't carry over
+	
 
 
 
@@ -342,11 +340,17 @@ def start_controller_thread():
 
 def start_game():
 		
-		game_instance.results.to_sql('game_data', con=engine, if_exists='append')
-		print("Game data saved in database")
+		if len(game_instance.event_list) != 0:
+			try:
+				print(game_instance.results)
+				game_instance.results.to_sql('game_data', con=engine, if_exists='append')
+				print("Game data saved in database")
+			except:
+				print("was unable to add to db")
 
 		game_instance.nr_of_events = 0 # Reinitialize nr_of_events since even_list is cleared
 		game_instance.nr_of_turtle_events = 0
+		del(game_instance.event_list[:]) #Ensure that correct hits from previous game doesn't carry over
 		print("Cleared event list and turtleevents")
 
 		game_instance.send_info(all_connections['turtlebots'], defaultContent=b'Nothing')
@@ -354,8 +358,8 @@ def start_game():
 
 		print ("starting game...")
 		game_instance.makeList(game_instance.coneInfo, game_instance.time_limit)
-		game_instance.send_info(all_connections['cones'], defaultContent= b"questionmark")
-		print("Send question marks is done")
+		#game_instance.send_info(all_connections['cones'], defaultContent= b"questionmark")
+		#print("Send question marks is done")
 		time.sleep(1)
 		game_instance.findCorrectCones(game_instance.nr_true, game_instance.coneInfo)
 		print("We found the correct cones")

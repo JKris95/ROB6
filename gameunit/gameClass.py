@@ -237,7 +237,7 @@ class GameType():
 			time.sleep(6) #Necessary because the cones utilize a 5 second sleep to show correct/wrong sign
 			print('coneinfo before shuffle', self.coneInfo)
 			shuffle(self.coneInfo)
-			self.send_info(connections, defaultContent=b'questionmark')
+			#self.send_info(connections, defaultContent=b'questionmark')
 			time.sleep(3)
 			print('coneinfo to be send after shuffling', self.coneInfo)
 			self.send_info(connections, self.coneInfo)
@@ -248,7 +248,7 @@ class GameType():
 			time.sleep(2) #Necessary because the cones utilize a 5 second sleep to show correct/wrong sign
 			print('coneinfo before shuffle', self.coneInfo)
 			shuffle(self.coneInfo)
-			self.send_info(connections, defaultContent=b'questionmark')
+			#self.send_info(connections, defaultContent=b'questionmark')
 			time.sleep(3)
 			print('coneinfo to be send after shuffling', self.coneInfo)
 			self.send_info(connections, self.coneInfo)
@@ -259,7 +259,7 @@ class GameType():
 			time.sleep((self.time_limit-elapsed_time) + 5) #Necessary because the cones utilize a 5 second sleep to show correct/wrong sign
 			print('coneinfo before shuffle', self.coneInfo)
 			shuffle(self.coneInfo)
-			self.send_info(connections, defaultContent=b'questionmark')
+			#self.send_info(connections, defaultContent=b'questionmark')
 			time.sleep(3)
 			print('coneinfo to be send after shuffling', self.coneInfo)
 			self.send_info(connections, self.coneInfo)
