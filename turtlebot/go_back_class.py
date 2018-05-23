@@ -24,17 +24,17 @@ class GoToPose():
     def __init__(self):
 
         self.goal_sent = False
-
+        print('1')
         # What to do if shut down (e.g. Ctrl-C or failure)
         rospy.on_shutdown(self.shutdown)
-        
+        print('2')
         # Tell the action client that we want to spin a thread by default
         self.move_base = actionlib.SimpleActionClient("move_base", MoveBaseAction)
         rospy.loginfo("Wait for the action server to come up")
-
+        print('3')
         # Allow up to 5 seconds for the action server to come up
         self.move_base.wait_for_server(rospy.Duration(5))
-
+        print('4')
     def goto(self, pos, quat):
 
         # Send a goal

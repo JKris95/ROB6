@@ -17,6 +17,12 @@ Front = Obstacle()
 Back = Obstacle()
 Cone = Obstacle()
 
+'''for i in range(0,10):
+	Front.get_reading()
+
+while True:
+	print(hej)'''
+
 while True:
 	#start = time.time()
 	Front.get_reading()
@@ -24,8 +30,7 @@ while True:
 	Back.make_list(100, 130, 0.3, Front.msg)
 	if turtlebot_state_variable == 'hit':
 		Cone.make_list(360, 0, 0.2, Front.msg)
-		Front.obstacle_cone('Front')
-		Back.obstacle_cone('Back')
+		Cone.obstacle_cone('Front')
 		Front.obstacle_not_cone('Front')
 		Back.obstacle_not_cone('Back')
 	elif turtlebot_state_variable != 'go back':

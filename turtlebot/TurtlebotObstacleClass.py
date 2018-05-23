@@ -24,6 +24,7 @@ from geometry_msgs.msg import Twist
 from std_msgs.msg import String
 import numpy as np
 import time
+import csv
 
 
 class Obstacle():
@@ -32,7 +33,7 @@ class Obstacle():
 		self.pub.publish('Nothing')
 		self.LIDAR_ERR = 0.05
 		self.is_detected = 0
-		self.nothing_sendt = 0
+		self.nothing_sent = 0
 		self.msg = 0
 
 
@@ -46,6 +47,9 @@ class Obstacle():
 
 	def get_reading(self):
 		self.msg = rospy.wait_for_message("/scan", LaserScan)
+		'''with open('document.csv', 'a') as f:
+			writer = csv.writer(f)
+			writer.writerow(self.msg.ranges)'''
 
 	def make_list(self, steps, start, distance, reading):
 		self.scan_filter = []
@@ -56,7 +60,9 @@ class Obstacle():
 			start = (start + 1) % msg_ranges_lenght
 
 	def obstacle_cone(self, direction):
+		print('Hej')
 		if self.checkList(self.scan_filter, 0.14, 0.189, 4) == True:
+			print('hit')
 			self.pub.publish(direction)
 			self.nothing_sent = 0
 			time.sleep(0.3)
@@ -69,7 +75,7 @@ class Obstacle():
 				self.is_detected = 1
 				self.nothing_sent = 0
 
-			elif self.is_detected == 0 and self.nothing_sendt == 0:
+			elif self.is_detected == 0 and self.nothing_sent == 0:
 				self.pub.publish('Nothing')
 				self.nothing_sent = 1
 				#print('Nothing')

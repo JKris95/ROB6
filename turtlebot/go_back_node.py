@@ -3,11 +3,13 @@ from go_back_class import GoToPose
 import time
 from std_msgs.msg import String
 
-topic_status_value
+topic_status_value = 'Nothing'
 rospy.init_node('go_back', anonymous=True)
 
 def turtlebot_state_function(data):
-    topic_status_value = data.data:
+	global topic_status_value
+	topic_status_value = data.data
+	print(data.data)
 
 #Publisher
 pub = rospy.Publisher('turtlebot_state', String, queue_size=10)
@@ -21,9 +23,10 @@ position = {'x': 0, 'y' : 0}
 quaternion = {'r1' : 0.000, 'r2' : 0.000, 'r3' : 0.000, 'r4' : 1.000} 
 while True:
     if topic_status_value == 'go back':
-        Goback.goto(position, quaternion)
-    while topic_status_value == 'go back'
-        print('wait for nothing to be send')
+		print('topic_status_value')
+		Goback.goto(position, quaternion)
+		while topic_status_value == 'go back':
+			print('wait for nothing to be send')
         #pub.publish('Nothing')
     #elif data == 'STOP':
         #Goback.shutdown()
