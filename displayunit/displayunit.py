@@ -10,7 +10,7 @@ imageToDisplay = b'Start'
 
 #Setup of root window for the GUI and the different images 
 root = tk.Tk()
-#root.attributes('-fullscreen',True)
+root.attributes('-fullscreen',True)
 
 image4 = tk.PhotoImage(file="./gifs/questionmark.gif")
 
