@@ -15,6 +15,7 @@ rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
 
 Front = Obstacle()
 Back = Obstacle()
+Cone = Obstacle()
 
 while True:
 	#start = time.time()
@@ -22,6 +23,7 @@ while True:
 	Front.make_list(100, 300, 0.3, Front.msg)
 	Back.make_list(100, 130, 0.3, Front.msg)
 	if turtlebot_state_variable == 'hit':
+		Cone.make_list(360, 0, 0.2, Front.msg)
 		Front.obstacle_cone('Front')
 		Back.obstacle_cone('Back')
 		Front.obstacle_not_cone('Front')

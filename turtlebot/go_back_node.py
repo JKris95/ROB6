@@ -22,7 +22,9 @@ quaternion = {'r1' : 0.000, 'r2' : 0.000, 'r3' : 0.000, 'r4' : 1.000}
 while True:
     if topic_status_value == 'go back':
         Goback.goto(position, quaternion)
-        pub.publish('Nothing')
+    while topic_status_value == 'go back'
+        print('wait for nothing to be send')
+        #pub.publish('Nothing')
     #elif data == 'STOP':
         #Goback.shutdown()
 
