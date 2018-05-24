@@ -17,8 +17,10 @@ while True:
         print("did not connect")
 
 def turtlebot_state_function(data):
+	print(data.data, 'connection node')
 	if data.data == 'turtle_hit':
 		s.sendall(b'hit')
+		print('I sent a hit')
 		pub.publish('Nothing')
 
 rospy.init_node('connection_node', anonymous=True)
