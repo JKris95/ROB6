@@ -35,5 +35,5 @@ while True:
 		pub.publish(data)
 		time.sleep(1)
 		pub.publish('Nothing')
-	if data == 'Nothing'
+	if data == 'Nothing':
 		pub.publish('Nothing')
