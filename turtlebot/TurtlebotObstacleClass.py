@@ -70,7 +70,7 @@ class Obstacle():
 			self.pub.publish('turtle_hit')
 
 	def obstacle_not_cone(self, direction):
-			if len(self.scan_filter)-(-24*np.mean(self.scan_filter)+13) >= 0:
+			if len(self.scan_filter)-(-23*np.mean(self.scan_filter)+13) >= 0:
 				self.pub.publish(direction)
 				print(direction)
 				self.is_detected = 1
