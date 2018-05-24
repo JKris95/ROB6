@@ -23,6 +23,7 @@ position = {'x': 0, 'y' : 0}
 quaternion = {'r1' : 0.000, 'r2' : 0.000, 'r3' : 0.000, 'r4' : 1.000} 
 while True:
     if topic_status_value == 'go back':
+		time.sleep(2)
 		print('topic_status_value')
 		Goback.goto(position, quaternion)
 		while topic_status_value == 'go back':
