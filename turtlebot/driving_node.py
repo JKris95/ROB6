@@ -45,7 +45,7 @@ def publish_cmd_vel():
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 #angular has to be .z value to change
 			pub.publish(twist)
 			time.sleep(0.5)
-		elif twist.linear.x != 0 and variable_to_not_spam_topic = 1:
+		elif twist.linear.x != 0 and variable_to_not_spam_topic == 1:
 			twist.linear.x = 0; twist.linear.y = 0; twist.linear.z = 0 
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0
 			variable_to_not_spam_topic = 0

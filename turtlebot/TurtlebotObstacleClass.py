@@ -47,9 +47,7 @@ class Obstacle():
 
 	def get_reading(self):
 		self.msg = rospy.wait_for_message("/scan", LaserScan)
-		'''with open('document.csv', 'a') as f:
-			writer = csv.writer(f)
-			writer.writerow(self.msg.ranges)'''
+
 
 	def make_list(self, steps, start, distance, reading):
 		self.scan_filter = []
@@ -58,6 +56,9 @@ class Obstacle():
 			if reading.ranges[start] >= self.LIDAR_ERR and reading.ranges[start] <= distance:
 				self.scan_filter.append(reading.ranges[start])
 			start = (start + 1) % msg_ranges_lenght
+		'''with open('turtle70.csv', 'a') as f:
+			writer = csv.writer(f)
+			writer.writerow(self.scan_filter)'''
 
 	def obstacle_cone(self, direction):
 		print(self.scan_filter)
