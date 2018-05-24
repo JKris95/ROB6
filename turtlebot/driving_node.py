@@ -32,7 +32,6 @@ def publish_cmd_vel():
 			try:
 				pub.publish(twist)
 				rate.sleep()
-				print('Being controlled')
 			except:
 				print('unable to publish')
 		#rospy.loginfo(twist) #debugging: performs triple-duty: the messages get printed to screen, it gets written to the Node's log file, and it gets written to rosout. rosout is a handy for debugging: you can pull up messages using rqt_console instead of having to find the console window with your Node's output.
