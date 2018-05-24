@@ -36,7 +36,7 @@ while True:
 	if recv_data == 'hit':
 		pub.publish(recv_data)
 		print(recv_data)
-		time.sleep(1)
+		time.sleep(0.5)
 		pub.publish('Nothing')
 		print('Nothing')
 	if recv_data == 'Nothing':

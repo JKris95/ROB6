@@ -62,7 +62,7 @@ class Obstacle():
 
 	def obstacle_cone(self, direction):
 		print(self.scan_filter)
-		if self.checkList(self.scan_filter, 0.14, 0.22, 2) == True:
+		if self.checkList(self.scan_filter, 0.14, 0.23, 2) == True:
 			print('hit')
 			self.pub.publish(direction)
 			self.nothing_sent = 0
