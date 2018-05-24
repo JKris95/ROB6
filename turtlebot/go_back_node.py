@@ -12,7 +12,7 @@ def turtlebot_state_function(data):
 	print(data.data)
 
 #Publisher
-pub = rospy.Publisher('turtlebot_state', String, queue_size=10)
+pub = rospy.Publisher('/turtlebot_state', String, queue_size=10)
 #Subscriber
 rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
 
