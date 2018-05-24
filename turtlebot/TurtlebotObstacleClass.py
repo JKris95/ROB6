@@ -66,7 +66,7 @@ class Obstacle():
 			print('hit')
 			self.pub.publish(direction)
 			self.nothing_sent = 0
-			time.sleep(0.3)
+			time.sleep(0.5)
 			self.pub.publish('turtle_hit')
 
 	def obstacle_not_cone(self, direction):

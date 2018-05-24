@@ -28,7 +28,7 @@ while True:
 
 while True:
 	#start = time.time()
-
+	print(turtlebot_state_variable, 'detection node')
 	if turtlebot_state_variable == 'hit':
 		Front.get_reading()
 		Front.make_list(100, 300, 0.3, Front.msg)
