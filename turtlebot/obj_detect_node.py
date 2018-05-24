@@ -38,8 +38,8 @@ while True:
 		Cone_back.make_list(178, 91, 0.3, Front.msg)
 		Cone_front.obstacle_cone('Front')
 		Cone_back.obstacle_cone('Back')
-		Front.obstacle_not_cone('Front')
-		Back.obstacle_not_cone('Back')
+		#Front.obstacle_not_cone('Front')
+		#Back.obstacle_not_cone('Back')
 	elif turtlebot_state_variable != 'go back':
 		Front.get_reading()
 		Front.make_list(100, 300, 0.3, Front.msg)

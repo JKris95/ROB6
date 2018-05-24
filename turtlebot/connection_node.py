@@ -30,7 +30,6 @@ pub = rospy.Publisher('/turtlebot_state', String, queue_size=10)
 
 while True:
 	recv_data = s.recv(1024)
-	print(recv_data, 'just recived this')
 	if recv_data == 'go back':
 		pub.publish(recv_data)
 		print('go back')
