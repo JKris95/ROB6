@@ -32,6 +32,7 @@ def publish_cmd_vel():
 			try:
 				pub.publish(twist)
 				rate.sleep()
+				print('Being controlled')
 			except:
 				print('unable to publish')
 		#rospy.loginfo(twist) #debugging: performs triple-duty: the messages get printed to screen, it gets written to the Node's log file, and it gets written to rosout. rosout is a handy for debugging: you can pull up messages using rqt_console instead of having to find the console window with your Node's output.
@@ -40,15 +41,18 @@ def publish_cmd_vel():
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 #angular has to be .z value to change
 			pub.publish(twist)
 			time.sleep(0.5)
+			print('back')
 		elif turtlebot_state_variable == 'Back': #What to do if the turtlebot detects something in front of it
 			twist.linear.x = 0.2; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 #angular has to be .z value to change
 			pub.publish(twist)
 			time.sleep(0.5)
+			print('forward')
 		elif twist.linear.x != 0 and variable_to_not_spam_topic == 1:
 			twist.linear.x = 0; twist.linear.y = 0; twist.linear.z = 0 
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0
 			variable_to_not_spam_topic = 0
+			print('going back so stop')
 
 def recv_from_controller():
 
