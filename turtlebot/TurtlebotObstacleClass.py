@@ -24,6 +24,7 @@ from geometry_msgs.msg import Twist
 from std_msgs.msg import String
 import numpy as np
 import time
+import csv
 
 
 class Obstacle():
@@ -32,7 +33,7 @@ class Obstacle():
 		self.pub.publish('Nothing')
 		self.LIDAR_ERR = 0.05
 		self.is_detected = 0
-		self.nothing_sendt = 0
+		self.nothing_sent = 0
 		self.msg = 0
 
 
@@ -47,6 +48,7 @@ class Obstacle():
 	def get_reading(self):
 		self.msg = rospy.wait_for_message("/scan", LaserScan)
 
+
 	def make_list(self, steps, start, distance, reading):
 		self.scan_filter = []
 		msg_ranges_lenght = len(reading.ranges)
@@ -54,22 +56,27 @@ class Obstacle():
 			if reading.ranges[start] >= self.LIDAR_ERR and reading.ranges[start] <= distance:
 				self.scan_filter.append(reading.ranges[start])
 			start = (start + 1) % msg_ranges_lenght
+		'''with open('turtle70.csv', 'a') as f:
+			writer = csv.writer(f)
+			writer.writerow(self.scan_filter)'''
 
 	def obstacle_cone(self, direction):
-		if self.checkList(self.scan_filter, 0.14, 0.189, 4) == True:
+		print(self.scan_filter)
+		if self.checkList(self.scan_filter, 0.14, 0.23, 2) == True:
+			print('hit')
 			self.pub.publish(direction)
 			self.nothing_sent = 0
-			time.sleep(0.3)
+			time.sleep(0.5)
 			self.pub.publish('turtle_hit')
 
 	def obstacle_not_cone(self, direction):
-			if len(self.scan_filter)-(-24*np.mean(self.scan_filter)+13) >= 0:
+			if len(self.scan_filter)-(-23*np.mean(self.scan_filter)+13) >= 0:
 				self.pub.publish(direction)
 				print(direction)
 				self.is_detected = 1
 				self.nothing_sent = 0
 
-			elif self.is_detected == 0 and self.nothing_sendt == 0:
+			elif self.is_detected == 0 and self.nothing_sent == 0:
 				self.pub.publish('Nothing')
 				self.nothing_sent = 1
 				#print('Nothing')

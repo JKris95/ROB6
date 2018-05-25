@@ -17,20 +17,28 @@ while True:
         print("did not connect")
 
 def turtlebot_state_function(data):
-    if data.data == 'turtle_hit':
-        s.sendall(b'hit')
+	print(data.data, 'connection node')
+	if data.data == 'turtle_hit':
+		s.sendall(b'hit')
+		print('I sent a hit')
+		pub.publish('Nothing')
 
 rospy.init_node('connection_node', anonymous=True)
 rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
-pub = rospy.Publisher('turtlebot_state', String, queue_size=10)
+pub = rospy.Publisher('/turtlebot_state', String, queue_size=10)
 
 
 while True:
-	data = s.recv(1024)
-	print(data)
-	if data == 'go back':
-		pub.publish(data)
-	if data == 'hit':
-		pub.publish(data)
-		time.sleep(1)
+	recv_data = s.recv(1024)
+	if recv_data == 'go back':
+		pub.publish(recv_data)
+		print('go back')
+	if recv_data == 'hit':
+		pub.publish(recv_data)
+		print(recv_data)
+		time.sleep(0.5)
 		pub.publish('Nothing')
+		print('Nothing')
+	if recv_data == 'Nothing':
+		pub.publish('Nothing')
+		print('Nothing')

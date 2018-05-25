@@ -40,15 +40,19 @@ def publish_cmd_vel():
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 #angular has to be .z value to change
 			pub.publish(twist)
 			time.sleep(0.5)
+			print('back')
 		elif turtlebot_state_variable == 'Back': #What to do if the turtlebot detects something in front of it
 			twist.linear.x = 0.2; twist.linear.y = 0; twist.linear.z = 0 #liniar has to be .x value to change
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0 #angular has to be .z value to change
 			pub.publish(twist)
 			time.sleep(0.5)
-		elif twist.linear.x != 0 and variable_to_not_spam_topic = 1:
+			print('forward')
+		elif twist.linear.x != 0 and variable_to_not_spam_topic == 1:
 			twist.linear.x = 0; twist.linear.y = 0; twist.linear.z = 0 
 			twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0
+			pub.publish(twist)
 			variable_to_not_spam_topic = 0
+			print('going back so stop')
 
 def recv_from_controller():
 
