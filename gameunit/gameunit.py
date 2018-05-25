@@ -140,7 +140,7 @@ class GUI_running_window(GUI_base):
 		except IndexError:
 			print("IndexError 2")
 		
-		self.append_window_list(self.frame, self.loop_game, self.current_game, self.current_category)
+		self.append_window_list(self.frame, self.current_game, self.current_category)
 		self.packer(self.window_list)
 		_thread.start_new_thread(self.play_again, ())
 
@@ -233,7 +233,7 @@ def receive(connection, address):
 		print("Current event list: " + str(game_instance.event_list) + " has length: " + str(len(game_instance.event_list)))
 	
 def recv_from_controller(connection):
-	print("we got into recv_from_controller")
+	#print("we got into recv_from_controller")
 	while True:
 		while True:
 			try:
@@ -243,7 +243,7 @@ def recv_from_controller(connection):
 			except:
 				print('Was not informed of any player')
 
-		#print("this is the player i loaded", player)
+		print("this is the player i loaded", player)
 
 		if len(game_instance.players) < game_instance.nr_of_clients["controllers"]:
 			game_instance.players.append(player)
@@ -289,6 +289,7 @@ def recv_from_turtlebot(connection, address):
 				break
 		print("I know of the player ", address, player_name)
 		hit = connection.recv(1024)
+		print('I got this', hit)
 		game_instance.nr_of_turtle_events += 1 #Using a class attribute because both threads running the function should share the variable
 		print(game_instance.nr_of_turtle_events, "Turtle Events ")
 		print(len(game_instance.event_list), "Len Event List")
@@ -348,6 +349,12 @@ def start_game():
 			except:
 				print("was unable to add to db")
 
+		try:
+			loaded_data = engine.execute("SELECT * FROM game_data").fetchall()
+			print(loaded_data)
+		except:
+			print("Empty db")
+
 		game_instance.nr_of_events = 0 # Reinitialize nr_of_events since even_list is cleared
 		game_instance.nr_of_turtle_events = 0
 		del(game_instance.event_list[:]) #Ensure that correct hits from previous game doesn't carry over
@@ -393,8 +400,6 @@ print("Starting the controllers thread")
 
 start_controller_thread()
 
-#start_controller_thread()
-print("we passed")
 
 while True:
 	
@@ -407,9 +412,6 @@ while True:
 
 		elif game_instance.game_type == 'coop':
 			game_instance.coop_game(all_connections['cones'], all_connections['displayunit'], all_connections['turtlebots'], game_instance.time_limit)
-
-	#else:
-	#	print("Game instance is false")
 
 	time.sleep(1)
 

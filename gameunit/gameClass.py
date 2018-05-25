@@ -144,13 +144,16 @@ class GameType():
 						print(winner + "won")
 					except:
 						print("I do not know who won")
-					
-					self.results = pd.DataFrame(self.event_list)
-					print(self.results, "dataframe")
+
 					self.game_nr += 1
 					if not self.loop_game:
 						self.game_is_running = False
+					
+					self.send_info(turtle_conns, defaultContent=b'hit')
+					time.sleep(1)
 					self.send_info(turtle_conns, defaultContent=b'go back') #Send signal to turtlebots telling them to go back to start 
+					self.results = pd.DataFrame(self.event_list)
+					print(self.results, "dataframe")
 					return
 				self.send_info(turtle_conns, defaultContent=b'hit')
 ###COOP SPECIFIC###
@@ -180,6 +183,7 @@ class GameType():
 						self.send_info(turtle_conns, defaultContent=b'hit')
 					elif nr_of_correct_hits == consecutive_corrects:
 						#pygame.mixer.music.stop()
+						self.send_info(turtle_conns, defaultContent=b'hit')
 						return (True, 0, elapsed_time)
 				elif recent_event['role'] == False:
 					print("A wrong cone was hit")
@@ -215,15 +219,16 @@ class GameType():
 			print(outcome)
 			if outcome[0] == True:
 				print("Congratulation, you won")
-				self.results = pd.DataFrame(self.event_list)
-				print(self.results)
 				self.game_nr +=1
 				if not self.loop_game:
 					self.game_is_running = False
 				self.packDUInfo(self.DUInfo, defaultContent='victory')
 				self.sendDisplayunitInfo(self.DUInfo, DU_connection)
-				self.send_info(turtle_conns, defaultContent=b'go back')
 				pygame.mixer.music.stop()
+				time.sleep(1)
+				self.send_info(turtle_conns, defaultContent=b'go back')
+				self.results = pd.DataFrame(self.event_list)
+				print(self.results)
 				return
 			else:
 				print("You lost")
