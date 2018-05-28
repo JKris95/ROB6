@@ -43,8 +43,9 @@ root.update()
 
 left = tk.Frame(root, borderwidth=2, relief="solid")
 right = tk.Frame(root, borderwidth=2, relief="solid")
-
-
+questionlabel.pack_forget()
+questionlabel.pack()
+root.update()
 while True:
 		DUInfoUnparsed = s.recv(1024) # Receive questions / correct answers
 		print(DUInfoUnparsed)
