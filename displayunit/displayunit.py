@@ -40,7 +40,6 @@ connect(s, HOST, PORT)
 #Display the questionmark on the screen
 questionlabel.pack()
 root.update()
-
 left = tk.Frame(root, borderwidth=2, relief="solid")
 right = tk.Frame(root, borderwidth=2, relief="solid")
 questionlabel.pack_forget()

@@ -125,22 +125,28 @@ class GUI_running_window(GUI_base):
 		GUI_base.__init__(self,master)
 		self.cb_var = tk.BooleanVar()
 		self.loop_game = tk.Checkbutton(self.frame, text = 'Loop game', width = 25, variable = self.cb_var, onvalue = True, offvalue = False, command=self.change_loop_state)
-		self.current_game = tk.Label(self.frame, text=game_instance.game_type)
-		self.current_category = tk.Label(self.frame, text=game_instance.category)
+		self.current_game = tk.Label(self.frame, text=("Current game type: ",game_instance.game_type))
+		self.current_category = tk.Label(self.frame, text=("Current Category: ",game_instance.category))
+		
 		
 		try: 
-			self.current_player_1 = tk.Label(self.frame, text=game_instance.players[0]["name"])
+			self.current_player_1 = tk.Label(self.frame, text=("Player 1: ", game_instance.players[0]["name"]))
 			self.append_window_list(self.current_player_1)
 		except IndexError:
 			print("IndexError 1")
 
 		try:
-			self.current_player_2 = tk.Label(self.frame, text=game_instance.players[1]["name"])
+			self.current_player_2 = tk.Label(self.frame, text=("Player 2: ",game_instance.players[1]["name"]))
 			self.append_window_list(self.current_player_2)
 		except IndexError:
 			print("IndexError 2")
 		
-		self.append_window_list(self.frame, self.current_game, self.current_category)
+
+
+		self.image_logo = tk.PhotoImage(file="logo.gif")
+		self.logo_label = tk.Label(image=self.image_logo)
+
+		self.append_window_list(self.frame, self.logo_label, self.current_game, self.current_category)
 		self.packer(self.window_list)
 		_thread.start_new_thread(self.play_again, ())
 
@@ -151,6 +157,7 @@ class GUI_running_window(GUI_base):
 	def play_again(self):
 		while True:
 			if game_instance.game_is_running == False:
+				self.logo_label.pack_forget()
 				self.close_window(GUI_game_settings)
 				break
 			time.sleep(1)
