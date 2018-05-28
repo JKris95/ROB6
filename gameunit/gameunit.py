@@ -161,7 +161,7 @@ class GUI_running_window(GUI_base):
 def main():
 	root = tk.Tk()
 	#root.attributes('-fullscreen',True)
-	root.geometry('450x300+0+0')
+	root.geometry('800x480+0+0')
 	GUI_connect_devices(root)
 	root.mainloop()
 
