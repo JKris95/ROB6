@@ -28,8 +28,6 @@ while True:
 		Goback.goto(position, quaternion)
 		while topic_status_value == 'go back':
 			print('wait for nothing to be send')
-        #pub.publish('Nothing')
-    #elif data == 'STOP':
-        #Goback.shutdown()
+
 
     

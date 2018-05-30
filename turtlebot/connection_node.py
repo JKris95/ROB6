@@ -4,11 +4,12 @@ import socket
 from std_msgs.msg import String
 
 
-HOST = '192.168.1.34'  
-PORT = 50007
+HOST = '192.168.1.34'  #HOST IP
+PORT = 50007 #PORT number
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)        
 
+#Connect to game unit, if fail try again
 while True:
     try:
         s.connect((HOST, PORT))

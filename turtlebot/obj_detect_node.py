@@ -18,13 +18,6 @@ Back = Obstacle()
 Cone_front = Obstacle()
 Cone_back = Obstacle()
 
-'''for i in range(0,10):
-	Front.get_reading()
-	Front.make_list(100, 300, 3, Front.msg)
-
-
-while True:
-	print(hej)'''
 
 while True:
 	#start = time.time()
