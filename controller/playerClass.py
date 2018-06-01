@@ -25,6 +25,33 @@ class Player():
 		for key, value in zip(keys, values):
 			settings[key] = value
 
+	def init_drive_cmds(self):
+		self.drive_cmds = [	{'lin': self.speeds['lin'], 'ang': 0.0}, #0, Forward
+		 				{'lin': -self.speeds['lin'], 'ang': 0.0}, #1, Backward 
+						{'lin': 0.0, 'ang': -self.speeds['ang']}, #2, Right
+						{'lin': 0.0, 'ang': self.speeds['ang']}, #3, Left 
+						{'lin': self.speeds['ang_lin'], 'ang': self.speeds['ang_ang']}, #4, Forward and Left
+						{'lin': self.speeds['ang_lin'], 'ang':-self.speeds['ang_ang']}, #5, Forward and Right
+						{'lin': -self.speeds['ang_lin'], 'ang': -self.speeds['ang_ang']}, #6, Back and Left
+						{'lin': -self.speeds['ang_lin'], 'ang':self.speeds['ang_ang']} #7, Back and Right
+					]
+
+	def switch_directions(self, command_list, probability_of_flipping=0.02):
+		odds = random.random() #Pick a random fraction between 0 and 1
+		if odds < probability_of_flipping:
+			positions = random.randint(1, len(command_list)-1)
+			pos = positions
+			for i in range(pos):
+				command_list.insert(i, command_list[-pos])
+				pos -= 1	
+			del(command_list[-positions:])
+			"""
+			if not self.flipped:
+				self.flipped = True
+			else:
+				self.flipped = False
+			"""
+
 	def set_angular(self, ang_lin=0.8, ang_ang=0.5):
 		"""Sets speed values for curved movements"""
 		self.speeds['ang_lin'] = round(ang_lin * self.max_lin_speed, 2) #New linear speed for curved movement
@@ -91,8 +118,17 @@ class Player():
 		self.speeds['ang'] = difficulty_params['ang_scale'] * self.max_ang_speed
 		self.control_mode = difficulty_params['control_mode']
 		self.set_angular()
-		
-	def flip_direction(self, probability_of_flipping=0.01):
+
+	def flip_direction(self, probability_of_flipping=0.03):
+		odds = random.random() #Pick a random fraction between 0 and 1
+		if odds < probability_of_flipping:
+			
+				if not self.flipped:
+					self.flipped = True
+				else:
+					self.flipped = False
+
+	def _flip_direction(self, probability_of_flipping=0.01):
 		odds = random.random() #Pick a random fraction between 0 and 1
 		if odds < probability_of_flipping:
 			for key, value in self.speeds.items(): 
