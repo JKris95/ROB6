@@ -394,10 +394,9 @@ def start_game():
 		##Counter
 		game_instance.start_counter(5)
 		
-		path_2 = 'gameunit/countdown.mp3'  #ændre path alt efter hvor scriptet kører fra, denne virker hvis det køres fra /gameunit.
+		path_2 = 'gameunit/go.mp3'  #ændre path alt efter hvor scriptet kører fra, denne virker hvis det køres fra /gameunit.
 		pygame.mixer.music.load(path_2)
 		pygame.mixer.music.play()
-		time.sleep(3)
 		
 		print("BOOP")
 		game_instance.send_info(all_connections['turtlebots'], defaultContent=b'Nothing')
