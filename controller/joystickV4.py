@@ -58,7 +58,6 @@ class GUI_select_difficulty(GUI_base):
 		#self.cb_var = tk.BooleanVar()
 		#self.flip = tk.Checkbutton(self.frame, text = 'Flip', width = 50, variable = self.cb_var, onvalue = True, offvalue = False, command=self.change_flip_state)
 		self.append_window_list( self.frame, self.difficulty_1, self.difficulty_2, self.difficulty_3, self.difficulty_4,self.difficulty_5) #
-		self.packer(self.window_list)
 		#self.flip.pack(side=tk.LEFT)
 	
 		self.MODES = [
@@ -73,6 +72,12 @@ class GUI_select_difficulty(GUI_base):
 		for text in self.MODES:
 			self.b = tk.Radiobutton(self.frame, text=text, variable=self.v, value=text, command=setattr(player, 'flip_directions', self.v.get()))
 			self.append_window_list(self.b)
+
+		self.flip_probability = tk.Scale(self.frame, from_=1, to=5, orient = tk.HORIZONTAL, label="Chance for flip", command=setattr(player, 'flip_chance', self.flip_probability.get()))
+		self.flip_probability.set(1) #sets the starting position to 10
+		self.append_window_list(self.flip_probability)
+
+		self.packer(self.window_list)
 
 """
 	def change_flip_state(self):

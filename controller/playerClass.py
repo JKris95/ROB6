@@ -16,7 +16,7 @@ class Player():
 		self.control_mode = '' # Determines the joystick mode
 		self.flip_directions = False # Determines if directions should be randomly flipped when driving
 		self.flipped = False # Keeps track of whether directions have been flipped or not
-		
+		self.flip_chance = 1
 
 	def change_settings(self, settings, keys, values):
 		"""change or add one or multiple key-value pairs of a given dictionary
