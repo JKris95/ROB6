@@ -23,7 +23,9 @@ def turtlebot_state_function(data):
 		s.sendall(b'hit')
 		print('I sent a hit')
 		pub.publish('Nothing')
-		time.sleep(2)
+		while data.data == 'turtle_hit':
+			print('Waiting for which is not turtle_hit')
+
 
 rospy.init_node('connection_node', anonymous=True)
 rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
