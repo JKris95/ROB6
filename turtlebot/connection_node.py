@@ -23,6 +23,7 @@ def turtlebot_state_function(data):
 		s.sendall(b'hit')
 		print('I sent a hit')
 		pub.publish('Nothing')
+		time.sleep(2)
 
 rospy.init_node('connection_node', anonymous=True)
 rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
