@@ -267,7 +267,7 @@ def recv_from_controller(connection):
 				print("person ", i, person, "player", player,)
 				if person['robot'] == player['robot']:
 					game_instance.players.pop(i)
-					print('removed player: ', game_instance.players[i])
+					print('removed player: ', person)
 					game_instance.players.append(player)
 					print('added player: ', player)
 
