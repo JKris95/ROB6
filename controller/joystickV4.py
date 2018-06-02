@@ -55,17 +55,30 @@ class GUI_select_difficulty(GUI_base):
 		self.difficulty_3 = tk.Button(self.frame, text = 'Mode 3', width = 50, height = 4, command = lambda *args:[player.hard(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
 		self.difficulty_4 = tk.Button(self.frame, text = 'Mode 4', width = 50, height = 4, command = lambda *args:[player.very_hard(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
 		self.difficulty_5 = tk.Button(self.frame, text = 'Mode 5', width = 50, height = 4, command = lambda *args:[player.very_easy(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
-		self.cb_var = tk.BooleanVar()
-		self.flip = tk.Checkbutton(self.frame, text = 'Flip', width = 50, variable = self.cb_var, onvalue = True, offvalue = False, command=self.change_flip_state)
-		self.append_window_list( self.frame, self.difficulty_1, self.difficulty_2, self.difficulty_3, self.difficulty_4) #self.difficulty_5
+		#self.cb_var = tk.BooleanVar()
+		#self.flip = tk.Checkbutton(self.frame, text = 'Flip', width = 50, variable = self.cb_var, onvalue = True, offvalue = False, command=self.change_flip_state)
+		self.append_window_list( self.frame, self.difficulty_1, self.difficulty_2, self.difficulty_3, self.difficulty_4,self.difficulty_5) #
 		self.packer(self.window_list)
-		self.flip.pack(side=tk.LEFT)
+		#self.flip.pack(side=tk.LEFT)
 	
-	def change_flip_state(self):
-		print ("variable is {0}".format(self.cb_var.get()))
-		player.flip_directions = self.cb_var.get() #gets the current value of cb_var and puts it into player.flipped
-		print("This is player.flipped", player.flip_directions)
+		self.MODES = [
+			("NotFlipped"),
+			("Flipped"),
+			("SuperFlipped"),
+		]
 
+		self.v = tk.StringVar()
+		self.v.set("NotFlipped") # initialize
+
+		for text in self.MODES:
+			self.b = tk.Radiobutton(self.frame, text=text, variable=self.v, value=text, command=setattr(player, 'flip_directions', self.v.get()))
+			self.append_window_list(self.b)
+
+"""
+	def change_flip_state(self):
+		print ("variable is {0}".format(self.v.get()))
+		player.flip_directions = self.v.get() #gets the current value of cb_var and puts it into player.flipped
+"""
 
 class GUI_select_player(GUI_base):
 	def __init__(self, master):
