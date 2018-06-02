@@ -23,6 +23,9 @@ def turtlebot_state_function(data):
 		s.sendall(b'hit')
 		print('I sent a hit')
 		pub.publish('Nothing')
+		while data.data == 'turtle_hit':
+			print('Waiting for which is not turtle_hit')
+
 
 rospy.init_node('connection_node', anonymous=True)
 rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
@@ -32,7 +35,10 @@ pub = rospy.Publisher('/turtlebot_state', String, queue_size=10)
 while True:
 	recv_data = s.recv(1024)
 	if recv_data == 'go back':
-		pub.publish(recv_data)
+		time.sleep(0.5)
+		for i in range(0,5):
+			pub.publish(recv_data)
+			time.sleep(0.1)
 		print('go back')
 	if recv_data == 'hit':
 		pub.publish(recv_data)
