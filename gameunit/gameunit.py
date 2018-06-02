@@ -6,8 +6,8 @@ import _thread
 from gameClass import GameType
 import json
 from sqlalchemy import create_engine
-
-
+import pandas as pd
+import pygame
 
 
 #Global variables
@@ -25,6 +25,8 @@ times_lock = _thread.allocate_lock()
 game_instance = GameType()
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 engine = create_engine('sqlite:///GAMEDATA.db', echo=False)
+pygame.mixer.init()
+
 
 #GUI START
 class GUI_base:
@@ -237,7 +239,7 @@ def receive(connection, address):
 		game_event = json.loads(game_event_raw.decode())
 		print("Event received: " + str(game_event))
 		game_instance.event_list.append(event_packer(game_event, address = address, time = (game_instance.time_tracking['end']-game_instance.time_tracking['start']), category = game_instance.category, game_type = game_instance.game_type, game_nr = game_instance.game_nr, date = time.asctime(), control_mode = 'N/A', player = 'N/A')) # Write to list containing information on all cones that were hit
-		print("Current event list: " + str(game_instance.event_list) + " has length: " + str(len(game_instance.event_list)))
+		#print("Current event list: " + str(game_instance.event_list) + " has length: " + str(len(game_instance.event_list)))
 	
 def recv_from_controller(connection):
 	#print("we got into recv_from_controller")
@@ -294,9 +296,9 @@ def recv_from_turtlebot(connection, address):
 				player_name = player['name']
 				control_mode = player['control_mode']
 				break
-		print("I know of the player ", address, player_name)
+		#print("I know of the player ", address, player_name)
 		hit = connection.recv(1024)
-		print('I got this', hit)
+		print('I got this', hit, " player ", player_name, " address ", address)
 		game_instance.nr_of_turtle_events += 1 #Using a class attribute because both threads running the function should share the variable
 		print(game_instance.nr_of_turtle_events, "Turtle Events ")
 		print(len(game_instance.event_list), "Len Event List")
@@ -356,8 +358,10 @@ def start_game():
 			except:
 				print("was unable to add to db")
 
+		
 		try:
 			loaded_data = engine.execute("SELECT * FROM game_data").fetchall()
+			loaded_data = pd.DataFrame(loaded_data)
 			print(loaded_data)
 		except:
 			print("Empty db")
@@ -367,9 +371,8 @@ def start_game():
 		del(game_instance.event_list[:]) #Ensure that correct hits from previous game doesn't carry over
 		print("Cleared event list and turtleevents")
 
-		game_instance.send_info(all_connections['turtlebots'], defaultContent=b'Nothing')
 
-
+		
 		print ("starting game...")
 		game_instance.makeList(game_instance.coneInfo, game_instance.time_limit)
 		#game_instance.send_info(all_connections['cones'], defaultContent= b"questionmark")
@@ -379,11 +382,26 @@ def start_game():
 		print("We found the correct cones")
 		game_instance.findContent(game_instance.get_category(game_instance.category), game_instance.coneInfo)
 		print("We found the content", game_instance.coneInfo)
+		
+
+
 		game_instance.send_info(all_connections['cones'], game_instance.coneInfo)
 		print("Send cone info is done")
 		game_instance.packDUInfo(game_instance.DUInfo, game_instance.coneInfo)
 		game_instance.sendDisplayunitInfo(game_instance.DUInfo, all_connections['displayunit'])
 		print("Send display unit info is done")
+
+		##Counter
+		game_instance.start_counter(5)
+		"""
+		path = 'gameunit/countdown.mp3'  #ændre path alt efter hvor scriptet kører fra, denne virker hvis det køres fra /gameunit.
+		pygame.mixer.music.load(path)
+		pygame.mixer.music.play()
+		time.sleep()
+		"""
+		print("BOOP")
+		game_instance.send_info(all_connections['turtlebots'], defaultContent=b'Nothing')
+
 		game_instance.time_tracking['start'] = time.time()
 
 try:
