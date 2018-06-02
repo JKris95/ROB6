@@ -37,3 +37,4 @@ for i in range(pos):
 del(dummy[-pos_cp:])
 
 print(dummy)
+"""
