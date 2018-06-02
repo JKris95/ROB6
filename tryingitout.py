@@ -24,3 +24,16 @@ for i in range(6):
 token = engine.execute("SELECT * FROM game_data").fetchall()
 
 print(token)
+"""
+dummy = [2, 4, 6]
+pos = 2
+pos_cp = pos
+for i in range(pos):
+    print(i)
+    dummy.insert(i, dummy[-pos])
+    pos -= 1
+    print(dummy)
+    time.sleep(0.5)
+del(dummy[-pos_cp:])
+
+print(dummy)
