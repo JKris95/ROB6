@@ -73,7 +73,7 @@ class GUI_select_difficulty(GUI_base):
 			self.b = tk.Radiobutton(self.frame, text=text, variable=self.v, value=text, command=setattr(player, 'flip_directions', self.v.get()))
 			self.append_window_list(self.b)
 
-		self.flip_probability = tk.Scale(self.frame, from_=1, to=5, orient = tk.HORIZONTAL, label="Chance for flip", command=setattr(player, 'flip_chance', self.flip_probability.get()/100.0))
+		self.flip_probability = tk.Scale(self.frame, from_=1, to=5, orient = tk.HORIZONTAL, label="Chance for flip", command=setattr(player, 'flip_chance', self.flip_probability.get()))
 		self.flip_probability.set(1) #sets the starting position to 10
 		self.append_window_list(self.flip_probability)
 
@@ -88,11 +88,11 @@ class GUI_select_difficulty(GUI_base):
 class GUI_select_player(GUI_base):
 	def __init__(self, master):
 		GUI_base.__init__(self,master)
-		self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, height = 5, command = lambda *args:[self.close_window(GUI_select_difficulty)])
-		self.player_martin = tk.Button(self.frame, text = 'Martin', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'],['Martin']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([ ('name', player.player_info['name']), ('robot', player.player_info['robot']), ('control_mode', player.difficulty) ])), player.init_drive_cmds(), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_nina = tk.Button(self.frame, text = 'Nina', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([ ('name', player.player_info['name']), ('robot', player.player_info['robot']), ('control_mode', player.difficulty) ])), player.init_drive_cmds(), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_natasja = tk.Button(self.frame, text = 'Natasja', width = 25, height = 5,  command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([ ('name', player.player_info['name']), ('robot', player.player_info['robot']), ('control_mode', player.difficulty) ])), player.init_drive_cmds(), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
-		self.player_guest = tk.Button(self.frame, text = 'Gæst', width = 25, height = 5, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([ ('name', player.player_info['name']), ('robot', player.player_info['robot']), ('control_mode', player.difficulty) ])), player.init_drive_cmds(), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.quitButton = tk.Button(self.frame, text = 'Back', width = 50, height = 4, command = lambda *args:[self.close_window(GUI_select_difficulty)])
+		self.player_martin = tk.Button(self.frame, text = 'P3', width = 50, height = 4, command = lambda *args:[player.change_settings(player.player_info,['name'],['Martin']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([ ('name', player.player_info['name']), ('robot', player.player_info['robot']), ('control_mode', player.control_mode) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_nina = tk.Button(self.frame, text = 'P1', width = 50, height = 4, command = lambda *args:[player.change_settings(player.player_info,['name'], ['Nina']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([ ('name', player.player_info['name']), ('robot', player.player_info['robot']), ('control_mode', player.control_mode) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_natasja = tk.Button(self.frame, text = 'P2', width = 50, height = 4,  command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Natasja']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([ ('name', player.player_info['name']), ('robot', player.player_info['robot']), ('control_mode', player.control_mode) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
+		self.player_guest = tk.Button(self.frame, text = 'Guest', width = 50, height = 4, command = lambda *args:[player.change_settings(player.player_info, ['name'], ['Gæst']), change_dict_pair(status, 'running', True), send_dict(gameunit_conn, dict([ ('name', player.player_info['name']), ('robot', player.player_info['robot']), ('control_mode', player.control_mode) ])), self.unpacker(self.window_list), self.new_window(GUI_player_screen)])
 		self.reverse_var = tk.BooleanVar()
 		self.reverse_directions = tk.Checkbutton(self.frame, text = 'Left hand', width = 50, variable = self.reverse_var, onvalue = True, offvalue = False, command=player.reverse_directions)
 		self.append_window_list( self.frame, self.player_martin, self.player_nina, self.player_natasja, self.player_guest, self.quitButton, self.reverse_directions)
@@ -191,93 +191,86 @@ def make_dict(keys, values):
 	return d
 
 def eight_Way():
-	print("eight way") # Debugging
-	drive_commands = player.drive_cmds[:]
 	random.seed()
 	while status['running'] == True:
-		if player.flip_directions == "SuperFlipped":
-			player.switch_directions(drive_commands, player.flip_chance)
-		elif player.flip_directions == "Flipped":
-			player.flip_direction(drive_commands, player.flip_chance)
+		if player.flip_directions:
+			player.flip_direction()
 		time.sleep(0.1)
+		print("eight way") # Debugging
 		if GPIO.input(32) == False and GPIO.input(38) == True and GPIO.input(36) == True:
 			print ('Forward')
-			send_dict(turtle_conn, drive_commands[0])
+			send_dict(turtle_conn, make_dict(['lin', 'ang'], [player.speeds['lin'], 0.0]))
 
 		elif GPIO.input(40) == False and GPIO.input(38) == True and GPIO.input(36) == True:
 			print ('Back')
-			send_dict(turtle_conn, drive_commands[1])
+			send_dict(turtle_conn, make_dict(['lin', 'ang'], [-player.speeds['lin'], 0.0]))
 
 		elif GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(38) == False:
 			print ('Right')
-			send_dict(turtle_conn, drive_commands[2])
+			send_dict(turtle_conn, make_dict(['lin', 'ang'], [0.0, -player.speeds['ang']]))
 
 		elif GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(36) == False:
 			print ('Left')
-			send_dict(turtle_conn, drive_commands[3])
+			send_dict(turtle_conn, make_dict(['lin', 'ang'], [0.0, player.speeds['ang']]))
 
 		elif GPIO.input(32) == False and GPIO.input(36) == False:
 			print ('Forward and Left')
-			send_dict(turtle_conn, drive_commands[4])
+			send_dict(turtle_conn, make_dict(['lin', 'ang'], [player.speeds['ang_lin'], player.speeds['ang_ang']]))
 
 		elif GPIO.input(32) == False and GPIO.input(38) == False:
 			print ('Forward and Right')
-			send_dict(turtle_conn, drive_commands[5])
+			send_dict(turtle_conn, make_dict(['lin', 'ang'], [player.speeds['ang_lin'], -player.speeds['ang_ang']]))
 
 		elif GPIO.input(40) == False and GPIO.input(36) == False:
 			print ('Back and Left')
-			send_dict(turtle_conn, drive_commands[6])
+			send_dict(turtle_conn, make_dict(['lin', 'ang'], [-player.speeds['ang_lin'], -player.speeds['ang_ang']]))
 
 		elif GPIO.input(40) == False and GPIO.input(38) == False:
 			print ('Back and Right')
-			send_dict(turtle_conn, drive_commands[7])
+			send_dict(turtle_conn, make_dict(['lin', 'ang'], [-player.speeds['ang_lin'], player.speeds['ang_ang']]))
 		
 		elif GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(36) == True and GPIO.input(38) == True:
 			print ('stop')
 			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', 0.0) ]))
 			wait_for_input()
-	#if player.flipped:
-	#	player.reverse_directions()
+	if player.flipped:
+		player.reverse_directions()
 
 def four_Way():
-	print('four way')
-	drive_commands = player.drive_cmds[:4]
-	#print(drive_commands)
 	random.seed()
 	while status['running'] == True:
-		if player.flip_directions == "SuperFlipped":
-			player.switch_directions(drive_commands, player.flip_chance)
-		elif player.flip_directions == "Flipped":
-			player.flip_direction(drive_commands, player.flip_chance)
+		if player.flip_directions:
+			player.flip_direction()
 		time.sleep(0.1)
+		print('four way')
 		if GPIO.input(32) == False and GPIO.input(38) == True and GPIO.input(36) == True:
 			print ('Forward')
-			send_dict(turtle_conn, drive_commands[0])
+			send_dict(turtle_conn, dict([ ('lin', player.speeds['lin']), ('ang', 0.0) ]))
 
 		elif GPIO.input(40) == False and GPIO.input(38) == True and GPIO.input(36) == True:
 			print ('Back')
-			send_dict(turtle_conn, drive_commands[1])
+			send_dict(turtle_conn, dict([ ('lin', -player.speeds['lin']), ('ang', 0.0) ]))
 
 		elif GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(38) == False:
 			print ('Right')
-			send_dict(turtle_conn, drive_commands[2])
+			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', -player.speeds['ang']) ]))
 
 		elif GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(36) == False:
 			print ('Left')
-			send_dict(turtle_conn, drive_commands[3])
+			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', player.speeds['ang']) ]))
 		
 		elif GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(36) == True and GPIO.input(38) == True:
 			print ('stop')
 			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', 0.0) ]))
 			wait_for_input()
-	#if player.flipped:
-	#	player.reverse_directions()
+	if player.flipped:
+		player.reverse_directions()
 
 def rotate_by_default():
 	random.seed()
 	while status['running'] == True:
-		#if player.flip_directions:
-			#player.flip_direction()
+		if player.flip_directions:
+			player.flip_direction()
 		time.sleep(0.1)
 		for channel in CHANNELS:
 			if GPIO.input(channel) == False:
@@ -287,14 +280,14 @@ def rotate_by_default():
 				print('rotate')
 				send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', player.speeds['ang'])]))
 				wait_for_input()
-	#if player.flipped:
-		#player.reverse_directions()
+	if player.flipped:
+		player.reverse_directions()
 
 def two_Way():
 	random.seed()
 	while status['running'] == True:
-		#if player.flip_directions:
-			#player.flip_direction()
+		if player.flip_directions:
+			player.flip_direction()
 		time.sleep(0.1)
 		print('two way')
 		if GPIO.input(32) == False and GPIO.input(38) == True and GPIO.input(36) == True:
@@ -309,41 +302,38 @@ def two_Way():
 			print ('stop')
 			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', 0.0) ]))
 			wait_for_input()
-	#if player.flipped:
-		#player.reverse_directions()
+	if player.flipped:
+		player.reverse_directions()
 		
 def angular():
-	print('angular')
-	drive_commands = player.drive_cmds[4:]
 	random.seed()
 	while status['running'] == True:
-		if player.flip_directions == "SuperFlipped":
-			player.switch_directions(drive_commands, player.flip_chance)
-		elif player.flip_directions == "Flipped":
-			player.flip_direction(drive_commands, player.flip_chance)
+		if player.flip_directions:
+			player.flip_direction()
 		time.sleep(0.1)
+		print('angular')
 		if GPIO.input(32) == False and GPIO.input(36) == False:
 			print ('Forward and Left')
-			send_dict(turtle_conn, drive_commands[0])
+			send_dict(turtle_conn, dict([ ('lin', player.speeds['ang_lin']), ('ang', player.speeds['ang_ang']) ]))
 
 		elif GPIO.input(32) == False and GPIO.input(38) == False:
 			print ('Forward and Right')
-			send_dict(turtle_conn, drive_commands[1])
+			send_dict(turtle_conn, dict([ ('lin', player.speeds['ang_lin']), ('ang', -player.speeds['ang_ang']) ]))
 
 		elif GPIO.input(40) == False and GPIO.input(36) == False:
 			print ('Back and Left')
-			send_dict(turtle_conn, drive_commands[2])
+			send_dict(turtle_conn, dict([ ('lin', -player.speeds['ang_lin']), ('ang', -player.speeds['ang_ang']) ]))
 
 		elif GPIO.input(40) == False and GPIO.input(38) == False:
 			print ('Back and Right')
-			send_dict(turtle_conn, drive_commands[3])
+			send_dict(turtle_conn, dict([ ('lin', -player.speeds['ang_lin']), ('ang', player.speeds['ang_ang']) ]))
 		
 		elif GPIO.input(32) == True and GPIO.input(40) == True and GPIO.input(36) == True and GPIO.input(38) == True:
 			print ('stop')
 			send_dict(turtle_conn, dict([ ('lin', 0.0), ('ang', 0.0) ]))
 			wait_for_input()
-	#if player.flipped:
-		#player.reverse_directions()
+	if player.flipped:
+		player.reverse_directions()
 
 """Global variables"""
 player = playerClass.Player()
