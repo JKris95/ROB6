@@ -50,16 +50,7 @@ class GUI_select_difficulty(GUI_base):
 	def __init__(self, master):
 		GUI_base.__init__(self,master)
 		#self.quitButton = tk.Button(self.frame, text = 'Back', width = 25, height = 5, command = lambda *args:[self.close_window(GUI_select_robot)])
-		self.difficulty_1 = tk.Button(self.frame, text = 'Mode 1', width = 50, height = 4, command = lambda *args:[player.easy(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
-		self.difficulty_2 = tk.Button(self.frame, text = 'Mode 2', width = 50, height = 4, command = lambda *args:[player.medium(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
-		self.difficulty_3 = tk.Button(self.frame, text = 'Mode 3', width = 50, height = 4, command = lambda *args:[player.hard(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
-		self.difficulty_4 = tk.Button(self.frame, text = 'Mode 4', width = 50, height = 4, command = lambda *args:[player.very_hard(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
-		self.difficulty_5 = tk.Button(self.frame, text = 'Mode 5', width = 50, height = 4, command = lambda *args:[player.very_easy(),self.unpacker(self.window_list), self.new_window(GUI_select_player)])
-		#self.cb_var = tk.BooleanVar()
-		#self.flip = tk.Checkbutton(self.frame, text = 'Flip', width = 50, variable = self.cb_var, onvalue = True, offvalue = False, command=self.change_flip_state)
-		self.append_window_list( self.frame, self.difficulty_1, self.difficulty_2, self.difficulty_3, self.difficulty_4,self.difficulty_5) #
-		#self.flip.pack(side=tk.LEFT)
-	
+		
 		self.MODES = [
 			("NotFlipped"),
 			("Flipped"),
@@ -70,14 +61,32 @@ class GUI_select_difficulty(GUI_base):
 		self.v.set("NotFlipped") # initialize
 
 		for text in self.MODES:
-			self.b = tk.Radiobutton(self.frame, text=text, variable=self.v, value=text, command=setattr(player, 'flip_directions', self.v.get()))
+			self.b = tk.Radiobutton(self.frame, text=text, variable=self.v, value=text)
 			#self.append_window_list(self.b)
 			self.b.pack(side=tk.LEFT)
 
 		self.slider_var = tk.IntVar()
-		self.flip_probability = tk.Scale(self.frame, from_=1, to=5, orient = tk.HORIZONTAL, label="Chance for flip", variable=self.slider_var, command=setattr(player, 'flip_chance', ((self.slider_var.get())/100.0)))
+		self.flip_probability = tk.Scale(self.frame, from_=1, to=5, orient = tk.HORIZONTAL, label="Chance for flip", variable=self.slider_var)
 		self.flip_probability.set(1) #sets the starting position to 1
+		
+		
+		self.difficulty_1 = tk.Button(self.frame, text = 'Mode 1', width = 50, height = 4, command = lambda *args:[player.easy(),self.unpacker(self.window_list), setattr(player, 'flip_directions', self.v.get()), setattr(player, 'flip_chance', ((self.slider_var.get())/100.0)),  self.new_window(GUI_select_player)])
+		self.difficulty_2 = tk.Button(self.frame, text = 'Mode 2', width = 50, height = 4, command = lambda *args:[player.medium(),self.unpacker(self.window_list),setattr(player, 'flip_directions', self.v.get()), setattr(player, 'flip_chance', ((self.slider_var.get())/100.0)), self.new_window(GUI_select_player)])
+		self.difficulty_3 = tk.Button(self.frame, text = 'Mode 3', width = 50, height = 4, command = lambda *args:[player.hard(),self.unpacker(self.window_list),setattr(player, 'flip_directions', self.v.get()), setattr(player, 'flip_chance', ((self.slider_var.get())/100.0)), self.new_window(GUI_select_player)])
+		self.difficulty_4 = tk.Button(self.frame, text = 'Mode 4', width = 50, height = 4, command = lambda *args:[player.very_hard(),self.unpacker(self.window_list),setattr(player, 'flip_directions', self.v.get()), setattr(player, 'flip_chance', ((self.slider_var.get())/100.0)), self.new_window(GUI_select_player)])
+		self.difficulty_5 = tk.Button(self.frame, text = 'Mode 5', width = 50, height = 4, command = lambda *args:[player.very_easy(),self.unpacker(self.window_list),setattr(player, 'flip_directions', self.v.get()), setattr(player, 'flip_chance', ((self.slider_var.get())/100.0)), self.new_window(GUI_select_player)])
+		#self.cb_var = tk.BooleanVar()
+		#self.flip = tk.Checkbutton(self.frame, text = 'Flip', width = 50, variable = self.cb_var, onvalue = True, offvalue = False, command=self.change_flip_state)
+		self.append_window_list( self.frame, self.difficulty_1, self.difficulty_2, self.difficulty_3, self.difficulty_4,self.difficulty_5) #
+		#self.flip.pack(side=tk.LEFT)
+	
+
 		#self.append_window_list(self.flip_probability)
+		for text in self.MODES:
+			
+			#self.append_window_list(self.b)
+			self.b.pack(side=tk.LEFT)
+		
 		self.flip_probability.pack(side=tk.LEFT)
 		self.packer(self.window_list)
 
