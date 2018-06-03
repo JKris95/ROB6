@@ -72,6 +72,7 @@ class Player():
 			self.speeds['ang'] = 0.25 * self.max_ang_speed
 			self.control_mode = 'rotation'
 			self.difficulty = '5'
+			self.set_angular()
 			print('difficulty changed')
 			print(self.speeds.items(), self.control_mode, self.flip_directions, self.flip_chance)
 		except:
@@ -95,7 +96,7 @@ class Player():
 			self.speeds['ang'] = 0.5 * self.max_ang_speed
 			self.control_mode = 'four_way'
 			self.difficulty = '2'
-			#self.set_angular() 
+			self.set_angular() 
 			print('difficulty changed')
 			print(self.speeds.items(), self.control_mode, self.flip_directions, self.flip_chance)
 		except:
@@ -107,7 +108,7 @@ class Player():
 			self.speeds['ang'] = 0.75 * self.max_ang_speed
 			self.control_mode = 'four_way'
 			self.difficulty = '3'
-			#self.set_angular()
+			self.set_angular()
 			print('difficulty changed')
 			print(self.speeds.items(), self.control_mode, self.flip_directions, self.flip_chance)
 		except:
