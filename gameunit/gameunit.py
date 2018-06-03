@@ -295,6 +295,8 @@ def recv_from_turtlebot(connection, address):
 			if player['robot'] == address:
 				player_name = player['name']
 				control_mode = player['control_mode']
+				flip_state = player['flip']
+				flip_prob = player['flip_prob']
 				break
 		#print("I know of the player ", address, player_name)
 		hit = connection.recv(1024)
@@ -305,6 +307,8 @@ def recv_from_turtlebot(connection, address):
 		if game_instance.nr_of_turtle_events == len(game_instance.event_list):
 			game_instance.event_list[game_instance.nr_of_turtle_events-1]['player'] = player_name
 			game_instance.event_list[game_instance.nr_of_turtle_events-1]['control_mode'] = control_mode
+			game_instance.event_list[game_instance.nr_of_turtle_events-1]['flip'] = flip_state
+			game_instance.event_list[game_instance.nr_of_turtle_events-1]['flip_prob'] = flip_prob
 
 		elif game_instance.nr_of_turtle_events > len(game_instance.event_list): # In case of false positive from a turtlebot that did not hit a cone
 			game_instance.nr_of_turtle_events = len(game_instance.event_list)
@@ -313,6 +317,8 @@ def recv_from_turtlebot(connection, address):
 			game_instance.nr_of_turtle_events = len(game_instance.event_list)
 			game_instance.event_list[game_instance.nr_of_turtle_events-1]['player'] = player_name
 			game_instance.event_list[game_instance.nr_of_turtle_events-1]['control_mode'] = control_mode
+			game_instance.event_list[game_instance.nr_of_turtle_events-1]['flip'] = flip_state
+			game_instance.event_list[game_instance.nr_of_turtle_events-1]['flip_prob'] = flip_prob
 			#for entry in range(game_instance.nr_of_turtle_events-1, len(game_instance.event_list)-1):
 			#	game_instance.event_list[entry]['player'] = 'NaN'
 			
