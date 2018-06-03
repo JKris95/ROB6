@@ -71,12 +71,13 @@ class GUI_select_difficulty(GUI_base):
 
 		for text in self.MODES:
 			self.b = tk.Radiobutton(self.frame, text=text, variable=self.v, value=text, command=setattr(player, 'flip_directions', self.v.get()))
-			self.append_window_list(self.b)
+			#self.append_window_list(self.b)
+			self.b.pack(side=tk.LEFT)
 
 		self.flip_probability = tk.Scale(self.frame, from_=1, to=5, orient = tk.HORIZONTAL, label="Chance for flip", command=setattr(player, 'flip_chance', self.flip_probability.get()/100.0))
 		self.flip_probability.set(1) #sets the starting position to 10
-		self.append_window_list(self.flip_probability)
-
+		#self.append_window_list(self.flip_probability)
+		self.flip_probability.pack(side=tk.LEFT)
 		self.packer(self.window_list)
 
 """
