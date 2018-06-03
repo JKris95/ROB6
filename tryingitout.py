@@ -22,6 +22,25 @@ for i in range(6):
 #df.to_sql('game_data', con=engine, if_exists='append')
 #df.to_sql('game_data', con=engine, if_exists='append')
 token = engine.execute("SELECT * FROM game_data").fetchall()
+<<<<<<< HEAD
 databoy = pd.DataFrame(token)
 #databoy.to_excel(excel_writer='blanksheet.xlsx', sheet_name='Sheet1')
 print(databoy)
+=======
+
+print(token)
+"""
+dummy = [2, 4, 6]
+pos = 2
+pos_cp = pos
+for i in range(pos):
+    print(i)
+    dummy.insert(i, dummy[-pos])
+    pos -= 1
+    print(dummy)
+    time.sleep(0.5)
+del(dummy[-pos_cp:])
+
+print(dummy)
+"""
+>>>>>>> 0874259e4a7ae2438c3dda717764a35abf0d2b02
