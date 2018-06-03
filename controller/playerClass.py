@@ -73,7 +73,7 @@ class Player():
 			self.control_mode = 'rotation'
 			self.difficulty = '5'
 			print('difficulty changed')
-			print(self.speeds.items(), self.control_mode, self.flip_directions)
+			print(self.speeds.items(), self.control_mode, self.flip_directions, self.flip_chance)
 		except:
 			print('Did not change all parameters')
 
@@ -85,7 +85,7 @@ class Player():
 			self.difficulty = '1'
 			self.set_angular()
 			print('difficulty changed')
-			print(self.speeds.items(), self.control_mode, self.flip_directions)
+			print(self.speeds.items(), self.control_mode, self.flip_directions, self.flip_chance)
 		except:
 			print('Did not change all parameters')
 
@@ -97,7 +97,7 @@ class Player():
 			self.difficulty = '2'
 			#self.set_angular() 
 			print('difficulty changed')
-			print(self.speeds.items(), self.control_mode, self.flip_directions)
+			print(self.speeds.items(), self.control_mode, self.flip_directions, self.flip_chance)
 		except:
 			print('Did not change all parameters')
 
@@ -109,7 +109,7 @@ class Player():
 			self.difficulty = '3'
 			#self.set_angular()
 			print('difficulty changed')
-			print(self.speeds.items(), self.control_mode, self.flip_directions)
+			print(self.speeds.items(), self.control_mode, self.flip_directions, self.flip_chance)
 		except:
 			print('Did not change all parameters')
 
@@ -121,7 +121,7 @@ class Player():
 			self.difficulty = '4'
 			self.set_angular()
 			print('difficulty changed')
-			print(self.speeds.items(), self.control_mode, self.flip_directions)
+			print(self.speeds.items(), self.control_mode, self.flip_directions, self.flip_chance)
 		except:
 			print('Did not change all parameters')
 
