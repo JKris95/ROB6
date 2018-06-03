@@ -61,7 +61,7 @@ def recv_from_controller():
 	while True:
 		global lin, ang
 		move_bytes = conn.recv(1024) #receive information as bytes
-		#print("Received", move_bytes, type(move_bytes))
+		print("Received", move_bytes, type(move_bytes))
 		#move_info_string = move_bytes.decode()
 		#print("After decoding", type(move_info_string))
 		try:
