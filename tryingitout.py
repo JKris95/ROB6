@@ -22,5 +22,6 @@ for i in range(6):
 #df.to_sql('game_data', con=engine, if_exists='append')
 #df.to_sql('game_data', con=engine, if_exists='append')
 token = engine.execute("SELECT * FROM game_data").fetchall()
-
-print(token)
+databoy = pd.DataFrame(token)
+#databoy.to_excel(excel_writer='blanksheet.xlsx', sheet_name='Sheet1')
+print(databoy)
