@@ -238,7 +238,7 @@ def receive(connection, address):
 		times_lock.release()
 		game_event = json.loads(game_event_raw.decode())
 		print("Event received: " + str(game_event))
-		game_instance.event_list.append(event_packer(game_event, address = address, time = (game_instance.time_tracking['end']-game_instance.time_tracking['start']), category = game_instance.category, game_type = game_instance.game_type, game_nr = game_instance.game_nr, date = time.asctime(), control_mode = 'N/A', player = 'N/A')) # Write to list containing information on all cones that were hit
+		game_instance.event_list.append(event_packer(game_event, address = address, time = (game_instance.time_tracking['end']-game_instance.time_tracking['start']), category = game_instance.category, game_type = game_instance.game_type, game_nr = game_instance.game_nr, date = time.asctime(), control_mode = 'N/A', flip_state = "N/A", flip_prob = "N/A", player = 'N/A', )) # Write to list containing information on all cones that were hit
 		#print("Current event list: " + str(game_instance.event_list) + " has length: " + str(len(game_instance.event_list)))
 	
 def recv_from_controller(connection):
