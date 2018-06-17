@@ -2,6 +2,8 @@ import rospy
 import time
 import socket
 from std_msgs.msg import String
+from geometry_msgs.msg import Twist
+
 
 
 HOST = '192.168.1.34'  #HOST IP
@@ -30,6 +32,8 @@ def turtlebot_state_function(data):
 rospy.init_node('connection_node', anonymous=True)
 rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
 pub = rospy.Publisher('/turtlebot_state', String, queue_size=10)
+pubTwist = rospy.Publisher('/cmd_vel', Twist, queue_size=5) #queqe size can be adjusted maybe
+
 
 
 while True:
@@ -39,6 +43,9 @@ while True:
 		for i in range(0,5):
 			pub.publish(recv_data)
 			time.sleep(0.1)
+		twist.linear.x = 0; twist.linear.y = 0; twist.linear.z = 0 
+		twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0
+		pubTwist.publish(twist)
 		print('go back')
 	if recv_data == 'hit':
 		pub.publish(recv_data)
