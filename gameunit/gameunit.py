@@ -238,10 +238,10 @@ def receive(connection, address):
 		times_lock.release()
 		game_event = json.loads(game_event_raw.decode())
 		print("Event received: " + str(game_event))
-		game_instance.event_list.append(event_packer(game_event, address = address, time = (game_instance.time_tracking['end']-game_instance.time_tracking['start']), category = game_instance.category, game_type = game_instance.game_type, game_nr = game_instance.game_nr, date = time.asctime(), control_mode = 'N/A', flip_state = "N/A", flip_prob = "N/A", player = 'N/A', )) # Write to list containing information on all cones that were hit
+		game_instance.event_list.append(event_packer(game_event, address = address, time = (game_instance.time_tracking['end']-game_instance.time_tracking['start']), category = game_instance.category, game_type = game_instance.game_type, game_nr = game_instance.game_nr, date = time.asctime(), control_mode = 'N/A', flip_state = "N/A", flip_prob = "N/A", player = 'N/A', team = game_instance.team_initials[0]+game_instance.team_initials[1])) # Write to list containing information on all cones that were hit
 		#print("Current event list: " + str(game_instance.event_list) + " has length: " + str(len(game_instance.event_list)))
 	
-def recv_from_controller(connection):
+def recv_from_controller(connection, team_idx):
 	#print("we got into recv_from_controller")
 	while True:
 		while True:
@@ -257,6 +257,7 @@ def recv_from_controller(connection):
 		if len(game_instance.players) < game_instance.nr_of_clients["controllers"]:
 			game_instance.players.append(player)
 			print("appended", player)
+			game_instance.team_initials[team_idx] = player['name'][:2]
 
 		elif player_is_registered(game_instance.players, player):
 			print('player is already registered')
@@ -270,6 +271,7 @@ def recv_from_controller(connection):
 					print('removed player: ', person)
 					game_instance.players.append(player)
 					print('added player: ', player)
+					game_instance.team_initials[team_idx] = player['name'][:2]
 
 def player_is_registered(player_list, player):
 	for idx, person in enumerate(player_list):
@@ -341,18 +343,17 @@ def startTheGame():
 
 
 def start_controller_thread():
-	test_it = 1
+	team_identifier = 0
 	if all_connections['controllers']:
 		print("starting controller threads")
 		for conn in all_connections['controllers']:
-			print("controller thread number ", test_it)
 			try:
-				_thread.start_new_thread(recv_from_controller, (conn,))
+				_thread.start_new_thread(recv_from_controller, (conn, team_identifier))
 			except:
 				print("Couldn't start thread for controller")
 
 			print("started a controller thread")
-			test_it +=1
+			team_identifier +=1
 
 def start_game():
 		
