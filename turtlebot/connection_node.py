@@ -39,7 +39,7 @@ pubTwist = rospy.Publisher('/cmd_vel', Twist, queue_size=5) #queqe size can be a
 while True:
 	recv_data = s.recv(1024)
 	if recv_data == 'go back':
-		time.sleep(0.5)
+		time.sleep(0.7)
 		for i in range(0,5):
 			pub.publish(recv_data)
 			time.sleep(0.1)

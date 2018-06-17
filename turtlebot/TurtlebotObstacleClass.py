@@ -62,12 +62,13 @@ class Obstacle():
 
 	def obstacle_cone(self, direction):
 		print(self.scan_filter)
-		if self.checkList(self.scan_filter, 0.14, 0.23, 2) == True:
+		if self.checkList(self.scan_filter, 0.13, 0.24, 2) == True:
 			print('hit')
 			self.pub.publish(direction)
 			self.nothing_sent = 0
-			time.sleep(0.5)
+			time.sleep(0.3)
 			self.pub.publish('turtle_hit')
+			time.sleep(0.5)
 
 	def obstacle_not_cone(self, direction):
 			if len(self.scan_filter)-(-23*np.mean(self.scan_filter)+13) >= 0:
