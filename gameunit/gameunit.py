@@ -22,6 +22,7 @@ conesInGame = False
 receive_threads_created = False
 controller_started = False
 times_lock = _thread.allocate_lock()
+turtle_lock = _thread.allocate_lock()
 game_instance = GameType()
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 engine = create_engine('sqlite:///GAMEDATA.db', echo=False)
@@ -303,6 +304,7 @@ def recv_from_turtlebot(connection, address):
 		#print("I know of the player ", address, player_name)
 		hit = connection.recv(1024)
 		print('I got this', hit, " player ", player_name, " address ", address)
+		turtle_lock.acquire()
 		game_instance.nr_of_turtle_events += 1 #Using a class attribute because both threads running the function should share the variable
 		print(game_instance.nr_of_turtle_events, "Turtle Events ")
 		print(len(game_instance.event_list), "Len Event List")
@@ -311,6 +313,7 @@ def recv_from_turtlebot(connection, address):
 			game_instance.event_list[game_instance.nr_of_turtle_events-1]['control_mode'] = control_mode
 			game_instance.event_list[game_instance.nr_of_turtle_events-1]['flip'] = flip_state
 			game_instance.event_list[game_instance.nr_of_turtle_events-1]['flip_prob'] = flip_prob
+			turtle_lock.release()
 
 		elif game_instance.nr_of_turtle_events > len(game_instance.event_list): # In case of false positive from a turtlebot that did not hit a cone
 			game_instance.nr_of_turtle_events = len(game_instance.event_list)
@@ -321,6 +324,7 @@ def recv_from_turtlebot(connection, address):
 			game_instance.event_list[game_instance.nr_of_turtle_events-1]['control_mode'] = control_mode
 			game_instance.event_list[game_instance.nr_of_turtle_events-1]['flip'] = flip_state
 			game_instance.event_list[game_instance.nr_of_turtle_events-1]['flip_prob'] = flip_prob
+			turtle_lock.release()
 			#for entry in range(game_instance.nr_of_turtle_events-1, len(game_instance.event_list)-1):
 			#	game_instance.event_list[entry]['player'] = 'NaN'
 			
