@@ -22,6 +22,7 @@ while True:
 def turtlebot_state_function(data):
 	print(data.data, 'connection node')
 	if data.data == 'turtle_hit':
+		print('I am trying to send a hit')
 		s.sendall(b'hit')
 		print('I sent a hit')
 		pub.publish('Nothing')
@@ -51,7 +52,7 @@ while True:
 	if recv_data == 'hit':
 		pub.publish(recv_data)
 		print(recv_data)
-		time.sleep(0.5)
+		time.sleep(0.6)
 		pub.publish('Nothing')
 		print('Nothing')
 	if recv_data == 'Nothing':
