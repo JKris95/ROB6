@@ -2,6 +2,8 @@ import rospy
 import time
 import socket
 from std_msgs.msg import String
+from geometry_msgs.msg import Twist
+
 
 
 HOST = '192.168.1.34'  #HOST IP
@@ -20,30 +22,37 @@ while True:
 def turtlebot_state_function(data):
 	print(data.data, 'connection node')
 	if data.data == 'turtle_hit':
+		print('I am trying to send a hit')
 		s.sendall(b'hit')
 		print('I sent a hit')
 		pub.publish('Nothing')
 		while data.data == 'turtle_hit':
-			print('Waiting for which is not turtle_hit')
-
+			pass
 
 rospy.init_node('connection_node', anonymous=True)
-rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
+rospy.Subscriber("/turtlebot_hit", String, turtlebot_state_function)
 pub = rospy.Publisher('/turtlebot_state', String, queue_size=10)
+pubTwist = rospy.Publisher('/cmd_vel', Twist, queue_size=5) #queqe size can be adjusted maybe
+twist = Twist()
+
+
 
 
 while True:
 	recv_data = s.recv(1024)
 	if recv_data == 'go back':
-		time.sleep(0.5)
+		time.sleep(0.7)
 		for i in range(0,5):
 			pub.publish(recv_data)
 			time.sleep(0.1)
+		twist.linear.x = 0; twist.linear.y = 0; twist.linear.z = 0 
+		twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0
+		pubTwist.publish(twist)
 		print('go back')
 	if recv_data == 'hit':
 		pub.publish(recv_data)
 		print(recv_data)
-		time.sleep(0.5)
+		time.sleep(0.6)
 		pub.publish('Nothing')
 		print('Nothing')
 	if recv_data == 'Nothing':
