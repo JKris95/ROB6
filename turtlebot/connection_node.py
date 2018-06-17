@@ -32,6 +32,8 @@ rospy.init_node('connection_node', anonymous=True)
 rospy.Subscriber("/turtlebot_state", String, turtlebot_state_function)
 pub = rospy.Publisher('/turtlebot_state', String, queue_size=10)
 pubTwist = rospy.Publisher('/cmd_vel', Twist, queue_size=5) #queqe size can be adjusted maybe
+twist = Twist()
+
 
 
 
