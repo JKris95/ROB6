@@ -30,6 +30,7 @@ import csv
 class Obstacle():
 	def __init__(self):
 		self.pub = rospy.Publisher('/turtlebot_state', String, queue_size=10)
+		self.hit_pub = rospy.Publisher('/turtlebot_hit', String, queue_size=10)
 		self.pub.publish('Nothing')
 		self.LIDAR_ERR = 0.05
 		self.is_detected = 0
@@ -62,14 +63,12 @@ class Obstacle():
 
 	def obstacle_cone(self, direction):
 		print(self.scan_filter)
-		if self.checkList(self.scan_filter, 0.13, 0.24, 2) == True:
+		if self.checkList(self.scan_filter, 0.14, 0.23, 2) == True:
 			print('I hit')
 			self.pub.publish(direction)
 			self.nothing_sent = 0
 			time.sleep(0.3)
-			self.pub.publish('turtle_hit')
-			self.pub.publish('turtle_hit')
-			self.pub.publish('turtle_hit')
+			self.hit_pub.publish('turtle_hit')
 			time.sleep(0.5)
 
 	def obstacle_not_cone(self, direction):
