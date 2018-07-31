@@ -244,6 +244,7 @@ def receive(connection, address):
 	
 def recv_from_controller(connection, team_idx):
 	#print("we got into recv_from_controller")
+	print('team:idx', team_idx)
 	while True:
 		while True:
 			try:

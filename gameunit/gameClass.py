@@ -45,7 +45,7 @@ class GameType():
 		self.category_names = ['colors', 'animals', 'times']
 		self.players = []
 		self.game_nr = 1
-		self.team_initials = []
+		self.team_initials = ['hi', 'hi']
 		self.results = pd.DataFrame(self.event_list)
 		
 
